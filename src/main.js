@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import iView from 'view-design'
+import viewDesign from 'view-design'
 import i18n from '@/locale'
 import config from '@/config'
 import importDirective from '@/directive'
@@ -19,9 +19,21 @@ import 'v-org-tree/dist/v-org-tree.css'
 /* eslint-disable */
 if (process.env.NODE_ENV !== 'production') require('@/mock')
 
-Vue.use(iView, {
+Vue.use(viewDesign, {
   i18n: (key, value) => i18n.t(key, value)
 })
+
+// Vue.use(viewDesign, {
+//   i18n: function(path, options) {
+//     let value = i18n.t(path, options)
+//     if (value !== null && value !== undefined) {
+//       return value
+//     }
+//     return ''
+//   }
+// })
+
+
 Vue.use(TreeTable)
 Vue.use(VOrgTree)
 /**
@@ -47,5 +59,6 @@ new Vue({
   el: '#app',
   router,
   store,
+  i18n,
   render: h => h(App)
 })

@@ -42,5 +42,8 @@ export default {
   tree_table_page: 'Tree Table',
   org_tree_page: 'Org Tree',
   drag_drawer_page: 'Draggable Drawer',
-  tree_select_page: 'Tree Selector'
+  tree_select_page: 'Tree Selector',
+  position_management: "职位管理",
+  job_posting: "职位发布",
+  job_application: "职位申请"
 }

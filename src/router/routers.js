@@ -50,6 +50,35 @@ export default [
       }
     ]
   },
+  {
+    path: '/position_management',
+    name: 'position_management',
+    meta: {
+      icon: 'logo-buffer',
+      title: '职位管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'job_posting',
+        name: 'job_posting',
+        meta: {
+          icon: 'md-notifications',
+          title: '职位发布'
+        },
+        component: () => import('@/views/position-management/job-posting.vue')
+      },
+      {
+        path: 'job_application',
+        name: 'job_application',
+        meta: {
+          icon: 'md-notifications',
+          title: '职位申请'
+        },
+        component: () => import('@/views/position-management/job-application.vue')
+      }
+    ]
+  },
   // {
   //   path: '',
   //   name: 'doc',
@@ -58,25 +87,6 @@ export default [
   //     href: 'https://lison16.github.io/iview-admin-doc/#/',
   //     icon: 'ios-book'
   //   }
-  // },
-  // {
-  //   path: '/join',
-  //   name: 'join',
-  //   component: Main,
-  //   meta: {
-  //     hideInBread: true
-  //   },
-  //   children: [
-  //     {
-  //       path: 'join_page',
-  //       name: 'join_page',
-  //       meta: {
-  //         icon: '_qq',
-  //         title: 'QQ群'
-  //       },
-  //       component: () => import('@/view/join-page.vue')
-  //     }
-  //   ]
   // },
   // {
   //   path: '/message',
@@ -94,7 +104,7 @@ export default [
   //         icon: 'md-notifications',
   //         title: '消息中心'
   //       },
-  //       component: () => import('@/view/single-page/message/index.vue')
+  //       component: () => import('@/views/single-page/message/index.vue')
   //     }
   //   ]
   // },
@@ -114,7 +124,7 @@ export default [
   //         icon: 'md-arrow-dropdown-circle',
   //         title: '树状下拉选择器'
   //       },
-  //       component: () => import('@/view/components/tree-select/index.vue')
+  //       component: () => import('@/views/components/tree-select/index.vue')
   //     },
   //     {
   //       path: 'count_to_page',
@@ -123,7 +133,7 @@ export default [
   //         icon: 'md-trending-up',
   //         title: '数字渐变'
   //       },
-  //       component: () => import('@/view/components/count-to/count-to.vue')
+  //       component: () => import('@/views/components/count-to/count-to.vue')
   //     },
   //     {
   //       path: 'drag_list_page',
@@ -132,7 +142,7 @@ export default [
   //         icon: 'ios-infinite',
   //         title: '拖拽列表'
   //       },
-  //       component: () => import('@/view/components/drag-list/drag-list.vue')
+  //       component: () => import('@/views/components/drag-list/drag-list.vue')
   //     },
   //     {
   //       path: 'drag_drawer_page',
@@ -141,7 +151,7 @@ export default [
   //         icon: 'md-list',
   //         title: '可拖拽抽屉'
   //       },
-  //       component: () => import('@/view/components/drag-drawer')
+  //       component: () => import('@/views/components/drag-drawer')
   //     },
   //     {
   //       path: 'org_tree_page',
@@ -150,7 +160,7 @@ export default [
   //         icon: 'ios-people',
   //         title: '组织结构树'
   //       },
-  //       component: () => import('@/view/components/org-tree')
+  //       component: () => import('@/views/components/org-tree')
   //     },
   //     {
   //       path: 'tree_table_page',
@@ -159,7 +169,7 @@ export default [
   //         icon: 'md-git-branch',
   //         title: '树状表格'
   //       },
-  //       component: () => import('@/view/components/tree-table/index.vue')
+  //       component: () => import('@/views/components/tree-table/index.vue')
   //     },
   //     {
   //       path: 'cropper_page',
@@ -168,7 +178,7 @@ export default [
   //         icon: 'md-crop',
   //         title: '图片裁剪'
   //       },
-  //       component: () => import('@/view/components/cropper/cropper.vue')
+  //       component: () => import('@/views/components/cropper/cropper.vue')
   //     },
   //     {
   //       path: 'tables_page',
@@ -177,7 +187,7 @@ export default [
   //         icon: 'md-grid',
   //         title: '多功能表格'
   //       },
-  //       component: () => import('@/view/components/tables/tables.vue')
+  //       component: () => import('@/views/components/tables/tables.vue')
   //     },
   //     {
   //       path: 'split_pane_page',
@@ -186,7 +196,7 @@ export default [
   //         icon: 'md-pause',
   //         title: '分割窗口'
   //       },
-  //       component: () => import('@/view/components/split-pane/split-pane.vue')
+  //       component: () => import('@/views/components/split-pane/split-pane.vue')
   //     },
   //     {
   //       path: 'markdown_page',
@@ -195,7 +205,7 @@ export default [
   //         icon: 'logo-markdown',
   //         title: 'Markdown编辑器'
   //       },
-  //       component: () => import('@/view/components/markdown/markdown.vue')
+  //       component: () => import('@/views/components/markdown/markdown.vue')
   //     },
   //     {
   //       path: 'editor_page',
@@ -204,7 +214,7 @@ export default [
   //         icon: 'ios-create',
   //         title: '富文本编辑器'
   //       },
-  //       component: () => import('@/view/components/editor/editor.vue')
+  //       component: () => import('@/views/components/editor/editor.vue')
   //     },
   //     {
   //       path: 'icons_page',
@@ -213,7 +223,7 @@ export default [
   //         icon: '_bear',
   //         title: '自定义图标'
   //       },
-  //       component: () => import('@/view/components/icons/icons.vue')
+  //       component: () => import('@/views/components/icons/icons.vue')
   //     }
   //   ]
   // },
