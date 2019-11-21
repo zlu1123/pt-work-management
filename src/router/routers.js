@@ -63,7 +63,7 @@ export default [
         path: 'job_posting',
         name: 'job_posting',
         meta: {
-          icon: 'md-notifications',
+          icon: 'ios-exit',
           title: '职位发布'
         },
         component: () => import('@/views/position-management/job-posting.vue')
@@ -72,8 +72,190 @@ export default [
         path: 'job_application',
         name: 'job_application',
         meta: {
-          icon: 'md-notifications',
+          icon: 'md-cafe',
           title: '职位申请'
+        },
+        component: () => import('@/views/position-management/job-application.vue')
+      }
+    ]
+  },
+  {
+    path: '/business_management',
+    name: 'business_management',
+    meta: {
+      icon: 'md-briefcase',
+      title: '企业管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'enterprise_information_maintenance',
+        name: 'enterprise_information_maintenance',
+        meta: {
+          icon: 'md-boat',
+          title: '企业信息维护'
+        },
+        component: () => import('@/views/position-management/job-posting.vue')
+      },
+      {
+        path: 'corporate_leader_maintenance',
+        name: 'corporate_leader_maintenance',
+        meta: {
+          icon: 'ios-person',
+          title: '企业负责人维护'
+        },
+        component: () => import('@/views/position-management/job-application.vue')
+      },
+      {
+        path: 'enterprise_recharge_maintenance',
+        name: 'enterprise_recharge_maintenance',
+        meta: {
+          icon: 'logo-usd',
+          title: '企业充值维护'
+        },
+        component: () => import('@/views/position-management/job-application.vue')
+      }
+    ]
+  },
+  {
+    path: '/financial_management',
+    name: 'financial_management',
+    meta: {
+      icon: 'md-card',
+      title: '财务管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'salary_review',
+        name: 'salary_review',
+        meta: {
+          icon: 'md-medal',
+          title: '工资审核'
+        },
+        component: () => import('@/views/position-management/job-posting.vue')
+      },
+      {
+        path: 'platform_recharge',
+        name: 'platform_recharge',
+        meta: {
+          icon: 'md-flower',
+          title: '平台充值'
+        },
+        component: () => import('@/views/position-management/job-application.vue')
+      },
+      {
+        path: 'financial_statements',
+        name: 'financial_statements',
+        meta: {
+          icon: 'md-filing',
+          title: '财务报表'
+        },
+        component: () => import('@/views/position-management/job-application.vue')
+      }
+    ]
+  },
+  {
+    path: '/advertising_management',
+    name: 'advertising_management',
+    meta: {
+      icon: 'logo-buffer',
+      title: '广告管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'advertising_maintenance',
+        name: 'advertising_maintenance',
+        meta: {
+          icon: 'ios-create',
+          title: '广告维护'
+        },
+        component: () => import('@/views/position-management/job-posting.vue')
+      }
+    ]
+  },
+  {
+    path: '/worker_management',
+    name: 'worker_management',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'worker_management_page',
+        name: 'worker_management_page',
+        meta: {
+          icon: 'md-contacts',
+          title: '务工人员管理'
+        },
+        component: () => import('@/views/position-management/job-posting.vue')
+      }
+    ]
+  },
+  {
+    path: '/platform_management',
+    name: 'platform_management',
+    meta: {
+      icon: 'md-construct',
+      title: '平台管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'platform_user_maintenance',
+        name: 'platform_user_maintenance',
+        meta: {
+          icon: 'ios-contacts',
+          title: '平台用户维护'
+        },
+        component: () => import('@/views/position-management/job-posting.vue')
+      },
+      {
+        path: 'data_dictionary_maintenance',
+        name: 'data_dictionary_maintenance',
+        meta: {
+          icon: 'ios-construct-outline',
+          title: '数据字典维护'
+        },
+        component: () => import('@/views/position-management/job-application.vue')
+      },
+      {
+        path: 'address_management',
+        name: 'address_management',
+        meta: {
+          icon: 'md-navigate',
+          title: '地址管理'
+        },
+        component: () => import('@/views/position-management/job-application.vue')
+      }
+    ]
+  },
+  {
+    path: '/distribution_management',
+    name: 'distribution_management',
+    meta: {
+      icon: 'ios-beer',
+      title: '分销管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'distribution_staff_management',
+        name: 'distribution_staff_management',
+        meta: {
+          icon: 'md-bicycle',
+          title: '分销人员管理'
+        },
+        component: () => import('@/views/position-management/job-posting.vue')
+      },
+      {
+        path: 'distribution_finance',
+        name: 'distribution_finance',
+        meta: {
+          icon: 'logo-bitcoin',
+          title: '分销财务'
         },
         component: () => import('@/views/position-management/job-application.vue')
       }
