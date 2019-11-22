@@ -45,6 +45,13 @@
 li {
   list-style: none;
 } /*这里设置*/
+
+  .label-line {
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+  }
+
 </style>
 
 <template>
@@ -59,59 +66,43 @@ li {
             <Col span="24">
               <ul class="goods-edit-list clearfix">
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品名称：</label>
-                  <Input v-model="goodsInfo.goodsName" disabled="disabled" style="width: 200px" />
+                  <label class="label-line">职位名称：</label>
+                  <Input v-model="goodsInfo.goodsName"  style="width: 200px" />
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品国际码：</label>
-                  <Input v-model="goodsInfo.goodsBarCode" disabled="disabled" style="width: 200px" />
+                  <label class="label-line">职位类型：</label>
+                  <Input v-model="goodsInfo.goodsBarCode"  style="width: 200px" />
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品编码：</label>
-                  <Input v-model="goodsInfo.number" disabled="disabled" style="width: 200px" />
+                  <label class="label-line">职位福利及要求：</label>
+                  <Input v-model="goodsInfo.number"  style="width: 200px" />
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品保质期：</label>
-                  <Input
-                    v-model="goodsInfo.shelfLifeTime"
-                    disabled="disabled"
-                    style="width: 200px"
-                  />
+                  <label class="label-line">工作时间：</label>
+                  <Input v-model="goodsInfo.shelfLifeTime" style="width: 200px"/>
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品含量：</label>
-                  <Input
-                    v-model="goodsInfo.specifications"
-                    disabled="disabled"
-                    style="width: 200px"
-                  />
+                  <label class="label-line">单价：</label>
+                  <Input v-model="goodsInfo.specifications" style="width: 200px"/>
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品品类：</label>
-                  <Input
-                    v-model="goodsInfo.goodsTypeName"
-                    disabled="disabled"
-                    style="width: 200px"
-                  />
+                  <label class="label-line">需求人数：</label>
+                  <Input v-model="goodsInfo.goodsTypeName" style="width: 200px"/>
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品售卖规格：</label>
-                  <Input
-                    v-model="goodsInfo.packingSpecification"
-                    disabled="disabled"
-                    style="width: 200px"
-                  />
+                  <label class="label-line">结算方式：</label>
+                  <Input v-model="goodsInfo.packingSpecification" style="width: 200px"/>
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品畅销度：</label>
-                  <Input v-model="goodsInfo.selling" disabled="disabled" style="width: 200px" />
+                  <label class="label-line">保险选择：</label>
+                  <Input v-model="goodsInfo.selling"  style="width: 200px" />
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品单位：</label>
-                  <Input v-model="goodsInfo.unitName" disabled="disabled" style="width: 200px" />
+                  <label class="label-line">保证金：</label>
+                  <Input v-model="goodsInfo.unitName"  style="width: 200px" />
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">配送类型：</label>
+                  <label class="label-line">健康选择：</label>
                   <Select v-model="goodsInfo.deliveryGoodsType" clearable style="width:200px;">
                     <Option
                       v-for="item in deliveryGoodsTypeList"
@@ -121,7 +112,7 @@ li {
                   </Select>
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品状态：</label>
+                  <label class="label-line">发布企业：</label>
                   <Select v-model="goodsInfo.goodsSupplierPutaway" clearable style="width:200px;">
                     <Option
                       v-for="item in goodsSupplierPutawayList"
@@ -131,49 +122,49 @@ li {
                   </Select>
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">库存：</label>
+                  <label class="label-line">企业负责人：</label>
                   <Input v-model="goodsInfo.thirdQty" placeholder="请输入库存" style="width: 200px" />
                 </li>
                 <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">销售价格：</label>
+                  <label class="label-line">平台负责人：</label>
                   <Input
                     v-model="goodsInfo.thirdSalePrice"
                     placeholder="请输入销售价格"
                     style="width: 200px"
                   />
                 </li>
-                <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">最低起订量：</label>
-                  <Input
-                    v-model="goodsInfo.deliveryGoodsMinQty"
-                    placeholder="请输入最低起订量"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">商品跨度：</label>
-                  <Input
-                    v-model="goodsInfo.deliveryGoodsSpan"
-                    placeholder="请输入商品跨度"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">单张订单限量：</label>
-                  <Input
-                    v-model="goodsInfo.maxQtyLimit"
-                    placeholder="请输入最大数量"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label style="display: inline-block; width: 100px; text-align: right;">供应商内部码：</label>
-                  <Input
-                    v-model="goodsInfo.supplierOwnCode"
-                    placeholder="供应商内部码"
-                    style="width: 200px"
-                  />
-                </li>
+<!--                <li>-->
+<!--                  <label class="label-line">最低起订量：</label>-->
+<!--                  <Input-->
+<!--                    v-model="goodsInfo.deliveryGoodsMinQty"-->
+<!--                    placeholder="请输入最低起订量"-->
+<!--                    style="width: 200px"-->
+<!--                  />-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <label class="label-line">商品跨度：</label>-->
+<!--                  <Input-->
+<!--                    v-model="goodsInfo.deliveryGoodsSpan"-->
+<!--                    placeholder="请输入商品跨度"-->
+<!--                    style="width: 200px"-->
+<!--                  />-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <label class="label-line">单张订单限量：</label>-->
+<!--                  <Input-->
+<!--                    v-model="goodsInfo.maxQtyLimit"-->
+<!--                    placeholder="请输入最大数量"-->
+<!--                    style="width: 200px"-->
+<!--                  />-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <label class="label-line">供应商内部码：</label>-->
+<!--                  <Input-->
+<!--                    v-model="goodsInfo.supplierOwnCode"-->
+<!--                    placeholder="供应商内部码"-->
+<!--                    style="width: 200px"-->
+<!--                  />-->
+<!--                </li>-->
               </ul>
               <div style="margin-top: 20px;">
                 <Poptip
