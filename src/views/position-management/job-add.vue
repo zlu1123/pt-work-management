@@ -5,145 +5,160 @@
         <Card>
           <p slot="title"><Icon type="android-create"></Icon>新增职位</p>
           <Row class="margin-top-10">
-            <i-col span="24">
-              <ul class="goods-edit-list clearfix">
-                <li>
-                  <label class="label-line">职位名称：</label>
-                  <Input
-                    v-model="positionInfo.merchantName"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label class="label-line">职位类型：</label>
-                  <Input
-                    v-model="positionInfo.goodsBarCode"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label class="label-line">职位福利：</label>
-                  <Select
-                    v-model="positionInfo.postionWelfare"
-                    clearable
-                    multiple
-                    :max-tag-count="2"
-                    style="width: 200px"
-                  >
-                    <Option
-                      v-for="item in postionWelfareList"
-                      :value="item.value"
-                      :key="item.value"
-                      >{{ item.label }}</Option
-                    >
-                  </Select>
-                </li>
-                <li>
-                  <label class="label-line">职位要求：</label>
-                  <Select
-                    v-model="positionInfo.postionRequire"
-                    clearable
-                    style="width:200px;"
-                  >
-                    <Option
-                      v-for="item in deliveryGoodsTypeList"
-                      :value="item.value"
-                      :key="item.value"
-                      >{{ item.label }}</Option
-                    >
-                  </Select>
-                </li>
-                <li>
-                  <label class="label-line">工作时间：</label>
-                  <Input
-                    v-model="positionInfo.shelfLifeTime"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label class="label-line">单价：</label>
-                  <Input
-                    v-model="positionInfo.specifications"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label class="label-line">需求人数：</label>
-                  <Input
-                    v-model="positionInfo.goodsTypeName"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label class="label-line">结算方式：</label>
-                  <Input
-                    v-model="positionInfo.packingSpecification"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label class="label-line">保险选择：</label>
-                  <Input v-model="positionInfo.selling" style="width: 200px" />
-                </li>
-                <li>
-                  <label class="label-line">保证金：</label>
-                  <Input v-model="positionInfo.unitName" style="width: 200px" />
-                </li>
-                <li>
-                  <label class="label-line">健康选择：</label>
-                  <Select
-                    v-model="positionInfo.deliveryGoodsType"
-                    clearable
-                    style="width:200px;"
-                  >
-                    <Option
-                      v-for="item in deliveryGoodsTypeList"
-                      :value="item.value"
-                      :key="item.value"
-                      >{{ item.label }}</Option
-                    >
-                  </Select>
-                </li>
-                <li>
-                  <label class="label-line">发布企业：</label>
-                  <Select
-                    v-model="positionInfo.goodsSupplierPutaway"
-                    clearable
-                    style="width:200px;"
-                  >
-                    <Option
-                      v-for="item in goodsSupplierPutawayList"
-                      :value="item.value"
-                      :key="item.value"
-                      >{{ item.label }}</Option
-                    >
-                  </Select>
-                </li>
-                <li>
-                  <label class="label-line">企业负责人：</label>
-                  <Input
-                    v-model="positionInfo.thirdQty"
-                    placeholder="请输入库存"
-                    style="width: 200px"
-                  />
-                </li>
-                <li>
-                  <label class="label-line">平台负责人：</label>
-                  <Input
-                    v-model="positionInfo.thirdSalePrice"
-                    placeholder="请输入销售价格"
-                    style="width: 200px"
-                  />
-                </li>
-              </ul>
-              <div style="margin-top: 20px;">
-                <Button type="primary" @click="insertPositon">确认</Button>
-                <Button style="margin: 0 10px;" @click="returnLastPage"
-                  >返回</Button
+            <i-col span="12" class="mar-top-10">
+              <label>职位名称：</label>
+              <Input v-model="positionInfo.merchantName" class="width-200" />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>职位类型：</label>
+              <Input v-model="positionInfo.goodsBarCode" class="width-200" />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>职位福利：</label>
+              <Select
+                v-model="positionInfo.postionWelfare"
+                multiple
+                :max-tag-count="2"
+                class="width-200"
+              >
+                <Option
+                  v-for="item in postionWelfareList"
+                  :value="item.value"
+                  :key="item.value"
+                  >{{ item.label }}</Option
                 >
-              </div>
+              </Select>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>职位要求：</label>
+              <Select
+                v-model="positionInfo.postionRequire"
+                multiple
+                :max-tag-count="2"
+                style="width:200px;"
+              >
+                <Option
+                  v-for="item in postionRequireList"
+                  :value="item.value"
+                  :key="item.value"
+                  >{{ item.label }}</Option
+                >
+              </Select>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>工作开始日期：</label>
+              <DatePicker
+                :value="positionInfo.shelfLifeTime"
+                format="yyyy年MM月dd日"
+                type="date"
+                placeholder="请选择开始日期"
+                class="width-200"
+              ></DatePicker>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>工作结束日期：</label>
+              <DatePicker
+                :value="positionInfo.shelfLifeTime"
+                format="yyyy年MM月dd日"
+                type="date"
+                placeholder="请选择结束日期"
+                class="width-200"
+              ></DatePicker>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>上班打卡时间：</label>
+              <TimePicker
+                format="HH:mm"
+                placeholder="请选择上班打卡时间"
+                class="width-200"
+              ></TimePicker>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>下班打卡时间：</label>
+              <TimePicker
+                format="HH:mm"
+                placeholder="请选择下班打卡时间"
+                class="width-200"
+              ></TimePicker>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>单价：</label>
+              <Input
+                v-model="positionInfo.specifications"
+                style="width: 50px"
+              />
+              <label>元/小时</label>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>需求人数：</label>
+              <Input v-model="positionInfo.goodsTypeName" class="width-200" />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>结算方式：</label>
+              <Select
+                v-model="positionInfo.settlementMethod"
+                style="width:200px"
+              >
+                <Option
+                  v-for="item in settlementMethodList"
+                  :value="item.value"
+                  :key="item.value"
+                  >{{ item.text }}</Option
+                >
+              </Select>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>保险选择：</label>
+              <Input v-model="positionInfo.selling" class="width-200" />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>保证金：</label>
+              <Input v-model="positionInfo.unitName" class="width-200" />
+            </i-col>
+            <!-- <i-col span="12" class="mar-top-10">
+              <label class="label-line">健康选择：</label>
+              <Select
+                v-model="positionInfo.deliveryGoodsType"
+                clearable
+                style="width:200px;"
+              >
+                <Option
+                  v-for="item in deliveryGoodsTypeList"
+                  :value="item.value"
+                  :key="item.value"
+                  >{{ item.label }}</Option
+                >
+              </Select>
+            </i-col> -->
+            <i-col span="12" class="mar-top-10">
+              <label>发布企业：</label>
+              <Input
+                v-model="positionInfo.selling"
+                placeholder="请输入企业名称"
+                class="width-200"
+              />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>企业负责人：</label>
+              <Input
+                v-model="positionInfo.thirdQty"
+                placeholder="请输入企业名称"
+                class="width-200"
+              />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>平台负责人：</label>
+              <Input
+                v-model="positionInfo.thirdSalePrice"
+                placeholder="请输入平台负责人"
+                class="width-200"
+              />
             </i-col>
           </Row>
+          <div class="mar-top-10 space-around">
+            <Button type="primary" @click="insertPositon">确认</Button>
+            <Button @click="returnLastPage">返回</Button>
+          </div>
         </Card>
       </i-col>
     </Row>
@@ -167,6 +182,23 @@ export default {
           label: '餐补',
           value: '1'
         }
+      ],
+      postionRequireList: [
+        {
+          label: '体力好',
+          value: '0'
+        },
+        {
+          label: '肌肉好',
+          value: '1'
+        }
+      ],
+      settlementMethodList: [
+        { text: '完工结', value: 2 },
+        { text: '次日结', value: 3 },
+        { text: '周结', value: 4 },
+        { text: '半月结', value: 5 },
+        { text: '月结', value: 6 }
       ]
     }
   },
@@ -198,56 +230,17 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-// @import '../../styles/common.less';
-// @import './components/table.less';
-.vertical-center-modal {
+.mar-top-10 {
+  margin-top: 10px;
+}
+
+.width-200 {
+  width: 200px;
+}
+
+.space-around {
   display: flex;
   align-items: center;
-  justify-content: center;
-
-  .ivu-modal {
-    top: 0;
-  }
-}
-.goods-edit-list {
-  padding-bottom: 24px;
-  border-bottom: 1px solid #e9eaec;
-}
-.goods-edit-list li {
-  float: left;
-  margin-right: 60px;
-  margin-bottom: 10px;
-}
-/*清除浮动*/
-.clearfix:before,
-.clearfix:after {
-  content: '';
-  display: table;
-}
-.clearfix:after {
-  clear: both;
-}
-.clearfix {
-  *zoom: 1;
-}
-.prompt-list {
-  margin-top: 2px;
-  width: 300px;
-  padding: 4px 7px;
-  border: 1px solid #dddee1;
-}
-.prompt-list li {
-  cursor: pointer;
-  padding: 2px 0;
-}
-
-li {
-  list-style: none;
-} /*这里设置*/
-
-.label-line {
-  display: inline-block;
-  width: 120px;
-  text-align: right;
+  justify-content: space-around;
 }
 </style>
