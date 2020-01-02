@@ -11,8 +11,18 @@
         </DropdownMenu>
       </Dropdown>
     </div>
-    <ul v-show="visible" :style="{left: contextMenuLeft + 'px', top: contextMenuTop + 'px'}" class="contextmenu">
-      <li v-for="(item, key) of menuList" @click="handleTagsOption(key)" :key="key">{{item}}</li>
+    <ul
+      v-show="visible"
+      :style="{ left: contextMenuLeft + 'px', top: contextMenuTop + 'px' }"
+      class="contextmenu"
+    >
+      <li
+        v-for="(item, key) of menuList"
+        @click="handleTagsOption(key)"
+        :key="key"
+      >
+        {{ item }}
+      </li>
     </ul>
     <div class="btn-con left-btn">
       <Button type="text" @click="handleScroll(240)">
@@ -24,8 +34,17 @@
         <Icon :size="18" type="ios-arrow-forward" />
       </Button>
     </div>
-    <div class="scroll-outer" ref="scrollOuter" @DOMMouseScroll="handlescroll" @mousewheel="handlescroll">
-      <div ref="scrollBody" class="scroll-body" :style="{left: tagBodyLeft + 'px'}">
+    <div
+      class="scroll-outer"
+      ref="scrollOuter"
+      @DOMMouseScroll="handlescroll"
+      @mousewheel="handlescroll"
+    >
+      <div
+        ref="scrollBody"
+        class="scroll-body"
+        :style="{ left: tagBodyLeft + 'px' }"
+      >
         <transition-group name="taglist-moving-animation">
           <Tag
             type="dot"
@@ -39,7 +58,8 @@
             :closable="item.name !== $config.homeName"
             :color="isCurrentTag(item) ? 'primary' : 'default'"
             @contextmenu.prevent.native="contextMenu(item, $event)"
-          >{{ showTitleInside(item) }}</Tag>
+            >{{ showTitleInside(item) }}</Tag
+          >
         </transition-group>
       </div>
     </div>
@@ -55,12 +75,12 @@ export default {
     value: Object,
     list: {
       type: Array,
-      default () {
+      default() {
         return []
       }
     }
   },
-  data () {
+  data() {
     return {
       tagBodyLeft: 0,
       rightOffset: 40,
@@ -75,21 +95,21 @@ export default {
     }
   },
   computed: {
-    currentRouteObj () {
+    currentRouteObj() {
       const { name, params, query } = this.value
       return { name, params, query }
     }
   },
   methods: {
-    handlescroll (e) {
+    handlescroll(e) {
       var type = e.type
       let delta = 0
       if (type === 'DOMMouseScroll' || type === 'mousewheel') {
-        delta = (e.wheelDelta) ? e.wheelDelta : -(e.detail || 0) * 40
+        delta = e.wheelDelta ? e.wheelDelta : -(e.detail || 0) * 40
       }
       this.handleScroll(delta)
     },
-    handleScroll (offset) {
+    handleScroll(offset) {
       const outerWidth = this.$refs.scrollOuter.offsetWidth
       const bodyWidth = this.$refs.scrollBody.offsetWidth
       if (offset > 0) {
@@ -97,31 +117,43 @@ export default {
       } else {
         if (outerWidth < bodyWidth) {
           if (this.tagBodyLeft < -(bodyWidth - outerWidth)) {
+            // eslint-disable-next-line no-self-assign
             this.tagBodyLeft = this.tagBodyLeft
           } else {
-            this.tagBodyLeft = Math.max(this.tagBodyLeft + offset, outerWidth - bodyWidth)
+            this.tagBodyLeft = Math.max(
+              this.tagBodyLeft + offset,
+              outerWidth - bodyWidth
+            )
           }
         } else {
           this.tagBodyLeft = 0
         }
       }
     },
-    handleTagsOption (type) {
+    handleTagsOption(type) {
       if (type.includes('all')) {
         // 关闭所有，除了home
         let res = this.list.filter(item => item.name === this.$config.homeName)
         this.$emit('on-close', res, 'all')
       } else if (type.includes('others')) {
         // 关闭除当前页和home页的其他页
-        let res = this.list.filter(item => routeEqual(this.currentRouteObj, item) || item.name === this.$config.homeName)
+        let res = this.list.filter(
+          item =>
+            routeEqual(this.currentRouteObj, item) ||
+            item.name === this.$config.homeName
+        )
         this.$emit('on-close', res, 'others', this.currentRouteObj)
         setTimeout(() => {
           this.getTagElementByRoute(this.currentRouteObj)
         }, 100)
       }
     },
-    handleClose (current) {
-      if (current.meta && current.meta.beforeCloseName && current.meta.beforeCloseName in beforeClose) {
+    handleClose(current) {
+      if (
+        current.meta &&
+        current.meta.beforeCloseName &&
+        current.meta.beforeCloseName in beforeClose
+      ) {
         new Promise(beforeClose[current.meta.beforeCloseName]).then(close => {
           if (close) {
             this.close(current)
@@ -131,20 +163,20 @@ export default {
         this.close(current)
       }
     },
-    close (route) {
+    close(route) {
       let res = this.list.filter(item => !routeEqual(route, item))
       this.$emit('on-close', res, undefined, route)
     },
-    handleClick (item) {
+    handleClick(item) {
       this.$emit('input', item)
     },
-    showTitleInside (item) {
+    showTitleInside(item) {
       return showTitle(item, this)
     },
-    isCurrentTag (item) {
+    isCurrentTag(item) {
       return routeEqual(this.currentRouteObj, item)
     },
-    moveToView (tag) {
+    moveToView(tag) {
       const outerWidth = this.$refs.scrollOuter.offsetWidth
       const bodyWidth = this.$refs.scrollBody.offsetWidth
       if (bodyWidth < outerWidth) {
@@ -152,15 +184,24 @@ export default {
       } else if (tag.offsetLeft < -this.tagBodyLeft) {
         // 标签在可视区域左侧
         this.tagBodyLeft = -tag.offsetLeft + this.outerPadding
-      } else if (tag.offsetLeft > -this.tagBodyLeft && tag.offsetLeft + tag.offsetWidth < -this.tagBodyLeft + outerWidth) {
+      } else if (
+        tag.offsetLeft > -this.tagBodyLeft &&
+        tag.offsetLeft + tag.offsetWidth < -this.tagBodyLeft + outerWidth
+      ) {
         // 标签在可视区域
-        this.tagBodyLeft = Math.min(0, outerWidth - tag.offsetWidth - tag.offsetLeft - this.outerPadding)
+        this.tagBodyLeft = Math.min(
+          0,
+          outerWidth - tag.offsetWidth - tag.offsetLeft - this.outerPadding
+        )
       } else {
         // 标签在可视区域右侧
-        this.tagBodyLeft = -(tag.offsetLeft - (outerWidth - this.outerPadding - tag.offsetWidth))
+        this.tagBodyLeft = -(
+          tag.offsetLeft -
+          (outerWidth - this.outerPadding - tag.offsetWidth)
+        )
       }
     },
-    getTagElementByRoute (route) {
+    getTagElementByRoute(route) {
       this.$nextTick(() => {
         this.refsTag = this.$refs.tagsPageOpened
         this.refsTag.forEach((item, index) => {
@@ -171,7 +212,7 @@ export default {
         })
       })
     },
-    contextMenu (item, e) {
+    contextMenu(item, e) {
       if (item.name === this.$config.homeName) {
         return
       }
@@ -180,15 +221,15 @@ export default {
       this.contextMenuLeft = e.clientX - offsetLeft + 10
       this.contextMenuTop = e.clientY - 64
     },
-    closeMenu () {
+    closeMenu() {
       this.visible = false
     }
   },
   watch: {
-    '$route' (to) {
+    $route(to) {
       this.getTagElementByRoute(to)
     },
-    visible (value) {
+    visible(value) {
       if (value) {
         document.body.addEventListener('click', this.closeMenu)
       } else {
@@ -196,7 +237,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     setTimeout(() => {
       this.getTagElementByRoute(this.$route)
     }, 200)

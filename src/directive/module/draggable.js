@@ -1,5 +1,6 @@
 import { on } from '@/libs/tools'
 export default {
+  // eslint-disable-next-line no-unused-vars
   inserted: (el, binding, vnode) => {
     let triggerDom = document.querySelector(binding.value.trigger)
     triggerDom.style.cursor = 'move'
@@ -24,8 +25,10 @@ export default {
     const handleMousemove = e => {
       let xOffset = e.pageX - pageX + transformX
       let yOffset = e.pageY - pageY + transformY
-      if (canMove) bodyDom.style.transform = `translate(${xOffset}px, ${yOffset}px)`
+      if (canMove)
+        bodyDom.style.transform = `translate(${xOffset}px, ${yOffset}px)`
     }
+    // eslint-disable-next-line no-unused-vars
     const handleMouseup = e => {
       canMove = false
     }
@@ -33,6 +36,7 @@ export default {
     on(document, 'mousemove', handleMousemove)
     on(document, 'mouseup', handleMouseup)
   },
+  // eslint-disable-next-line no-unused-vars
   update: (el, binding, vnode) => {
     if (!binding.value.recover) return
     let bodyDom = document.querySelector(binding.value.body)

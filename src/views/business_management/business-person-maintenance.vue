@@ -1,14 +1,22 @@
 <template>
   <div>
+    <i-col>
+      <Card>
+        <Row>
+          <Button type="primary" icon="md-add" @click="addJobInfo"
+            >企业负责人新增</Button
+          >
+        </Row>
+      </Card>
+    </i-col>
     <i-col :span="24">
       <Card>
         <p slot="title">
           <Icon type="navicon-round"></Icon>
-          职位申请人列表
+          企业负责人列表
         </p>
         <div style="overflow: auto;height: 540px;" class="margin-top-5">
           <Table
-            style="min-width: 1000px;"
             highlight-row
             border
             :columns="orderListTitle"
@@ -33,7 +41,7 @@
 </template>
 
 <script>
-import { postionApplyApplyList, postionApplyApplyExam } from '@/api/user'
+import { enterpriseDirectorPage } from '@/api/user'
 export default {
   name: 'job-posting',
   data() {
@@ -51,70 +59,29 @@ export default {
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
       totalCount: 0,
-      orderList: [],
       orderListTitle: [
         {
           title: '序号',
           type: 'index',
-          width: 70,
           align: 'center'
         },
         {
-          title: '商户名称',
-          key: 'merchId',
-          width: 180,
+          title: '企业名称',
+          key: 'merchName',
           align: 'center'
         },
         {
-          title: '职位信息',
-          key: 'postionId',
-          width: 150,
+          title: '企业负责人',
+          key: 'merchCharge',
           align: 'center'
         },
         {
-          title: '审核状态',
-          key: 'exemStat',
-          width: 150,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', params.row.exemStat === '1' ? '待申请' : '申请通过')
-          }
-        },
-        // {
-        //   title: '身份证号码',
-        //   key: 'certNo'
-        // },
-        // {
-        //   title: '姓名',
-        //   key: 'certName',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '性别',
-        //   key: 'sex'
-        // },
-        // {
-        //   title: '头像',
-        //   key: 'headImage',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '身高',
-        //   key: 'hign',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '年龄',
-        //   key: 'age',
-        //   align: 'center'
-        // },
-        {
-          title: '审核',
+          title: '操作',
           key: 'action',
           width: 100,
           align: 'center',
           render: (h, params) => {
-            if (params.row.exemStat === '1') {
+            if (this.queryDetailAuth) {
               return h('div', [
                 h(
                   'Button',
@@ -123,22 +90,25 @@ export default {
                       type: 'primary',
                       size: 'small'
                     },
+                    style: {
+                      marginRight: '0px'
+                    },
                     on: {
                       click: () => {
-                        this.postionApplyApplyExam(
-                          params.row.applyUserId,
-                          params.row.postionApplyId
-                        )
+                        this.goDetail(params.row.id, params.row.orderType)
                       }
                     }
                   },
-                  '通过'
+                  '详情'
                 )
               ])
+            } else {
+              return null
             }
           }
         }
-      ]
+      ],
+      orderList: []
     }
   },
   methods: {
@@ -146,14 +116,6 @@ export default {
       // 获取当前页
       this.pageNo = val
       // this.queryOrderList()
-    },
-    payStatusStr(val) {
-      // 转义支付状态
-      if (val == 0) {
-        return '未支付'
-      } else if (val == 1) {
-        return '已支付'
-      }
     },
 
     queryOrderInfo() {
@@ -176,22 +138,23 @@ export default {
 
     addJobInfo() {
       this.$router.push({
-        path: '/job_add'
-      })
-    },
-    postionApplyApplyExam(applyUserId, postionApplyId) {
-      postionApplyApplyExam({
-        postionApplyId: postionApplyId
+        path: '/business_person_add'
       })
     }
   },
   mounted() {
-    postionApplyApplyList().then(res => {
-      // { applyExemStat: 1 }
-      console.log(res)
-      this.orderList = res.data.data
-    })
-    // this.orderList = [0]
+    // var isSkip = this.$route.query.skip;
+    // if(isSkip == 1){
+    //     this.orderStatus = 2;
+    //     this.startTime = util.formatTime(new Date(),'yy-mm-dd 00:00:00');
+    //     this.endTime = util.formatTime(new Date(),'yy-mm-dd 23:59:59');
+    // }else if(isSkip == 2){
+    //     this.payStatus = 0;
+    //     this.startTime = this.$route.query.startTime;
+    //     this.endTime = this.$route.query.endTime;
+    // }
+    // this.queryOrderList();
+    enterpriseDirectorPage()
   }
 }
 </script>

@@ -21,6 +21,7 @@ export default {
     el.__success_callback__ = binding.value.success
     el.__error_callback__ = binding.value.error
   },
+  // eslint-disable-next-line no-unused-vars
   unbind: (el, binding) => {
     delete el.__success_callback__
     delete el.__error_callback__

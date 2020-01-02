@@ -1,7 +1,8 @@
 import store from '@/store'
 export default {
-  install (Vue, options) {
+  install(Vue, options) {
     if (options.developmentOff && process.env.NODE_ENV === 'development') return
+    // eslint-disable-next-line no-unused-vars
     Vue.config.errorHandler = (error, vm, mes) => {
       let info = {
         type: 'script',

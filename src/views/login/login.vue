@@ -1,7 +1,3 @@
-<style lang="less">
-  @import './login.less';
-</style>
-
 <template>
   <div class="login">
     <div class="login-con">
@@ -23,12 +19,11 @@ export default {
     LoginForm
   },
   methods: {
-    ...mapActions([
-      'handleLogin',
-      'getUserInfo'
-    ]),
-    handleSubmit ({ userName, password }) {
+    ...mapActions(['handleLogin', 'getUserInfo']),
+    handleSubmit({ userName, password }) {
+      // eslint-disable-next-line no-unused-vars
       this.handleLogin({ userName, password }).then(res => {
+        // eslint-disable-next-line no-unused-vars
         this.getUserInfo().then(res => {
           this.$router.push({
             name: this.$config.homeName
@@ -39,7 +34,6 @@ export default {
   }
 }
 </script>
-
-<style>
-
+<style lang="less" scoped>
+@import './login.less';
 </style>

@@ -1,5 +1,5 @@
 import Main from '@/components/main'
-import parentView from '@/components/parent-view'
+// import parentView from '@/components/parent-view'
 
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
@@ -118,7 +118,7 @@ export default [
           title: '企业负责人维护'
         },
         component: () =>
-          import('@/views/position-management/job-application.vue')
+          import('@/views/business_management/business-person-maintenance.vue')
       },
       {
         path: 'enterprise_recharge_maintenance',
@@ -129,6 +129,26 @@ export default [
         },
         component: () =>
           import('@/views/position-management/job-application.vue')
+      },
+      {
+        path: '/enterprise_add',
+        name: 'enterprise_add',
+        meta: {
+          hideInMenu: true,
+          title: '企业新增'
+        },
+        component: () =>
+          import('@/views/business_management/enterprise_add.vue')
+      },
+      {
+        path: '/business_person_add',
+        name: 'business_person_add',
+        meta: {
+          hideInMenu: true,
+          title: '企业新增'
+        },
+        component: () =>
+          import('@/views/business_management/business_person_add.vue')
       }
     ]
   },
@@ -316,15 +336,19 @@ export const otherRouter = {
   children: [
     {
       path: '/job-add',
-      title: '',
       name: 'job-add',
       component: () => import('@/views/position-management/job-add.vue')
     },
     {
       path: '/enterprise-add',
-      title: '',
       name: 'enterprise-add',
-      component: () => import('@/views/business_management/enterprise-add.vue')
+      component: () => import('@/views/business_management/enterprise_add.vue')
+    },
+    {
+      path: '/business_person_add',
+      name: 'business_person_add',
+      component: () =>
+        import('@/views/business_management/business_person_add.vue')
     }
   ]
 }
