@@ -12,7 +12,7 @@ export const login = ({ userName, password }) => {
   })
 }
 
-export const getUserInfo = (token) => {
+export const getUserInfo = token => {
   return axios.request({
     url: 'get_info',
     params: {
@@ -22,7 +22,7 @@ export const getUserInfo = (token) => {
   })
 }
 
-export const logout = (token) => {
+export const logout = token => {
   return axios.request({
     url: 'logout',
     method: 'post'
@@ -80,5 +80,33 @@ export const restoreTrash = msg_id => {
     data: {
       msg_id
     }
+  })
+}
+
+export const insertPostionRelease = params => {
+  // const data = {
+  //   userName,
+  //   password
+  // }
+  return axios.request({
+    url: '/postionRelease/insert',
+    data: params,
+    method: 'post'
+  })
+}
+
+export const postionApplyApplyList = params => {
+  return axios.request({
+    url: '/postionApply/applyList',
+    data: params,
+    method: 'post'
+  })
+}
+
+export const postionApplyApplyExam = params => {
+  return axios.request({
+    url: '/postionApply/applyExam',
+    data: params,
+    method: 'post'
   })
 }

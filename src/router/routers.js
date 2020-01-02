@@ -75,14 +75,15 @@ export default [
           icon: 'md-cafe',
           title: '职位申请维护'
         },
-        component: () => import('@/views/position-management/job-application.vue')
+        component: () =>
+          import('@/views/position-management/job-application.vue')
       },
       {
         path: '/job_add',
         name: 'job_add',
         meta: {
           hideInMenu: true,
-          title: "职位新增"
+          title: '职位新增'
         },
         component: () => import('@/views/position-management/job-add.vue')
       }
@@ -104,7 +105,10 @@ export default [
           icon: 'md-boat',
           title: '企业信息维护'
         },
-        component: () => import('@/views/position-management/job-posting.vue')
+        component: () =>
+          import(
+            '@/views/business_management/enterprise_information_maintenance.vue'
+          )
       },
       {
         path: 'corporate_leader_maintenance',
@@ -113,7 +117,8 @@ export default [
           icon: 'ios-person',
           title: '企业负责人维护'
         },
-        component: () => import('@/views/position-management/job-application.vue')
+        component: () =>
+          import('@/views/position-management/job-application.vue')
       },
       {
         path: 'enterprise_recharge_maintenance',
@@ -122,7 +127,8 @@ export default [
           icon: 'logo-usd',
           title: '企业充值维护'
         },
-        component: () => import('@/views/position-management/job-application.vue')
+        component: () =>
+          import('@/views/position-management/job-application.vue')
       }
     ]
   },
@@ -151,7 +157,8 @@ export default [
           icon: 'md-flower',
           title: '平台充值'
         },
-        component: () => import('@/views/position-management/job-application.vue')
+        component: () =>
+          import('@/views/position-management/job-application.vue')
       },
       {
         path: 'financial_statements',
@@ -160,7 +167,8 @@ export default [
           icon: 'md-filing',
           title: '财务报表'
         },
-        component: () => import('@/views/position-management/job-application.vue')
+        component: () =>
+          import('@/views/position-management/job-application.vue')
       }
     ]
   },
@@ -228,7 +236,8 @@ export default [
           icon: 'ios-construct-outline',
           title: '数据字典维护'
         },
-        component: () => import('@/views/position-management/job-application.vue')
+        component: () =>
+          import('@/views/position-management/job-application.vue')
       },
       {
         path: 'address_management',
@@ -237,7 +246,8 @@ export default [
           icon: 'md-navigate',
           title: '地址管理'
         },
-        component: () => import('@/views/position-management/job-application.vue')
+        component: () =>
+          import('@/views/position-management/job-application.vue')
       }
     ]
   },
@@ -266,7 +276,8 @@ export default [
           icon: 'logo-bitcoin',
           title: '分销财务'
         },
-        component: () => import('@/views/position-management/job-application.vue')
+        component: () =>
+          import('@/views/position-management/job-application.vue')
       }
     ]
   },
@@ -293,8 +304,7 @@ export default [
       hideInMenu: true
     },
     component: () => import('@/views/error-page/404.vue')
-  },
-
+  }
 ]
 
 // 作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
@@ -304,6 +314,17 @@ export const otherRouter = {
   redirect: '/home',
   component: Main,
   children: [
-      { path: '/job-add', title: '', name: 'job-add', component: () => import('@/views/position-management/job-add.vue') },
+    {
+      path: '/job-add',
+      title: '',
+      name: 'job-add',
+      component: () => import('@/views/position-management/job-add.vue')
+    },
+    {
+      path: '/enterprise-add',
+      title: '',
+      name: 'enterprise-add',
+      component: () => import('@/views/business_management/enterprise-add.vue')
+    }
   ]
-};
+}
