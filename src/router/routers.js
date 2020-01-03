@@ -128,7 +128,9 @@ export default [
           title: '企业充值维护'
         },
         component: () =>
-          import('@/views/position-management/job-application.vue')
+          import(
+            '@/views/business_management/enterprise_recharge_maintenance.vue'
+          )
       },
       {
         path: '/enterprise_add',
@@ -168,7 +170,8 @@ export default [
           icon: 'md-medal',
           title: '工资审核'
         },
-        component: () => import('@/views/position-management/job-posting.vue')
+        component: () =>
+          import('@/views/financial_management/salary_review.vue')
       },
       {
         path: 'platform_recharge',
@@ -178,7 +181,7 @@ export default [
           title: '平台充值'
         },
         component: () =>
-          import('@/views/position-management/job-application.vue')
+          import('@/views/financial_management/platform_recharge.vue')
       },
       {
         path: 'financial_statements',
@@ -188,7 +191,7 @@ export default [
           title: '财务报表'
         },
         component: () =>
-          import('@/views/position-management/job-application.vue')
+          import('@/views/financial_management/financial_statements.vue')
       }
     ]
   },

@@ -69,68 +69,88 @@ export default {
           align: 'center'
         },
         {
-          title: '订单编号',
-          key: 'orderNumber',
-          width: 180,
-          align: 'center'
-        },
-        {
           title: '商户名称',
           key: 'crmMerchantName',
-          width: 150,
           align: 'center'
         },
         {
-          title: '下单门店',
-          key: 'storeName',
-          width: 150
+          title: '职位名称',
+          key: 'storeName'
         },
         {
-          title: '订单类型',
+          title: '职位类型',
           key: 'orderType',
-          width: 100,
           align: 'center',
           render: (h, params) => {
             return h('div', this.orderTypeStr(params.row.orderType))
           }
         },
         {
-          title: '收货地址',
-          key: 'deliveryAddress',
-          width: 280
+          title: '职位福利',
+          key: 'deliveryAddress'
         },
         {
-          title: '收货电话',
+          title: '职位要求：',
           key: 'deliveryPhone',
           width: 115,
           align: 'center'
         },
         {
-          title: '支付方式',
+          title: '工作开始日期：',
           key: 'payType',
           align: 'center',
-          width: 85,
           render: (h, params) => {
             return h('div', this.payTypeStr(params.row.payType))
           }
         },
         {
-          title: '支付状态',
+          title: '工作结束日期：',
           key: 'payStatus',
           align: 'center',
-          width: 85,
           render: (h, params) => {
             return h('div', this.payStatusStr(params.row.payStatus))
           }
         },
         {
-          title: '订单状态',
+          title: '上班打卡时间：',
           key: 'orderStatus',
           align: 'center',
-          width: 95,
           render: (h, params) => {
             return h('div', this.orderStatusStr(params.row.orderStatus))
           }
+        },
+        {
+          title: '下班打卡时间：',
+          key: 'orderStatus',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', this.orderStatusStr(params.row.orderStatus))
+          }
+        },
+        {
+          title: '单价：',
+          key: 'orderStatus',
+          align: 'center'
+        },
+        {
+          title: '需求人数：',
+          key: 'orderStatus',
+          align: 'center'
+        },
+        {
+          title: '结算方式：',
+          key: 'orderStatus',
+          align: 'center'
+        },
+        {
+          title: '保险选择：',
+          key: 'orderStatus',
+          align: 'center'
+        },
+        {
+          title: '保证金：',
+          key: 'orderStatus',
+          align: 'center'
         },
         {
           title: '操作',
@@ -162,78 +182,6 @@ export default {
             } else {
               return null
             }
-          }
-        }
-      ],
-      orderListTitle1: [
-        {
-          title: '序号',
-          type: 'index',
-          width: 70,
-          align: 'center'
-        },
-        {
-          title: '订单编号',
-          key: 'orderNumber',
-          width: 180,
-          align: 'center'
-        },
-        {
-          title: '商户名称',
-          key: 'crmMerchantName',
-          width: 150,
-          align: 'center'
-        },
-        {
-          title: '下单门店',
-          key: 'storeName',
-          width: 150
-        },
-        {
-          title: '订单类型',
-          key: 'orderType',
-          width: 100,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', this.orderTypeStr(params.row.orderType))
-          }
-        },
-        {
-          title: '收货地址',
-          key: 'deliveryAddress',
-          width: 280
-        },
-        {
-          title: '收货电话',
-          key: 'deliveryPhone',
-          width: 115,
-          align: 'center'
-        },
-        {
-          title: '支付方式',
-          key: 'payType',
-          align: 'center',
-          width: 85,
-          render: (h, params) => {
-            return h('div', this.payTypeStr(params.row.payType))
-          }
-        },
-        {
-          title: '支付状态',
-          key: 'payStatus',
-          align: 'center',
-          width: 85,
-          render: (h, params) => {
-            return h('div', this.payStatusStr(params.row.payStatus))
-          }
-        },
-        {
-          title: '订单状态',
-          key: 'orderStatus',
-          align: 'center',
-          width: 95,
-          render: (h, params) => {
-            return h('div', this.orderStatusStr(params.row.orderStatus))
           }
         }
       ],

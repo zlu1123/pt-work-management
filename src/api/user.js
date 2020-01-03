@@ -156,3 +156,84 @@ export const queryPosition = params => {
     method: 'post'
   })
 }
+
+// 企业充值维护-企业充值记录
+export const queryEnterpriseRechargeRecords = params => {
+  return axios.request({
+    url: '/enterpriseRecharge/records',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 企业充值维护-企业充值-银行卡转账
+export const enterpriseRechargeUnionPay = params => {
+  return axios.request({
+    url: '/enterpriseRecharge/unionPay',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 企业充值维护-企业充值-微信充值
+export const enterpriseRechargeWeChatPay = params => {
+  return axios.request({
+    url: '/enterpriseRecharge/weChatPay',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 工资审核-发放工资职位列表
+export const queryfinanceWageAuditPage = params => {
+  return axios.request({
+    url: '/financeWageAudit/page',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 工资审核-职位工作人员工资审核
+export const financeWageAudit = params => {
+  return axios.request({
+    url: '/financeWageAudit/audit',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 平台充值-平台充值记录
+export const queryfinanceRechargePage = params => {
+  return axios.request({
+    url: '/financeRecharge/page',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 平台充值-银联卡转账到平台账户
+export const financeRechargeUnionPay = params => {
+  return axios.request({
+    url: '/financeRecharge/unionPay',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 平台充值-微信充值（预留，不计入到交付功能）
+export const financeRechargeWeChatPay = params => {
+  return axios.request({
+    url: '/financeRecharge/weChatPay',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 财务报表
+export const financeReportFormPage = params => {
+  return axios.request({
+    url: '/financeReportForm/page',
+    data: params,
+    method: 'post'
+  })
+}
