@@ -66,5 +66,6 @@ export default {
   distribution_staff_management: '分销人员管理',
   distribution_finance: '分销财务',
   enterprise_add: '企业新增',
-  business_person_add: '企业负责人新增'
+  business_person_add: '企业负责人新增',
+  advertising_maintenance_add: '轮播图新增'
 }

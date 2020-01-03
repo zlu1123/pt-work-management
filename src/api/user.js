@@ -237,3 +237,39 @@ export const financeReportFormPage = params => {
     method: 'post'
   })
 }
+
+// 轮播图列表
+export const noticeOrAdPage = params => {
+  return axios.request({
+    url: '/noticeOrAd/page',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 轮播图编辑、停用/启用
+export const noticeOrAdUpdate = params => {
+  return axios.request({
+    url: '/noticeOrAd/update',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 轮播图新增
+export const noticeOrAdInsert = params => {
+  return axios.request({
+    url: '/noticeOrAd/insert',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 轮播图删除
+export const noticeOrAdDelete = params => {
+  return axios.request({
+    url: '/noticeOrAd/delete',
+    data: params,
+    method: 'post'
+  })
+}

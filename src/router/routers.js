@@ -211,7 +211,20 @@ export default [
           icon: 'ios-create',
           title: '广告维护'
         },
-        component: () => import('@/views/position-management/job-posting.vue')
+        component: () =>
+          import('@/views/advertising_management/advertising_maintenance.vue')
+      },
+      {
+        path: '/advertising_maintenance_add',
+        name: 'advertising_maintenance_add',
+        meta: {
+          hideInMenu: true,
+          title: '广告新增'
+        },
+        component: () =>
+          import(
+            '@/views/advertising_management/advertising_maintenance_add.vue'
+          )
       }
     ]
   },
@@ -352,6 +365,12 @@ export const otherRouter = {
       name: 'business_person_add',
       component: () =>
         import('@/views/business_management/business_person_add.vue')
+    },
+    {
+      path: '/advertising_maintenance_add',
+      name: 'advertising_maintenance_add',
+      component: () =>
+        import('@/views/advertising_management/advertising_maintenance_add.vue')
     }
   ]
 }

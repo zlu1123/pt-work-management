@@ -154,6 +154,18 @@
                 class="width-200"
               />
             </i-col>
+            <i-col span="24" class="mar-top-10">
+              <label>职位描述：</label>
+              <Input
+                v-model="positionInfo.des"
+                placeholder="请输入职位描述"
+                maxlength="1000"
+                :autosize="{ minRows: 5, maxRows: 10 }"
+                show-word-limit
+                type="textarea"
+                class="width-500"
+              />
+            </i-col>
           </Row>
           <div class="mar-top-10 space-around">
             <Button type="primary" @click="insertPositon">确认</Button>
@@ -236,6 +248,10 @@ export default {
 
 .width-200 {
   width: 200px;
+}
+
+.width-500 {
+  width: 500px;
 }
 
 .space-around {
