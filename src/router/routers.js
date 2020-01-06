@@ -243,7 +243,8 @@ export default [
           icon: 'md-contacts',
           title: '务工人员管理'
         },
-        component: () => import('@/views/position-management/job-posting.vue')
+        component: () =>
+          import('@/views/worker_management/worker_management_page.vue')
       }
     ]
   },
@@ -263,7 +264,8 @@ export default [
           icon: 'ios-contacts',
           title: '平台用户维护'
         },
-        component: () => import('@/views/position-management/job-posting.vue')
+        component: () =>
+          import('@/views/platform_management/platform_user_maintenance.vue')
       },
       {
         path: 'data_dictionary_maintenance',
@@ -273,7 +275,7 @@ export default [
           title: '数据字典维护'
         },
         component: () =>
-          import('@/views/position-management/job-application.vue')
+          import('@/views/platform_management/data_dictionary_maintenance.vue')
       },
       {
         path: 'address_management',
@@ -283,7 +285,7 @@ export default [
           title: '地址管理'
         },
         component: () =>
-          import('@/views/position-management/job-application.vue')
+          import('@/views/platform_management/address_management.vue')
       }
     ]
   },
@@ -303,7 +305,10 @@ export default [
           icon: 'md-bicycle',
           title: '分销人员管理'
         },
-        component: () => import('@/views/position-management/job-posting.vue')
+        component: () =>
+          import(
+            '@/views/distribution_management/distribution_staff_management.vue'
+          )
       },
       {
         path: 'distribution_finance',
@@ -313,7 +318,7 @@ export default [
           title: '分销财务'
         },
         component: () =>
-          import('@/views/position-management/job-application.vue')
+          import('@/views/distribution_management/distribution_finance.vue')
       }
     ]
   },

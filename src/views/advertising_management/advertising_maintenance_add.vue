@@ -3,7 +3,7 @@
     <Row class="margin-top-10">
       <i-col>
         <Card>
-          <p slot="title"><Icon type="android-create"></Icon>新增职位</p>
+          <p slot="title"><Icon type="android-create"></Icon>新增首页图</p>
           <Row class="margin-top-10" type="flex" justify="center">
             <i-col :span="14">
               <Upload

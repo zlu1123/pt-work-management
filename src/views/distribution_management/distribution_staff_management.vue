@@ -1,25 +1,30 @@
 <template>
   <div>
-    <Card>
-      <Row>
-        <Button type="primary" icon="md-add" @click="addAdPage"
-          >轮播图新增</Button
-        >
-      </Row>
-    </Card>
+    <i-col>
+      <Card>
+        <Row>
+          <Button type="primary" icon="md-add" @click="addJobInfo"
+            >分销人员新增</Button
+          >
+        </Row>
+      </Card>
+    </i-col>
     <i-col :span="24">
       <Card>
         <p slot="title">
           <Icon type="navicon-round"></Icon>
-          轮播图列表
+          分销人员列表
         </p>
         <div style="overflow: auto;height: 540px;" class="margin-top-5">
-          <Table
+          <!-- // <Table style="min-width: 1000px;" v-if="!queryDetailAuth" highlight-row  border :columns="orderListTitle1" :data="orderList"></Table>
+                    // <Table style="min-width: 1000px;" v-if="queryDetailAuth" highlight-row  border :columns="orderListTitle" :data="orderList"></Table> -->
+          <i-table
+            style="min-width: 1000px;"
             highlight-row
             border
             :columns="orderListTitle"
             :data="orderList"
-          ></Table>
+          ></i-table>
         </div>
         <div style="border: 1px solid #e9eaec; padding: 10px;">
           <Page
@@ -39,7 +44,7 @@
 </template>
 
 <script>
-import { noticeOrAdPage } from '@/api/user'
+// import { queryPosition } from '@/api/user'
 export default {
   name: 'job-posting',
   data() {
@@ -61,24 +66,36 @@ export default {
         {
           title: '序号',
           type: 'index',
+          width: 70,
           align: 'center'
         },
         {
-          title: '是否启用',
-          key: 'merchName',
+          title: '分销人员名称',
+          key: 'crmMerchantName',
           align: 'center'
         },
         {
-          title: '图片',
-          key: 'merchCharge',
-          align: 'center'
+          title: '分销人员年龄',
+          key: 'storeName'
+        },
+        {
+          title: '分销人员身高',
+          key: 'orderType',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', this.orderTypeStr(params.row.orderType))
+          }
+        },
+        {
+          title: '分销人员性别',
+          key: 'deliveryAddress'
         },
         {
           title: '操作',
           key: 'action',
-          width: 400,
+          width: 200,
           align: 'center',
-          render: (h, params) => {
+          render: h => {
             return h('div', [
               h(
                 'Button',
@@ -88,31 +105,11 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '20px'
+                    marginRight: '10px'
                   },
                   on: {
                     click: () => {
-                      this.salaryReview(params.row.id, params.row.orderType)
-                      // 跳转到详情页面
-                    }
-                  }
-                },
-                '详情'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '20px'
-                  },
-                  on: {
-                    click: () => {
-                      // this.salaryReview(params.row.id, params.row.orderType)
-                      // 跳转到编辑页面
+                      // this.goDetail(params.row.id, params.row.orderType)
                     }
                   }
                 },
@@ -122,39 +119,19 @@ export default {
                 'Button',
                 {
                   props: {
-                    type: 'primary',
+                    type: 'error',
                     size: 'small'
                   },
                   style: {
-                    marginRight: '20px'
+                    marginRight: '0px'
                   },
                   on: {
                     click: () => {
-                      // this.salaryReview(params.row.id, params.row.orderType)
-                      // 跳转到编辑页面
+                      // this.goDetail(params.row.id, params.row.orderType)
                     }
                   }
                 },
-                '启用'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '20px'
-                  },
-                  on: {
-                    click: () => {
-                      // this.salaryReview(params.row.id, params.row.orderType)
-                      // 跳转到编辑页面
-                    }
-                  }
-                },
-                '停用'
+                '删除'
               )
             ])
           }
@@ -170,27 +147,27 @@ export default {
       // this.queryOrderList()
     },
 
-    queryOrderInfo() {
-      // 查询按钮
-      this.pageNo = 1
-      this.queryOrderList()
-    },
     getMaxRows(val) {
       // 获取当前页最大条数
       this.maxRows = val
       this.queryOrderList()
     },
 
-    // 审核工资单
-    addAdPage() {
+    goDetail(orderId, orderType) {
       this.$router.push({
-        path: '/advertising_maintenance_add'
+        name: 'order-details',
+        query: { orderId: orderId, orderType: orderType }
+      })
+    },
+
+    addJobInfo() {
+      this.$router.push({
+        path: '/job_add'
       })
     }
   },
   mounted() {
-    noticeOrAdPage()
-    this.orderList = [{}]
+    this.orderList = [{ crmMerchantName: '张璐' }]
   }
 }
 </script>

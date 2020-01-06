@@ -273,3 +273,66 @@ export const noticeOrAdDelete = params => {
     method: 'post'
   })
 }
+
+// 务工人员列表
+export const workManageList = params => {
+  return axios.request({
+    url: '/workManage/list',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 务工人员详细信息
+export const workManageInfo = params => {
+  return axios.request({
+    url: '/workManage/info',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 务工人员实名认证信息
+export const workManageIdtfy = params => {
+  return axios.request({
+    url: '/workManage/idtfy',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 平台用户列表
+export const platformUserPage = params => {
+  return axios.request({
+    url: '/platformUser/page',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 平台用户新增
+export const platformUserInsert = params => {
+  return axios.request({
+    url: '/platformUser/insert',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 平台用户更新
+export const platformUserUpdate = params => {
+  return axios.request({
+    url: '/platformUser/update',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 平台用户删除
+export const platformUserDelete = params => {
+  return axios.request({
+    url: '/platformUser/delete',
+    data: params,
+    method: 'post'
+  })
+}
