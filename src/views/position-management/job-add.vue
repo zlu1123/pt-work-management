@@ -179,6 +179,7 @@
 
 <script>
 import { insertPostionRelease } from '@/api/user'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'searchable-table',
@@ -220,24 +221,28 @@ export default {
       this.$router.go(-1)
     },
     insertPositon() {
-      // {
-      //   merchId: '202001019536',
-      //   postionName: '揽货员',
-      //   postionAddr: '西安',
-      //   postionWelfare: '五险一金',
-      //   postionRequire: '身体好',
-      //   workTime: '8',
-      //   price: '30',
-      //   priceUnit: '时',
-      //   billtype: '日结',
-      //   positiondes: '帮助揽货,装货',
-      //   insurance: '1',
-      //   margin: '1',
-      //   health: '1'
-      // }
-      insertPostionRelease()
+      insertPostionRelease({
+        // merchId: this.getCookieToken.loginNo,
+        merchId: '202001060064',
+        postionName: '送水员',
+        postionAddr: '渭南',
+        postionWelfare: '五险一金',
+        postionRequire: '身体好',
+        workTime: '8',
+        price: '20',
+        priceUnit: '时',
+        billtype: '日结',
+        positiondes: '送水,装水',
+        insurance: '1',
+        margin: '1',
+        health: '1'
+      })
     },
     cancel() {}
+  },
+
+  computed: {
+    ...mapGetters(['getCookieToken'])
   }
 }
 </script>

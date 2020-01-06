@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { queryEnterpriseManage } from '@/api/user'
+import { queryEnterpriseRelease } from '@/api/user'
 export default {
   name: 'job-posting',
   data() {
@@ -143,18 +143,13 @@ export default {
     }
   },
   mounted() {
-    // var isSkip = this.$route.query.skip;
-    // if(isSkip == 1){
-    //     this.orderStatus = 2;
-    //     this.startTime = util.formatTime(new Date(),'yy-mm-dd 00:00:00');
-    //     this.endTime = util.formatTime(new Date(),'yy-mm-dd 23:59:59');
-    // }else if(isSkip == 2){
-    //     this.payStatus = 0;
-    //     this.startTime = this.$route.query.startTime;
-    //     this.endTime = this.$route.query.endTime;
-    // }
-    // this.queryOrderList();
-    queryEnterpriseManage()
+    queryEnterpriseRelease({}).then(res => {
+      if (res.data) {
+        if (res.data.retCode === '00000') {
+          this.orderList = res.data.data
+        }
+      }
+    })
   }
 }
 </script>

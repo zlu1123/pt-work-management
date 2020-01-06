@@ -1,12 +1,13 @@
 import axios from '@/libs/api.request'
 
-export const login = ({ userName, password }) => {
+// 用户登录
+export const login = ({ loginId, pwd }) => {
   const data = {
-    userName,
-    password
+    loginId,
+    pwd
   }
   return axios.request({
-    url: 'login',
+    url: '/user/omslogin',
     data,
     method: 'post'
   })
@@ -83,12 +84,17 @@ export const restoreTrash = msg_id => {
     }
   })
 }
+// 职位列表
+export const postionReleasePage = params => {
+  return axios.request({
+    url: '/postionRelease/page',
+    data: params,
+    method: 'post'
+  })
+}
 
+// 新增职位
 export const insertPostionRelease = params => {
-  // const data = {
-  //   userName,
-  //   password
-  // }
   return axios.request({
     url: '/postionRelease/insert',
     data: params,
@@ -113,9 +119,9 @@ export const postionApplyApplyExam = params => {
 }
 
 // 企业列表查询
-export const queryEnterpriseManage = params => {
+export const queryEnterpriseRelease = params => {
   return axios.request({
-    url: '/enterpriseManage/infoRelease/page',
+    url: '/enterpriseRelease/page',
     data: params,
     method: 'post'
   })
@@ -124,7 +130,7 @@ export const queryEnterpriseManage = params => {
 // 企业新增
 export const enterpriseManageInsert = params => {
   return axios.request({
-    url: '/enterpriseManage/infoRelease/insert',
+    url: '/enterpriseRelease/insert',
     data: params,
     method: 'post'
   })

@@ -186,9 +186,10 @@ export default {
     }
   },
   mounted() {
-    postionApplyApplyList().then(res => {
+    postionApplyApplyList({
+      merchId: '202001060064'
+    }).then(res => {
       // { applyExemStat: 1 }
-      console.log(res)
       this.orderList = res.data.data
     })
     // this.orderList = [0]

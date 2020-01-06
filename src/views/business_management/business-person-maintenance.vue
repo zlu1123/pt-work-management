@@ -67,7 +67,7 @@ export default {
         },
         {
           title: '企业名称',
-          key: 'merchName',
+          key: 'merchChargeId',
           align: 'center'
         },
         {
@@ -81,30 +81,26 @@ export default {
           width: 100,
           align: 'center',
           render: (h, params) => {
-            if (this.queryDetailAuth) {
-              return h('div', [
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '0px'
-                    },
-                    on: {
-                      click: () => {
-                        this.goDetail(params.row.id, params.row.orderType)
-                      }
-                    }
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
                   },
-                  '详情'
-                )
-              ])
-            } else {
-              return null
-            }
+                  style: {
+                    marginRight: '0px'
+                  },
+                  on: {
+                    click: () => {
+                      this.goDetail(params.row.id, params.row.orderType)
+                    }
+                  }
+                },
+                '详情'
+              )
+            ])
           }
         }
       ],
@@ -143,18 +139,12 @@ export default {
     }
   },
   mounted() {
-    // var isSkip = this.$route.query.skip;
-    // if(isSkip == 1){
-    //     this.orderStatus = 2;
-    //     this.startTime = util.formatTime(new Date(),'yy-mm-dd 00:00:00');
-    //     this.endTime = util.formatTime(new Date(),'yy-mm-dd 23:59:59');
-    // }else if(isSkip == 2){
-    //     this.payStatus = 0;
-    //     this.startTime = this.$route.query.startTime;
-    //     this.endTime = this.$route.query.endTime;
-    // }
-    // this.queryOrderList();
-    enterpriseDirectorPage()
+    // session loginNo
+    enterpriseDirectorPage({
+      merchId: '202001060064'
+    }).then(res => {
+      this.orderList = res.data.data
+    })
   }
 }
 </script>
