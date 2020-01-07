@@ -55,7 +55,8 @@ export default [
     name: 'position_management',
     meta: {
       icon: 'logo-buffer',
-      title: '职位管理'
+      title: '职位管理',
+      access: ['01']
     },
     component: Main,
     children: [
@@ -94,7 +95,8 @@ export default [
     name: 'business_management',
     meta: {
       icon: 'md-briefcase',
-      title: '企业管理'
+      title: '企业管理',
+      access: ['00', '01']
     },
     component: Main,
     children: [
@@ -253,7 +255,8 @@ export default [
     name: 'platform_management',
     meta: {
       icon: 'md-construct',
-      title: '平台管理'
+      title: '平台管理',
+      access: ['00']
     },
     component: Main,
     children: [

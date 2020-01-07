@@ -1,5 +1,6 @@
 import {
   login,
+  // eslint-disable-next-line no-unused-vars
   logout,
   getUserInfo,
   getMessage,
@@ -83,9 +84,22 @@ export default {
           pwd: password
         })
           .then(res => {
-            const data = res.data
-            commit('setToken', data.data)
-            resolve()
+            const userInfo = res.data.data
+            commit('setToken', userInfo)
+            commit('setUserId', userInfo.loginNo)
+            // 角色：
+            // 超级管理员：所有权限
+            // 平台管理员：所有权限
+            // 平台用户：除过财务管理所有模块
+            // 平台财务：首页、财务管理
+            // 企业管理员：首页（企业职位统计、职位报名实到统计）、职位管理、企业管理（企业负责人维护、企业充值维护）
+            if (userInfo.userType === '00') {
+              commit('setAccess', ['00', '01'])
+            } else if (userInfo.userType === '01') {
+              commit('setAccess', ['01'])
+            }
+            commit('setHasGetInfo', true)
+            resolve(res)
           })
           .catch(err => {
             reject(err)
@@ -93,17 +107,19 @@ export default {
       })
     },
     // 退出登录
+    // eslint-disable-next-line no-unused-vars
     handleLogOut({ state, commit }) {
+      // eslint-disable-next-line no-unused-vars
       return new Promise((resolve, reject) => {
-        logout(state.token)
-          .then(() => {
-            commit('setToken', '')
-            commit('setAccess', [])
-            resolve()
-          })
-          .catch(err => {
-            reject(err)
-          })
+        // logout(state.token)
+        //   .then(() => {
+        commit('setToken', '')
+        commit('setAccess', [])
+        resolve()
+        // })
+        // .catch(err => {
+        // reject(err)
+        // })
         // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
         // commit('setToken', '')
         // commit('setAccess', [])

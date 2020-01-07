@@ -4,7 +4,8 @@
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
           <login-form @on-success-valid="handleSubmit"></login-form>
-          <p class="login-tip">请输入用户和密码</p>
+          <!-- <p class="login-tip">请输入用户和密码</p> -->
+          <Checkbox class="login-check-box" v-model="check">记住密码</Checkbox>
         </div>
       </Card>
     </div>
@@ -18,10 +19,21 @@ export default {
   components: {
     LoginForm
   },
+  data() {
+    return {
+      check: true
+    }
+  },
   methods: {
     ...mapActions(['handleLogin']),
     handleSubmit({ userName, password }) {
-      this.handleLogin({ userName, password }).then(() => {
+      // password = this.$md5(password)
+      this.handleLogin({ userName, password }).then(res => {
+        if (res && res.data.retCode === '00000') {
+          if (this.check) {
+            this.$sessionData('set', 'userInfo', { userName, password })
+          }
+        }
         this.$router.push({
           name: this.$config.homeName
         })

@@ -72,39 +72,67 @@ export default {
         },
         {
           title: '企业负责人',
-          key: 'merchCharge',
+          key: 'merchId',
           align: 'center'
         },
         {
           title: '操作',
           key: 'action',
-          width: 100,
           align: 'center',
           render: (h, params) => {
-            if (this.queryDetailAuth) {
-              return h('div', [
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '0px'
-                    },
-                    on: {
-                      click: () => {
-                        this.goDetail(params.row.id, params.row.orderType)
-                      }
-                    }
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
                   },
-                  '详情'
-                )
-              ])
-            } else {
-              return null
-            }
+                  style: {
+                    marginRight: '10px'
+                  },
+                  on: {
+                    click: () => {
+                      this.goDetail(params.row, 'detail')
+                    }
+                  }
+                },
+                '详情'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '10px'
+                  },
+                  on: {
+                    click: () => {
+                      this.goDetail(params.row, 'update')
+                    }
+                  }
+                },
+                '更新'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.async()
+                    }
+                  }
+                },
+                '删除'
+              )
+            ])
           }
         }
       ],
@@ -129,10 +157,28 @@ export default {
       this.queryOrderList()
     },
 
-    goDetail(orderId, orderType) {
+    async() {
+      this.$Modal.confirm({
+        title: '提醒',
+        content: '<p>确认删除当前公司吗？</p>',
+        loading: true,
+        onOk: () => {
+          setTimeout(() => {
+            this.$Modal.remove()
+            this.$Message.info('Asynchronously close the dialog box')
+          }, 2000)
+          this.getListInfo()
+        }
+      })
+    },
+
+    goDetail(item, flag) {
       this.$router.push({
-        name: 'order-details',
-        query: { orderId: orderId, orderType: orderType }
+        path: '/enterprise_add',
+        query: {
+          flag: flag,
+          params: item
+        }
       })
     },
 
@@ -140,16 +186,20 @@ export default {
       this.$router.push({
         path: '/enterprise_add'
       })
+    },
+
+    getListInfo() {
+      queryEnterpriseRelease({}).then(res => {
+        if (res.data) {
+          if (res.data.retCode === '00000') {
+            this.orderList = res.data.data
+          }
+        }
+      })
     }
   },
   mounted() {
-    queryEnterpriseRelease({}).then(res => {
-      if (res.data) {
-        if (res.data.retCode === '00000') {
-          this.orderList = res.data.data
-        }
-      }
-    })
+    this.getListInfo()
   }
 }
 </script>

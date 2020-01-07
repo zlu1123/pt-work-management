@@ -3,19 +3,39 @@
     <Row class="margin-top-10">
       <i-col>
         <Card>
-          <p slot="title"><Icon type="android-create"></Icon>企业新增</p>
+          <p slot="title">
+            <Icon type="android-create"></Icon>企业{{
+              disabled ? '详情' : '新增'
+            }}
+          </p>
           <Row class="margin-top-10">
             <i-col span="24">
               <ul>
                 <li>
                   <label class="label-line">企业名称：</label>
-                  <Input v-model="merchName" style="width: 200px" />
+                  <Input
+                    :disabled="disabled"
+                    v-model="merchName"
+                    style="width: 200px"
+                  />
                   <label class="label-line">企业负责人：</label>
-                  <Input v-model="merchCharge" style="width: 200px" />
+                  <Input
+                    :disabled="disabled"
+                    v-model="merchCharge"
+                    style="width: 200px"
+                  />
                 </li>
               </ul>
-              <div style="margin-top: 20px;">
-                <Button type="primary" @click="addMerchant">确认</Button>
+              <div style="margin-top: 20px;" v-if="!disabled">
+                <Poptip
+                  placement="top-start"
+                  confirm
+                  title="您确认增加当前企业吗？"
+                  @on-ok="addMerchant"
+                  @on-cancel="cancel"
+                >
+                  <Button type="primary">添加</Button>
+                </Poptip>
                 <Button style="margin: 0 10px;" @click="returnLastPage"
                   >返回</Button
                 >
@@ -36,19 +56,30 @@ export default {
   data() {
     return {
       merchCharge: '',
-      merchName: ''
+      merchName: '',
+      disabled: false
     }
   },
-  mounted() {},
+  mounted() {
+    const beforePageData = this.$route.query
+    if (beforePageData.flag === 'detail') {
+      this.disabled = true
+      this.merchName = beforePageData.params.merchName
+      this.merchCharge = beforePageData.params.merchId
+    }
+  },
   methods: {
     returnLastPage() {
-      //   this.$router.push({ path: "/job_posting" });
       this.$router.go(-1)
     },
     addMerchant() {
       enterpriseManageInsert({
         merchName: this.merchName,
         merchCharge: this.merchCharge
+      }).then(res => {
+        if (res.data && res.data.retCode === '00000') {
+          this.$router.go(-1)
+        }
       })
     },
     cancel() {}
