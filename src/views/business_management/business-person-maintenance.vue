@@ -3,7 +3,7 @@
     <i-col>
       <Card>
         <Row>
-          <Button type="primary" icon="md-add" @click="addJobInfo"
+          <Button type="primary" icon="md-add" @click="addManageInfo"
             >企业负责人新增</Button
           >
         </Row>
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { enterpriseDirectorPage } from '@/api/user'
+import { enterpriseDirectorPage, enterpriseDirectorDelete } from '@/api/user'
 export default {
   name: 'job-posting',
   data() {
@@ -78,7 +78,6 @@ export default {
         {
           title: '操作',
           key: 'action',
-          width: 100,
           align: 'center',
           render: (h, params) => {
             return h('div', [
@@ -90,15 +89,48 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '0px'
+                    marginRight: '10px'
                   },
                   on: {
                     click: () => {
-                      this.goDetail(params.row.id, params.row.orderType)
+                      this.goDetail(params.row, 'detail')
                     }
                   }
                 },
                 '详情'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '10px'
+                  },
+                  on: {
+                    click: () => {
+                      this.goDetail(params.row, 'update')
+                    }
+                  }
+                },
+                '更新'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.deleteItem(params.row.merchId)
+                    }
+                  }
+                },
+                '删除'
               )
             ])
           }
@@ -125,26 +157,54 @@ export default {
       this.queryOrderList()
     },
 
-    goDetail(orderId, orderType) {
+    goDetail(item, flag) {
       this.$router.push({
-        name: 'order-details',
-        query: { orderId: orderId, orderType: orderType }
+        path: '/business_person_add',
+        query: {
+          flag: flag,
+          params: item
+        }
       })
     },
 
-    addJobInfo() {
+    addManageInfo() {
       this.$router.push({
         path: '/business_person_add'
+      })
+    },
+
+    deleteItem(id) {
+      this.$Modal.confirm({
+        title: '提醒',
+        content: '<p>确认删除当前企业负责人吗？</p>',
+        loading: true,
+        onOk: () => {
+          enterpriseDirectorDelete({
+            merchId: id
+          }).then(res => {
+            if (res.data && res.data.retCode === '00000') {
+              this.$Modal.remove()
+              this.$Message.info('删除成功')
+              this.queryList()
+            }
+          })
+        }
+      })
+    },
+
+    queryList() {
+      enterpriseDirectorPage({
+        merchId: '202001060064'
+      }).then(res => {
+        if (res.data && res.data.retCode === '00000') {
+          this.orderList = res.data.data
+        }
       })
     }
   },
   mounted() {
     // session loginNo
-    enterpriseDirectorPage({
-      merchId: '202001060064'
-    }).then(res => {
-      this.orderList = res.data.data
-    })
+    this.queryList()
   }
 }
 </script>

@@ -11,6 +11,7 @@ import {
   getUnreadCount
 } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
+// import { sessionData } from '../../libs/local'
 
 export default {
   state: {
@@ -18,6 +19,7 @@ export default {
     userId: '',
     avatarImgPath: '',
     token: getToken(),
+    // token: sessionData('get', 'token'),
     access: '',
     hasGetInfo: false,
     unreadCount: 0,
@@ -42,6 +44,7 @@ export default {
     setToken(state, token) {
       state.token = token
       setToken(token)
+      // sessionData('set', 'token', token)
     },
     setHasGetInfo(state, status) {
       state.hasGetInfo = status
@@ -94,9 +97,11 @@ export default {
             // 平台财务：首页、财务管理
             // 企业管理员：首页（企业职位统计、职位报名实到统计）、职位管理、企业管理（企业负责人维护、企业充值维护）
             if (userInfo.userType === '00') {
-              commit('setAccess', ['00', '01'])
+              commit('setAccess', ['00', '01', '03'])
             } else if (userInfo.userType === '01') {
               commit('setAccess', ['01'])
+            } else if (userInfo.userType === '03') {
+              commit('setAccess', ['03'])
             }
             commit('setHasGetInfo', true)
             resolve(res)

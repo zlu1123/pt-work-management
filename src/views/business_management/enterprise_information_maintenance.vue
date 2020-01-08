@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { queryEnterpriseRelease } from '@/api/user'
+import { queryEnterpriseRelease, enterpriseManageDelete } from '@/api/user'
 export default {
   name: 'job-posting',
   data() {
@@ -126,7 +126,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.async()
+                      this.deleteItem(params.row.merchId)
                     }
                   }
                 },
@@ -157,17 +157,21 @@ export default {
       this.queryOrderList()
     },
 
-    async() {
+    deleteItem(id) {
       this.$Modal.confirm({
         title: '提醒',
-        content: '<p>确认删除当前公司吗？</p>',
+        content: '<p>确认删除当前企业吗？</p>',
         loading: true,
         onOk: () => {
-          setTimeout(() => {
-            this.$Modal.remove()
-            this.$Message.info('Asynchronously close the dialog box')
-          }, 2000)
-          this.getListInfo()
+          enterpriseManageDelete({
+            merchId: id
+          }).then(res => {
+            if (res.data && res.data.retCode === '00000') {
+              this.$Modal.remove()
+              this.$Message.info('删除成功')
+              this.getListInfo()
+            }
+          })
         }
       })
     },

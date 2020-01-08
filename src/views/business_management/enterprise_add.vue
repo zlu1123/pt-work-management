@@ -5,7 +5,7 @@
         <Card>
           <p slot="title">
             <Icon type="android-create"></Icon>企业{{
-              disabled ? '详情' : '新增'
+              disabled ? '详情' : updateFlag ? '信息修改' : '新增'
             }}
           </p>
           <Row class="margin-top-10">
@@ -30,11 +30,13 @@
                 <Poptip
                   placement="top-start"
                   confirm
-                  title="您确认增加当前企业吗？"
+                  :title="popTitle"
                   @on-ok="addMerchant"
                   @on-cancel="cancel"
                 >
-                  <Button type="primary">添加</Button>
+                  <Button type="primary">{{
+                    updateFlag ? '更新' : '新增'
+                  }}</Button>
                 </Poptip>
                 <Button style="margin: 0 10px;" @click="returnLastPage"
                   >返回</Button
@@ -49,7 +51,7 @@
 </template>
 
 <script>
-import { enterpriseManageInsert } from '@/api/user'
+import { enterpriseManageInsert, enterpriseReleaseUpdate } from '@/api/user'
 
 export default {
   name: 'searchable-table',
@@ -57,13 +59,20 @@ export default {
     return {
       merchCharge: '',
       merchName: '',
-      disabled: false
+      disabled: false,
+      updateFlag: false,
+      popTitle: '您确认增加当前企业吗？'
     }
   },
   mounted() {
     const beforePageData = this.$route.query
-    if (beforePageData.flag === 'detail') {
-      this.disabled = true
+    if (beforePageData && Object.keys(beforePageData).length > 0) {
+      if (beforePageData.flag === 'detail') {
+        this.disabled = true
+      } else {
+        this.updateFlag = true
+        this.popTitle = '您确认更新当前企业信息吗？'
+      }
       this.merchName = beforePageData.params.merchName
       this.merchCharge = beforePageData.params.merchId
     }
@@ -73,14 +82,41 @@ export default {
       this.$router.go(-1)
     },
     addMerchant() {
-      enterpriseManageInsert({
-        merchName: this.merchName,
-        merchCharge: this.merchCharge
-      }).then(res => {
-        if (res.data && res.data.retCode === '00000') {
-          this.$router.go(-1)
-        }
-      })
+      if (this.updateFlag) {
+        // 更新
+        enterpriseReleaseUpdate({
+          merchName: this.merchName,
+          merchCharge: this.merchCharge,
+          merchId: this.merchCharge
+        }).then(res => {
+          if (res.data && res.data.retCode === '00000') {
+            this.$Notice.success({
+              title: '提醒',
+              desc: '企业信息更新成功'
+            })
+            this.$router.go(-1)
+          } else {
+            this.$Notice.error({
+              title: '提醒',
+              desc: '企业信息更新失败'
+            })
+          }
+        })
+      } else {
+        // 新增
+        enterpriseManageInsert({
+          merchName: this.merchName,
+          merchCharge: this.merchCharge
+        }).then(res => {
+          if (res.data && res.data.retCode === '00000') {
+            this.$Notice.success({
+              title: '提醒',
+              desc: '企业新增成功'
+            })
+            this.$router.go(-1)
+          }
+        })
+      }
     },
     cancel() {}
   }

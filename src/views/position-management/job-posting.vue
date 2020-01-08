@@ -40,8 +40,7 @@
 </template>
 
 <script>
-// import apiUrl from  '../../libs/request_path.js';
-import { postionReleasePage } from '@/api/user'
+import { postionReleasePage, insertPostionDelete } from '@/api/user'
 import { mapGetters } from 'vuex'
 export default {
   name: 'job-posting',
@@ -81,15 +80,15 @@ export default {
           key: 'positiondes',
           align: 'center'
         },
-        {
-          title: '职位福利',
-          key: 'postionWelfare'
-        },
-        {
-          title: '职位要求',
-          key: 'postionRequire',
-          align: 'center'
-        },
+        // {
+        //   title: '职位福利',
+        //   key: 'postionWelfare'
+        // },
+        // {
+        //   title: '职位要求',
+        //   key: 'postionRequire',
+        //   align: 'center'
+        // },
         {
           title: '工作开始日期',
           key: 'payType',
@@ -106,27 +105,27 @@ export default {
             return h('div', this.payStatusStr(params.row.payStatus))
           }
         },
-        {
-          title: '上班打卡时间',
-          key: 'orderStatus',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', this.orderStatusStr(params.row.orderStatus))
-          }
-        },
-        {
-          title: '下班打卡时间',
-          key: 'orderStatus',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', this.orderStatusStr(params.row.orderStatus))
-          }
-        },
-        {
-          title: '单价',
-          key: 'price',
-          align: 'center'
-        },
+        // {
+        //   title: '上班打卡时间',
+        //   key: 'orderStatus',
+        //   align: 'center',
+        //   render: (h, params) => {
+        //     return h('div', this.orderStatusStr(params.row.orderStatus))
+        //   }
+        // },
+        // {
+        //   title: '下班打卡时间',
+        //   key: 'orderStatus',
+        //   align: 'center',
+        //   render: (h, params) => {
+        //     return h('div', this.orderStatusStr(params.row.orderStatus))
+        //   }
+        // },
+        // {
+        //   title: '单价',
+        //   key: 'price',
+        //   align: 'center'
+        // },
         {
           title: '需求人数',
           key: 'orderStatus',
@@ -137,16 +136,16 @@ export default {
           key: 'billtype',
           align: 'center'
         },
-        {
-          title: '保证金',
-          key: 'orderStatus',
-          align: 'center'
-        },
+        // {
+        //   title: '保证金',
+        //   key: 'orderStatus',
+        //   align: 'center'
+        // },
         {
           title: '操作',
           key: 'action',
-          width: 100,
           align: 'center',
+          width: '200',
           render: (h, params) => {
             return h('div', [
               h(
@@ -157,15 +156,48 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '0px'
+                    marginRight: '10px'
                   },
                   on: {
                     click: () => {
-                      this.goDetail(params.row.id, params.row.orderType)
+                      this.goDetail(params.row, 'detail')
                     }
                   }
                 },
                 '详情'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '10px'
+                  },
+                  on: {
+                    click: () => {
+                      this.goDetail(params.row, 'update')
+                    }
+                  }
+                },
+                '更新'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.deleteItem(params.row.merchId)
+                    }
+                  }
+                },
+                '删除'
               )
             ])
           }
@@ -192,10 +224,13 @@ export default {
       this.queryOrderList()
     },
 
-    goDetail(orderId, orderType) {
+    goDetail(item, flag) {
       this.$router.push({
-        name: 'order-details',
-        query: { orderId: orderId, orderType: orderType }
+        path: '/job_add',
+        query: {
+          flag,
+          params: item
+        }
       })
     },
 
@@ -203,15 +238,38 @@ export default {
       this.$router.push({
         path: '/job_add'
       })
+    },
+
+    deleteItem(id) {
+      this.$Modal.confirm({
+        title: '提醒',
+        content: '<p>确认删除当前职位吗？</p>',
+        loading: true,
+        onOk: () => {
+          insertPostionDelete({
+            merchId: id
+          }).then(res => {
+            if (res.data && res.data.retCode === '00000') {
+              this.$Modal.remove()
+              this.$Message.info('删除成功')
+              this.queryList()
+            }
+          })
+        }
+      })
+    },
+
+    queryList() {
+      postionReleasePage({
+        merchId: this.getCookieToken.loginNo
+      }).then(res => {
+        this.orderList = res.data.data
+      })
     }
   },
   mounted() {
-    postionReleasePage({
-      merchId: '202001060064'
-      // merchId: this.getCookieToken.loginNo
-    }).then(res => {
-      this.orderList = res.data.data
-    })
+    // this.queryList();
+    this.orderList = [{ orderStatus: 2 }]
   },
 
   computed: {

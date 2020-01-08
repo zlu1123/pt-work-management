@@ -34,6 +34,7 @@
 
 <script>
 import { postionApplyApplyList, postionApplyApplyExam } from '@/api/user'
+import { mapGetters } from 'vuex'
 export default {
   name: 'job-posting',
   data() {
@@ -62,19 +63,16 @@ export default {
         {
           title: '商户名称',
           key: 'merchId',
-          width: 180,
           align: 'center'
         },
         {
           title: '职位信息',
           key: 'postionId',
-          width: 150,
           align: 'center'
         },
         {
           title: '审核状态',
           key: 'exemStat',
-          width: 150,
           align: 'center',
           render: (h, params) => {
             return h('div', params.row.exemStat === '1' ? '待申请' : '申请通过')
@@ -111,31 +109,54 @@ export default {
         {
           title: '审核',
           key: 'action',
-          width: 100,
+          width: 200,
           align: 'center',
           render: (h, params) => {
-            if (params.row.exemStat === '1') {
-              return h('div', [
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.postionApplyApplyExam(
-                          params.row.applyUserId,
-                          params.row.postionApplyId
-                        )
-                      }
-                    }
+            // if (params.row.exemStat === '1') {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
                   },
-                  '通过'
-                )
-              ])
-            }
+                  style: {
+                    marginRight: '10px'
+                  },
+                  on: {
+                    click: () => {
+                      this.confirmApply(
+                        params.row.applyUserId,
+                        params.row.postionApplyId,
+                        'is'
+                      )
+                    }
+                  }
+                },
+                '通过'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.confirmApply(
+                        params.row.applyUserId,
+                        params.row.postionApplyId,
+                        'no'
+                      )
+                    }
+                  }
+                },
+                '拒绝'
+              )
+            ])
+            // }
           }
         }
       ]
@@ -179,20 +200,45 @@ export default {
         path: '/job_add'
       })
     },
+
+    confirmApply(applyUserId, postionApplyId, flag) {
+      let alertText = `<p>确认${flag === 'is' ? '通过' : '拒绝'}该申请吗？</p>`
+      this.$Modal.confirm({
+        title: '提醒',
+        content: alertText,
+        loading: true,
+        onOk: () => {
+          postionApplyApplyExam(applyUserId, postionApplyId, flag)
+        }
+      })
+    },
+
     postionApplyApplyExam(applyUserId, postionApplyId) {
       postionApplyApplyExam({
         postionApplyId: postionApplyId
+      }).then(res => {
+        if (res.data && res.data.retCode === '00000') {
+          this.$Modal.remove()
+          this.$Message.info('审核成功')
+          this.queryList()
+        }
+      })
+    },
+
+    queryList() {
+      postionApplyApplyList({
+        merchId: this.getCookieToken.loginNo
+      }).then(res => {
+        // { applyExemStat: 1 }
+        this.orderList = res.data.data
       })
     }
   },
   mounted() {
-    postionApplyApplyList({
-      merchId: '202001060064'
-    }).then(res => {
-      // { applyExemStat: 1 }
-      this.orderList = res.data.data
-    })
-    // this.orderList = [0]
+    this.queryList()
+  },
+  computed: {
+    ...mapGetters(['getCookieToken'])
   }
 }
 </script>

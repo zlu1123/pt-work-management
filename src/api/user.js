@@ -13,16 +13,6 @@ export const login = ({ loginId, pwd }) => {
   })
 }
 
-export const getUserInfo = token => {
-  return axios.request({
-    url: 'get_info',
-    params: {
-      token
-    },
-    method: 'get'
-  })
-}
-
 // eslint-disable-next-line no-unused-vars
 export const logout = token => {
   return axios.request({
@@ -31,59 +21,6 @@ export const logout = token => {
   })
 }
 
-export const getUnreadCount = () => {
-  return axios.request({
-    url: 'message/count',
-    method: 'get'
-  })
-}
-
-export const getMessage = () => {
-  return axios.request({
-    url: 'message/init',
-    method: 'get'
-  })
-}
-
-export const getContentByMsgId = msg_id => {
-  return axios.request({
-    url: 'message/content',
-    method: 'get',
-    params: {
-      msg_id
-    }
-  })
-}
-
-export const hasRead = msg_id => {
-  return axios.request({
-    url: 'message/has_read',
-    method: 'post',
-    data: {
-      msg_id
-    }
-  })
-}
-
-export const removeReaded = msg_id => {
-  return axios.request({
-    url: 'message/remove_readed',
-    method: 'post',
-    data: {
-      msg_id
-    }
-  })
-}
-
-export const restoreTrash = msg_id => {
-  return axios.request({
-    url: 'message/restore',
-    method: 'post',
-    data: {
-      msg_id
-    }
-  })
-}
 // 职位列表
 export const postionReleasePage = params => {
   return axios.request({
@@ -102,6 +39,25 @@ export const insertPostionRelease = params => {
   })
 }
 
+// 更新职位
+export const postionReleaseUpdate = params => {
+  return axios.request({
+    url: '/postionRelease/update',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 删除职位
+export const insertPostionDelete = params => {
+  return axios.request({
+    url: '/postionRelease/delete',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 职位申请列表
 export const postionApplyApplyList = params => {
   return axios.request({
     url: '/postionApply/applyList',
@@ -110,6 +66,7 @@ export const postionApplyApplyList = params => {
   })
 }
 
+// 职位申请审核
 export const postionApplyApplyExam = params => {
   return axios.request({
     url: '/postionApply/applyExam',
@@ -136,6 +93,24 @@ export const enterpriseManageInsert = params => {
   })
 }
 
+// 企业信息更新
+export const enterpriseReleaseUpdate = params => {
+  return axios.request({
+    url: '/enterpriseRelease/update',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 企业删除
+export const enterpriseManageDelete = params => {
+  return axios.request({
+    url: '/enterpriseRelease/delete',
+    data: params,
+    method: 'post'
+  })
+}
+
 // 企业负责人列表查询
 export const enterpriseDirectorPage = params => {
   return axios.request({
@@ -149,6 +124,24 @@ export const enterpriseDirectorPage = params => {
 export const enterpriseDirectorInsert = params => {
   return axios.request({
     url: '/enterpriseDirector/insert',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 企业负责人更新
+export const enterpriseDirectorUpdate = params => {
+  return axios.request({
+    url: '/enterpriseDirector/update',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 企业负责人删除
+export const enterpriseDirectorDelete = params => {
+  return axios.request({
+    url: '/enterpriseDirector/delete',
     data: params,
     method: 'post'
   })

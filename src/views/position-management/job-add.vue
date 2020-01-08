@@ -168,7 +168,15 @@
             </i-col>
           </Row>
           <div class="mar-top-10 space-around">
-            <Button type="primary" @click="insertPositon">确认</Button>
+            <Poptip
+              placement="top-start"
+              confirm
+              :title="popTitle"
+              @on-ok="insertPositon"
+              @on-cancel="cancel"
+            >
+              <Button type="primary">{{ updateFlag ? '更新' : '新增' }}</Button>
+            </Poptip>
             <Button @click="returnLastPage">返回</Button>
           </div>
         </Card>
@@ -178,7 +186,7 @@
 </template>
 
 <script>
-import { insertPostionRelease } from '@/api/user'
+import { insertPostionRelease, postionReleaseUpdate } from '@/api/user'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -212,31 +220,75 @@ export default {
         { text: '周结', value: 4 },
         { text: '半月结', value: 5 },
         { text: '月结', value: 6 }
-      ]
+      ],
+      disabled: false,
+      updateFlag: false,
+      popTitle: '您确认增加当前职位吗？'
     }
   },
-  mounted() {},
+  mounted() {
+    const beforePageData = this.$route.query
+    if (beforePageData && Object.keys(beforePageData).length > 0) {
+      if (beforePageData.flag === 'detail') {
+        this.disabled = true
+      } else {
+        this.updateFlag = true
+        this.popTitle = '您确认更新当前职位信息吗？'
+      }
+      // this.merchCharge = beforePageData.params.merchCharge
+      // this.certNo = beforePageData.params.certNo
+    }
+  },
   methods: {
     returnLastPage() {
       this.$router.go(-1)
     },
     insertPositon() {
-      insertPostionRelease({
-        // merchId: this.getCookieToken.loginNo,
-        merchId: '202001060064',
-        postionName: '送水员',
-        postionAddr: '渭南',
-        postionWelfare: '五险一金',
-        postionRequire: '身体好',
-        workTime: '8',
-        price: '20',
-        priceUnit: '时',
-        billtype: '日结',
-        positiondes: '送水,装水',
-        insurance: '1',
-        margin: '1',
-        health: '1'
-      })
+      if (this.updateFlag) {
+        // 更新
+        postionReleaseUpdate({}).then(res => {
+          if (res.data && res.data.retCode === '00000') {
+            if (res.data && res.data.retCode === '00000') {
+              this.$Notice.success({
+                title: '提醒',
+                desc: '职位信息变更成功'
+              })
+              this.$router.go(-1)
+            } else {
+              this.$Notice.error({
+                title: '提醒',
+                desc: '职位信息变更失败'
+              })
+            }
+          }
+        })
+      } else {
+        insertPostionRelease({
+          merchId: this.getCookieToken.loginNo,
+          // merchId: '202001060064',
+          postionName: '送水员',
+          postionAddr: '渭南',
+          postionWelfare: '五险一金',
+          postionRequire: '身体好',
+          workTime: '8',
+          price: '20',
+          priceUnit: '时',
+          billtype: '日结',
+          positiondes: '送水,装水',
+          insurance: '1',
+          margin: '1',
+          health: '1',
+          releasEmerchAddr: ['1', '2']
+        }).then(res => {
+          if (res.data && res.data.retCode === '00000') {
+            this.$Notice.success({
+              title: '提醒',
+              desc: '职位新增成功'
+            })
+            this.$router.go(-1)
+          }
+        })
+      }
     },
     cancel() {}
   },
