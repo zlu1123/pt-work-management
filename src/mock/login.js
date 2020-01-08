@@ -21,11 +21,7 @@ export const login = req => {
   return { token: USER_MAP[req.userName].token }
 }
 
-export const getUserInfo = req => {
-  const params = getParams(req.url)
-  return USER_MAP[params.token]
-}
-
+// eslint-disable-next-line no-unused-vars
 export const logout = req => {
   return null
 }

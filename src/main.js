@@ -17,6 +17,7 @@ import VOrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
 import md5 from 'js-md5'
 import { localData, sessionData } from './libs/local'
+import VueMap from 'vue-amap'
 
 Vue.prototype.$localData = localData
 Vue.prototype.$sessionData = sessionData
@@ -41,6 +42,29 @@ Vue.use(viewDesign, {
 //     return ''
 //   }
 // })
+
+Vue.use(VueMap)
+// 初始化vue-amap
+VueMap.initAMapApiLoader({
+  // 高德key
+  // key: '1e098fb2b135edf3f50eb0b5cafef19c',
+  key: 'd618bbef4475929b27c029cf6cb01bf1',
+  // 插件集合 （插件按需引入）
+  // plugin: ['AMap.Geolocation']
+  plugin: [
+    'Geocoder',
+    'Geolocation',
+    'Autocomplete',
+    'PlaceSearch',
+    'Scale',
+    'OverView',
+    'ToolBar',
+    'MapType',
+    'PolyEditor',
+    'CircleEditor'
+  ],
+  v: '1.4.4'
+})
 
 Vue.use(TreeTable)
 Vue.use(VOrgTree)

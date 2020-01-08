@@ -166,7 +166,37 @@
                 class="width-500"
               />
             </i-col>
+            <i-col span="24">
+              <label>请选择地址：</label>
+              <div class="amap-page-container">
+                <div class="container">
+                  <div class="tip">
+                    <input
+                      class="custom-componet-input"
+                      id="custom-componet-input"
+                    />
+                  </div>
+                  <el-amap
+                    vid="amap"
+                    :zoom="zoom"
+                    :center="center"
+                    class="amap-demo"
+                  >
+                    <custom-map-searchbox
+                      @select="selectSearch"
+                      input="custom-componet-input"
+                    ></custom-map-searchbox>
+                    <el-amap-marker
+                      v-if="selectMarker"
+                      :position="selectMarker.position"
+                      :label="selectMarker.label"
+                    ></el-amap-marker>
+                  </el-amap>
+                </div>
+              </div>
+            </i-col>
           </Row>
+
           <div class="mar-top-10 space-around">
             <Poptip
               placement="top-start"
