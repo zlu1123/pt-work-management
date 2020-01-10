@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import viewDesign from 'view-design'
+import VueAMap from 'vue-amap'
 import i18n from '@/locale'
 import config from '@/config'
 import importDirective from '@/directive'
@@ -17,7 +18,6 @@ import VOrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
 import md5 from 'js-md5'
 import { localData, sessionData } from './libs/local'
-import VueMap from 'vue-amap'
 
 Vue.prototype.$localData = localData
 Vue.prototype.$sessionData = sessionData
@@ -33,35 +33,25 @@ Vue.use(viewDesign, {
   i18n: (key, value) => i18n.t(key, value)
 })
 
-// Vue.use(viewDesign, {
-//   i18n: function(path, options) {
-//     let value = i18n.t(path, options)
-//     if (value !== null && value !== undefined) {
-//       return value
-//     }
-//     return ''
-//   }
-// })
-
-Vue.use(VueMap)
+Vue.use(VueAMap)
 // 初始化vue-amap
-VueMap.initAMapApiLoader({
+VueAMap.initAMapApiLoader({
   // 高德key
   // key: '1e098fb2b135edf3f50eb0b5cafef19c',
   key: 'd618bbef4475929b27c029cf6cb01bf1',
   // 插件集合 （插件按需引入）
   // plugin: ['AMap.Geolocation']
   plugin: [
-    'Geocoder',
-    'Geolocation',
-    'Autocomplete',
-    'PlaceSearch',
-    'Scale',
-    'OverView',
-    'ToolBar',
-    'MapType',
-    'PolyEditor',
-    'CircleEditor'
+    'AMap.Geocoder',
+    'AMap.Geolocation',
+    'AMap.Autocomplete',
+    'AMap.PlaceSearch',
+    'AMap.Scale',
+    'AMap.OverView',
+    'AMap.ToolBar',
+    'AMap.MapType',
+    'AMap.PolyEditor',
+    'AMap.CircleEditor'
   ],
   v: '1.4.4'
 })

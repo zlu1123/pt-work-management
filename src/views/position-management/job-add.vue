@@ -168,32 +168,12 @@
             </i-col>
             <i-col span="24">
               <label>请选择地址：</label>
-              <div class="amap-page-container">
-                <div class="container">
-                  <div class="tip">
-                    <input
-                      class="custom-componet-input"
-                      id="custom-componet-input"
-                    />
-                  </div>
-                  <el-amap
-                    vid="amap"
-                    :zoom="zoom"
-                    :center="center"
-                    class="amap-demo"
-                  >
-                    <custom-map-searchbox
-                      @select="selectSearch"
-                      input="custom-componet-input"
-                    ></custom-map-searchbox>
-                    <el-amap-marker
-                      v-if="selectMarker"
-                      :position="selectMarker.position"
-                      :label="selectMarker.label"
-                    ></el-amap-marker>
-                  </el-amap>
-                </div>
-              </div>
+              <Input
+                @on-focus="modelShow = true"
+                v-model="positionInfo.des"
+                placeholder="请选择地址"
+                class="width-200"
+              />
             </i-col>
           </Row>
 
@@ -212,6 +192,26 @@
         </Card>
       </i-col>
     </Row>
+    <Modal
+      title="修改配送地址"
+      v-model="modelShow"
+      width="900"
+      @on-ok="confirmEditScope"
+      class-name="vertical-center-modal"
+    >
+      <div style="height: 500px">
+        <el-amap vid="amapDemo" :center="center" :zoom="zoom" :events="events">
+          <el-amap-marker
+            vid="component-marker"
+            :position="markerPosition"
+          ></el-amap-marker>
+        </el-amap>
+        <div class="toolbar">
+          <!-- position: [{{ lng }}, {{ lat }}]  -->
+          address: {{ address }}
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -222,6 +222,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'searchable-table',
   data() {
+    let self = this
     return {
       positionInfo: {}, // 工作信息
       postionWelfareList: [
@@ -253,7 +254,35 @@ export default {
       ],
       disabled: false,
       updateFlag: false,
-      popTitle: '您确认增加当前职位吗？'
+      popTitle: '您确认增加当前职位吗？',
+      modelShow: false,
+      zoom: 12,
+      center: [108.93977, 34.341574],
+      markerPosition: [108.93977, 34.341574],
+      address: '',
+      lng: 0,
+      lat: 0,
+      events: {
+        click(e) {
+          let { lng, lat } = e.lnglat
+          self.lng = lng
+          self.lat = lat
+          self.markerPosition = [lng, lat]
+          // 这里通过高德 SDK 完成。
+          var geocoder = new AMap.Geocoder({
+            radius: 1000,
+            extensions: 'all'
+          })
+          geocoder.getAddress([lng, lat], function(status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+              if (result && result.regeocode) {
+                self.address = result.regeocode.formattedAddress
+                self.$nextTick()
+              }
+            }
+          })
+        }
+      }
     }
   },
   mounted() {
@@ -270,6 +299,7 @@ export default {
     }
   },
   methods: {
+    confirmEditScope() {},
     returnLastPage() {
       this.$router.go(-1)
     },
