@@ -18,12 +18,12 @@
                     v-model="merchName"
                     style="width: 200px"
                   />
-                  <!-- <label class="label-line">企业负责人：</label>
+                  <label class="label-line">企业地址：</label>
                   <Input
                     :disabled="disabled"
-                    v-model="merchCharge"
+                    v-model="merchAddr"
                     style="width: 200px"
-                  /> -->
+                  />
                 </li>
               </ul>
               <div style="margin-top: 20px;">
@@ -60,6 +60,7 @@ export default {
     return {
       merchCharge: '',
       merchName: '',
+      merchImg: 'https://www.baidu.com',
       disabled: false,
       updateFlag: false,
       popTitle: '您确认增加当前企业吗？'
@@ -76,6 +77,7 @@ export default {
       }
       this.merchName = beforePageData.params.merchName
       this.merchCharge = beforePageData.params.merchId
+      this.merchAddr = beforePageData.params.merchAddr
     }
   },
   methods: {
@@ -87,7 +89,7 @@ export default {
         // 更新
         enterpriseReleaseUpdate({
           merchName: this.merchName,
-          // merchCharge: this.merchCharge,
+          merchAddr: this.merchAddr,
           merchId: this.merchCharge
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
@@ -106,8 +108,9 @@ export default {
       } else {
         // 新增
         enterpriseManageInsert({
-          merchName: this.merchName
-          // merchCharge: this.merchCharge
+          merchName: this.merchName,
+          merchAddr: this.merchAddr,
+          merchImg: this.merchImg
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({

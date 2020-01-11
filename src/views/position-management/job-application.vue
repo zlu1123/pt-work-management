@@ -61,13 +61,31 @@ export default {
           align: 'center'
         },
         {
-          title: '商户名称',
-          key: 'merchId',
+          title: '职位信息',
+          key: 'postionName',
           align: 'center'
         },
         {
-          title: '职位信息',
-          key: 'postionId',
+          title: '工作地点',
+          key: 'postionAddr'
+        },
+        {
+          title: '结算方式',
+          key: 'billtype',
+          align: 'center'
+        },
+        {
+          title: '工作内容',
+          key: 'positiondes'
+        },
+        {
+          title: '位置图像',
+          key: 'releasEmerchImg',
+          align: 'center'
+        },
+        {
+          title: '需求人数',
+          key: 'workCount',
           align: 'center'
         },
         {
@@ -75,88 +93,68 @@ export default {
           key: 'exemStat',
           align: 'center',
           render: (h, params) => {
-            return h('div', params.row.exemStat === '1' ? '待申请' : '申请通过')
+            return h(
+              'div',
+              params.row.applyExemStat === '1'
+                ? '待审核'
+                : params.row.applyExemStat === '2'
+                ? '申请通过'
+                : '申请拒绝'
+            )
           }
         },
-        // {
-        //   title: '身份证号码',
-        //   key: 'certNo'
-        // },
-        // {
-        //   title: '姓名',
-        //   key: 'certName',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '性别',
-        //   key: 'sex'
-        // },
-        // {
-        //   title: '头像',
-        //   key: 'headImage',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '身高',
-        //   key: 'hign',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '年龄',
-        //   key: 'age',
-        //   align: 'center'
-        // },
+
         {
           title: '审核',
           key: 'action',
           width: 200,
           align: 'center',
           render: (h, params) => {
-            // if (params.row.exemStat === '1') {
-            return h('div', [
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '10px'
-                  },
-                  on: {
-                    click: () => {
-                      this.confirmApply(
-                        params.row.applyUserId,
-                        params.row.postionApplyId,
-                        'is'
-                      )
+            if (params.row.applyExemStat === '1') {
+              return h('div', [
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '10px'
+                    },
+                    on: {
+                      click: () => {
+                        this.confirmApply(
+                          params.row.applyUserId,
+                          params.row.postionApplyId,
+                          'is'
+                        )
+                      }
                     }
-                  }
-                },
-                '通过'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'error',
-                    size: 'small'
                   },
-                  on: {
-                    click: () => {
-                      this.confirmApply(
-                        params.row.applyUserId,
-                        params.row.postionApplyId,
-                        'no'
-                      )
+                  '通过'
+                ),
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'error',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.confirmApply(
+                          params.row.applyUserId,
+                          params.row.postionApplyId,
+                          'no'
+                        )
+                      }
                     }
-                  }
-                },
-                '拒绝'
-              )
-            ])
-            // }
+                  },
+                  '拒绝'
+                )
+              ])
+            }
           }
         }
       ]
@@ -208,14 +206,15 @@ export default {
         content: alertText,
         loading: true,
         onOk: () => {
-          postionApplyApplyExam(applyUserId, postionApplyId, flag)
+          this.postionApplyApplyExamMethod(applyUserId, postionApplyId, flag)
         }
       })
     },
 
-    postionApplyApplyExam(applyUserId, postionApplyId) {
+    postionApplyApplyExamMethod(applyUserId, postionApplyId, flag) {
       postionApplyApplyExam({
-        postionApplyId: postionApplyId
+        postionApplyId: postionApplyId,
+        applyExemStat: flag === 'is' ? '2' : '3' // 2 通过 3 拒绝
       }).then(res => {
         if (res.data && res.data.retCode === '00000') {
           this.$Modal.remove()
@@ -229,8 +228,12 @@ export default {
       postionApplyApplyList({
         merchId: this.getCookieToken.loginNo
       }).then(res => {
-        // { applyExemStat: 1 }
-        this.orderList = res.data.data
+        const data = res.data.data
+        if (data) {
+          if (Object.keys(data[0]).length > 0) {
+            this.orderList = data
+          }
+        }
       })
     }
   },

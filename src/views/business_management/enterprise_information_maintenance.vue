@@ -70,11 +70,11 @@ export default {
           key: 'merchName',
           align: 'center'
         },
-        // {
-        //   title: '企业负责人',
-        //   key: 'merchId',
-        //   align: 'center'
-        // },
+        {
+          title: '企业地址',
+          key: 'merchAddr',
+          align: 'center'
+        },
         {
           title: '操作',
           key: 'action',

@@ -12,7 +12,7 @@
             <i-col span="12">
               <label>企业负责人姓名：</label>
               <Input
-                v-model="merchCharge"
+                v-model="merchChargeName"
                 :disabled="disabled"
                 style="width: 200px"
               />
@@ -54,22 +54,25 @@
 <script>
 import { enterpriseDirectorInsert, enterpriseDirectorUpdate } from '@/api/user'
 import { mapGetters } from 'vuex'
-import { checkID } from '@/libs/util'
+// import { checkID } from '@/libs/util'
 
 export default {
   name: 'searchable-table',
   data() {
     return {
-      merchCharge: '',
+      merchChargeName: '',
       certNo: '',
       disabled: false,
       updateFlag: false,
       popTitle: '您确认增加当前负责人吗？',
       merchName: '',
-      merchId: ''
+      merchId: '',
+      merchChargeId: '', // 列表查询返回
+      merchCharge: '' // 列表查询返回
     }
   },
   mounted() {
+    debugger
     const beforePageData = this.$route.query
     if (beforePageData.flag !== 'add') {
       if (beforePageData.flag === 'detail') {
@@ -78,8 +81,10 @@ export default {
         this.updateFlag = true
         this.popTitle = '您确认更新当前企业负责人信息吗？'
       }
-      this.merchCharge = beforePageData.params.merchCharge
-      this.certNo = beforePageData.params.certNo
+      this.merchChargeName = beforePageData.params.merchCharge
+      this.certNo = beforePageData.params.loginId
+      this.merchChargeId = beforePageData.params.merchChargeId
+      this.merchId = beforePageData.params.merchId
     } else {
       this.merchName = beforePageData.params.label
       this.merchId = beforePageData.params.value
@@ -90,26 +95,30 @@ export default {
       this.$router.go(-1)
     },
     addMerchantManage() {
-      if (!this.merchCharge) {
+      if (!this.merchChargeName) {
         this.$Message.error({
           content: '请输入企业负责人姓名'
         })
         return
       }
-      if (!this.certNo) {
+      if (!this.updateFlag && !this.certNo) {
         this.$Message.error({
           content: '请输入企业负责人身份证号码'
         })
         return
       }
-      if (!checkID(this.certNo)) {
-        this.$Message.error({
-          content: '身份证号码不正确'
-        })
-        return
-      }
+      // if (!this.updateFlag && !checkID(this.certNo)) {
+      //   this.$Message.error({
+      //     content: '身份证号码不正确'
+      //   })
+      //   return
+      // }
       if (this.updateFlag) {
-        enterpriseDirectorUpdate().then(res => {
+        enterpriseDirectorUpdate({
+          merchId: this.merchId,
+          merchChargeId: this.merchChargeId,
+          merchChargeName: this.merchChargeName
+        }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             if (res.data && res.data.retCode === '00000') {
               this.$Notice.success({
@@ -129,8 +138,7 @@ export default {
         enterpriseDirectorInsert({
           // merchId: this.getCookieToken.loginNo,
           merchId: this.merchId,
-          merchName: this.merchName,
-          merchCharge: this.merchCharge,
+          merchChargeName: this.merchChargeName,
           certNo: this.certNo
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {

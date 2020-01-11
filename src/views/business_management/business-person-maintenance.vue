@@ -97,12 +97,12 @@ export default {
           align: 'center'
         },
         {
-          title: '企业名称',
+          title: '企业负责人ID',
           key: 'merchChargeId',
           align: 'center'
         },
         {
-          title: '企业负责人',
+          title: '企业负责人名称',
           key: 'merchCharge',
           align: 'center'
         },
@@ -157,7 +157,10 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.deleteItem(params.row.merchId)
+                      this.deleteItem(
+                        params.row.merchId,
+                        params.row.merchChargeId
+                      )
                     }
                   }
                 },
@@ -219,14 +222,15 @@ export default {
       })
     },
 
-    deleteItem(id) {
+    deleteItem(merchId, merchChargeId) {
       this.$Modal.confirm({
         title: '提醒',
         content: '<p>确认删除当前企业负责人吗？</p>',
         loading: true,
         onOk: () => {
           enterpriseDirectorDelete({
-            merchId: id
+            merchId: merchId,
+            merchChargeId: merchChargeId
           }).then(res => {
             if (res.data && res.data.retCode === '00000') {
               this.$Modal.remove()

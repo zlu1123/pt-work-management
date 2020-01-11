@@ -88,7 +88,7 @@
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>需求人数：</label>
-              <Input v-model="positionInfo.needPersons" class="width-200" />
+              <Input v-model="positionInfo.workCount" class="width-200" />
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>结算方式：</label>
@@ -319,20 +319,25 @@ export default {
       } else {
         insertPostionRelease({
           merchId: this.getCookieToken.loginNo,
-          // merchId: '202001060064',
-          postionName: '送水员',
-          postionAddr: '渭南',
+          postionName: '送水懂得多员',
+          postionAddr: '渭南发发发',
           postionWelfare: '五险一金',
           postionRequire: '身体好',
           workTime: '8',
           price: '20',
           priceUnit: '时',
           billtype: '日结',
-          positiondes: '送水,装水',
+          positiondes: '送水懂得多,装水',
           insurance: '1',
           margin: '1',
           health: '1',
-          releasEmerchAddr: ['1', '2']
+          releasEmerchAddr: "'1', '2'",
+          workCount: '20',
+          releasEmerchImg: 'http://baidu.com',
+          workBeginDate: '20200102',
+          workEndDate: '20200501',
+          clockBeginDate: '09:00',
+          clockEndDate: '17:00'
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({
