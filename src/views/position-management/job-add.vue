@@ -7,11 +7,11 @@
           <Row class="margin-top-10">
             <i-col span="12" class="mar-top-10">
               <label>职位名称：</label>
-              <Input v-model="positionInfo.merchantName" class="width-200" />
+              <Input v-model="positionInfo.postionName" class="width-200" />
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>职位类型：</label>
-              <Input v-model="positionInfo.goodsBarCode" class="width-200" />
+              <Input v-model="positionInfo.postionType" class="width-200" />
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>职位福利：</label>
@@ -83,22 +83,16 @@
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>单价：</label>
-              <Input
-                v-model="positionInfo.specifications"
-                style="width: 50px"
-              />
+              <Input v-model="positionInfo.price" style="width: 50px" />
               <label>元/小时</label>
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>需求人数：</label>
-              <Input v-model="positionInfo.goodsTypeName" class="width-200" />
+              <Input v-model="positionInfo.needPersons" class="width-200" />
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>结算方式：</label>
-              <Select
-                v-model="positionInfo.settlementMethod"
-                style="width:200px"
-              >
+              <Select v-model="positionInfo.billType" style="width:200px">
                 <Option
                   v-for="item in settlementMethodList"
                   :value="item.value"
@@ -109,11 +103,11 @@
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>保险选择：</label>
-              <Input v-model="positionInfo.selling" class="width-200" />
+              <Input v-model="positionInfo.health" class="width-200" />
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>保证金：</label>
-              <Input v-model="positionInfo.unitName" class="width-200" />
+              <Input v-model="positionInfo.margin" class="width-200" />
             </i-col>
             <!-- <i-col span="12" class="mar-top-10">
               <label class="label-line">健康选择：</label>
@@ -133,7 +127,7 @@
             <i-col span="12" class="mar-top-10">
               <label>发布企业：</label>
               <Input
-                v-model="positionInfo.selling"
+                v-model="positionInfo.releaseMerch"
                 placeholder="请输入企业名称"
                 class="width-200"
               />
@@ -149,7 +143,7 @@
             <i-col span="12" class="mar-top-10">
               <label>平台负责人：</label>
               <Input
-                v-model="positionInfo.thirdSalePrice"
+                v-model="positionInfo.platformCharge1"
                 placeholder="请输入平台负责人"
                 class="width-200"
               />
@@ -157,7 +151,7 @@
             <i-col span="24" class="mar-top-10">
               <label>职位描述：</label>
               <Input
-                v-model="positionInfo.des"
+                v-model="positionInfo.positiondes"
                 placeholder="请输入职位描述"
                 maxlength="1000"
                 :autosize="{ minRows: 5, maxRows: 10 }"

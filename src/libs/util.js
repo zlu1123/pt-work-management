@@ -6,7 +6,7 @@ const { title, cookieExpires, useI18n } = config
 
 export const TOKEN_KEY = 'token'
 
-export const setToken = (token) => {
+export const setToken = token => {
   Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
 }
 
@@ -16,7 +16,7 @@ export const getToken = () => {
   else return false
 }
 
-export const hasChild = (item) => {
+export const hasChild = item => {
   return item.children && item.children.length !== 0
 }
 
@@ -39,7 +39,10 @@ export const getMenuByRouter = (list, access) => {
         name: item.name,
         meta: item.meta
       }
-      if ((hasChild(item) || (item.meta && item.meta.showAlways)) && showThisMenuEle(item, access)) {
+      if (
+        (hasChild(item) || (item.meta && item.meta.showAlways)) &&
+        showThisMenuEle(item, access)
+      ) {
         obj.children = getMenuByRouter(item.children, access)
       }
       if (item.meta && item.meta.href) obj.href = item.meta.href
@@ -57,28 +60,30 @@ export const getBreadCrumbList = (route, homeRoute) => {
   let homeItem = { ...homeRoute, icon: homeRoute.meta.icon }
   let routeMetched = route.matched
   if (routeMetched.some(item => item.name === homeRoute.name)) return [homeItem]
-  let res = routeMetched.filter(item => {
-    return item.meta === undefined || !item.meta.hideInBread
-  }).map(item => {
-    let meta = { ...item.meta }
-    if (meta.title && typeof meta.title === 'function') {
-      meta.__titleIsFunction__ = true
-      meta.title = meta.title(route)
-    }
-    let obj = {
-      icon: (item.meta && item.meta.icon) || '',
-      name: item.name,
-      meta: meta
-    }
-    return obj
-  })
+  let res = routeMetched
+    .filter(item => {
+      return item.meta === undefined || !item.meta.hideInBread
+    })
+    .map(item => {
+      let meta = { ...item.meta }
+      if (meta.title && typeof meta.title === 'function') {
+        meta.__titleIsFunction__ = true
+        meta.title = meta.title(route)
+      }
+      let obj = {
+        icon: (item.meta && item.meta.icon) || '',
+        name: item.name,
+        meta: meta
+      }
+      return obj
+    })
   res = res.filter(item => {
     return !item.meta.hideInMenu
   })
   return [{ ...homeItem, to: homeRoute.path }, ...res]
 }
 
-export const getRouteTitleHandled = (route) => {
+export const getRouteTitleHandled = route => {
   let router = { ...route }
   let meta = { ...route.meta }
   let title = ''
@@ -97,7 +102,10 @@ export const showTitle = (item, vm) => {
   let { title, __titleIsFunction__ } = item.meta
   if (!title) return
   if (useI18n) {
-    if (title.includes('{{') && title.includes('}}') && useI18n) title = title.replace(/({{[\s\S]+?}})/, (m, str) => str.replace(/{{([\s\S]*)}}/, (m, _) => vm.$t(_.trim())))
+    if (title.includes('{{') && title.includes('}}') && useI18n)
+      title = title.replace(/({{[\s\S]+?}})/, (m, str) =>
+        str.replace(/{{([\s\S]*)}}/, (m, _) => vm.$t(_.trim()))
+      )
     else if (__titleIsFunction__) title = item.meta.title
     else title = vm.$t(item.name)
   } else title = (item.meta && item.meta.title) || item.name
@@ -156,7 +164,8 @@ export const getNewTagList = (list, newRoute) => {
  * @param {*} route 路由列表
  */
 const hasAccess = (access, route) => {
-  if (route.meta && route.meta.access) return hasOneOf(access, route.meta.access)
+  if (route.meta && route.meta.access)
+    return hasOneOf(access, route.meta.access)
   else return true
 }
 
@@ -168,7 +177,7 @@ const hasAccess = (access, route) => {
  * @description 用户是否可跳转到该页
  */
 export const canTurnTo = (name, access, routes) => {
-  const routePermissionJudge = (list) => {
+  const routePermissionJudge = list => {
     return list.some(item => {
       if (item.children && item.children.length) {
         return routePermissionJudge(item.children)
@@ -227,21 +236,24 @@ export const doCustomTimes = (times, callback) => {
  * @returns {Promise} resolve参数是解析后的二维数组
  * @description 从Csv文件中解析出表格，解析成二维数组
  */
-export const getArrayFromFile = (file) => {
+export const getArrayFromFile = file => {
   let nameSplit = file.name.split('.')
   let format = nameSplit[nameSplit.length - 1]
   return new Promise((resolve, reject) => {
     let reader = new FileReader()
     reader.readAsText(file) // 以文本格式读取
     let arr = []
-    reader.onload = function (evt) {
+    reader.onload = function(evt) {
       let data = evt.target.result // 读到的数据
       let pasteData = data.trim()
-      arr = pasteData.split((/[\n\u0085\u2028\u2029]|\r\n?/g)).map(row => {
-        return row.split('\t')
-      }).map(item => {
-        return item[0].split(',')
-      })
+      arr = pasteData
+        .split(/[\n\u0085\u2028\u2029]|\r\n?/g)
+        .map(row => {
+          return row.split('\t')
+        })
+        .map(item => {
+          return item[0].split(',')
+        })
       if (format === 'csv') resolve(arr)
       else reject(new Error('[Format Error]:你上传的不是Csv文件'))
     }
@@ -253,7 +265,7 @@ export const getArrayFromFile = (file) => {
  * @returns {Object} { columns, tableData }
  * @description 从二维数组中获取表头和表格数据，将第一行作为表头，用于在iView的表格中展示数据
  */
-export const getTableDataFromArray = (array) => {
+export const getTableDataFromArray = array => {
   let columns = []
   let tableData = []
   if (array.length > 1) {
@@ -292,7 +304,10 @@ export const findNodeUpperByClasses = (ele, classes) => {
   let parentNode = ele.parentNode
   if (parentNode) {
     let classList = parentNode.classList
-    if (classList && classes.every(className => classList.contains(className))) {
+    if (
+      classList &&
+      classes.every(className => classList.contains(className))
+    ) {
       return parentNode
     } else {
       return findNodeUpperByClasses(parentNode, classes)
@@ -327,7 +342,11 @@ export const routeEqual = (route1, route2) => {
   const params2 = route2.params || {}
   const query1 = route1.query || {}
   const query2 = route2.query || {}
-  return (route1.name === route2.name) && objEqual(params1, params2) && objEqual(query1, query2)
+  return (
+    route1.name === route2.name &&
+    objEqual(params1, params2) &&
+    objEqual(query1, query2)
+  )
 }
 
 /**
@@ -336,7 +355,7 @@ export const routeEqual = (route1, route2) => {
 export const routeHasExist = (tagNavList, routeItem) => {
   let len = tagNavList.length
   let res = false
-  doCustomTimes(len, (index) => {
+  doCustomTimes(len, index => {
     if (routeEqual(tagNavList[index], routeItem)) res = true
   })
   return res
@@ -346,24 +365,23 @@ export const localSave = (key, value) => {
   localStorage.setItem(key, value)
 }
 
-export const localRead = (key) => {
+export const localRead = key => {
   return localStorage.getItem(key) || ''
 }
 
 // scrollTop animation
 export const scrollTop = (el, from = 0, to, duration = 500, endCallback) => {
   if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = (
+    window.requestAnimationFrame =
       window.webkitRequestAnimationFrame ||
       window.mozRequestAnimationFrame ||
       window.msRequestAnimationFrame ||
-      function (callback) {
+      function(callback) {
         return window.setTimeout(callback, 1000 / 60)
       }
-    )
   }
   const difference = Math.abs(from - to)
-  const step = Math.ceil(difference / duration * 50)
+  const step = Math.ceil((difference / duration) * 50)
 
   const scroll = (start, end, step) => {
     if (start === end) {
@@ -371,9 +389,9 @@ export const scrollTop = (el, from = 0, to, duration = 500, endCallback) => {
       return
     }
 
-    let d = (start + step > end) ? end : start + step
+    let d = start + step > end ? end : start + step
     if (start > end) {
-      d = (start - step < end) ? end : start - step
+      d = start - step < end ? end : start - step
     }
 
     if (el === window) {
@@ -396,4 +414,79 @@ export const setTitle = (routeItem, vm) => {
   const pageTitle = showTitle(handledRoute, vm)
   const resTitle = pageTitle ? `${title} - ${pageTitle}` : title
   window.document.title = resTitle
+}
+
+export const checkID = ID => {
+  if (typeof ID !== 'string') return '非法字符串'
+  const city = {
+    11: '北京',
+    12: '天津',
+    13: '河北',
+    14: '山西',
+    15: '内蒙古',
+    21: '辽宁',
+    22: '吉林',
+    23: '黑龙江 ',
+    31: '上海',
+    32: '江苏',
+    33: '浙江',
+    34: '安徽',
+    35: '福建',
+    36: '江西',
+    37: '山东',
+    41: '河南',
+    42: '湖北 ',
+    43: '湖南',
+    44: '广东',
+    45: '广西',
+    46: '海南',
+    50: '重庆',
+    51: '四川',
+    52: '贵州',
+    53: '云南',
+    54: '西藏 ',
+    61: '陕西',
+    62: '甘肃',
+    63: '青海',
+    64: '宁夏',
+    65: '新疆',
+    71: '台湾',
+    81: '香港',
+    82: '澳门',
+    91: '国外'
+  }
+  const birthday =
+    ID.substr(6, 4) +
+    '/' +
+    Number(ID.substr(10, 2)) +
+    '/' +
+    Number(ID.substr(12, 2))
+  const d = new Date(birthday)
+  const newBirthday =
+    d.getFullYear() + '/' + Number(d.getMonth() + 1) + '/' + Number(d.getDate())
+  const currentTime = new Date().getTime()
+  const time = d.getTime()
+  const arrInt = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
+  const arrCh = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
+  let sum = 0,
+    i,
+    residue
+
+  if (!/^\d{17}(\d|x)$/i.test(ID)) return false // '非法身份证'
+  if (city[ID.substr(0, 2)] === undefined) return false // '非法地区'
+  if (time >= currentTime || birthday !== newBirthday) return false // '非法生日'
+  for (i = 0; i < 17; i++) {
+    sum += ID.substr(i, 1) * arrInt[i]
+  }
+  residue = arrCh[sum % 11]
+  if (residue !== ID.substr(17, 1)) return false // '非法身份证哦'
+
+  return true
+  // return (
+  //   city[ID.substr(0, 2)] +
+  //   ',' +
+  //   birthday +
+  //   ',' +
+  //   (ID.substr(16, 1) % 2 ? ' 男' : '女')
+  // )
 }

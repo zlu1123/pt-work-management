@@ -32,6 +32,7 @@ export default {
         if (res && res.data.retCode === '00000') {
           if (this.check) {
             this.$sessionData('set', 'userInfo', { userName, password })
+            this.$localData('set', 'userInfo', { userName, password })
           }
         }
         this.$router.push({

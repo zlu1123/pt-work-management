@@ -26,9 +26,6 @@ Vue.prototype.$md5 = md5
 /* eslint-disable */
 // if (process.env.NODE_ENV !== 'production') require('@/mock')
 
-// import style
-import 'view-design/dist/styles/iview.css'
-
 Vue.use(viewDesign, {
   i18n: (key, value) => i18n.t(key, value)
 })

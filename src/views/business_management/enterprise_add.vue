@@ -18,21 +18,22 @@
                     v-model="merchName"
                     style="width: 200px"
                   />
-                  <label class="label-line">企业负责人：</label>
+                  <!-- <label class="label-line">企业负责人：</label>
                   <Input
                     :disabled="disabled"
                     v-model="merchCharge"
                     style="width: 200px"
-                  />
+                  /> -->
                 </li>
               </ul>
-              <div style="margin-top: 20px;" v-if="!disabled">
+              <div style="margin-top: 20px;">
                 <Poptip
                   placement="top-start"
                   confirm
                   :title="popTitle"
                   @on-ok="addMerchant"
                   @on-cancel="cancel"
+                  v-if="!disabled"
                 >
                   <Button type="primary">{{
                     updateFlag ? '更新' : '新增'
@@ -86,7 +87,7 @@ export default {
         // 更新
         enterpriseReleaseUpdate({
           merchName: this.merchName,
-          merchCharge: this.merchCharge,
+          // merchCharge: this.merchCharge,
           merchId: this.merchCharge
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
@@ -105,8 +106,8 @@ export default {
       } else {
         // 新增
         enterpriseManageInsert({
-          merchName: this.merchName,
-          merchCharge: this.merchCharge
+          merchName: this.merchName
+          // merchCharge: this.merchCharge
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({

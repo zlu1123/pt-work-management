@@ -49,6 +49,14 @@ export default {
       }
     }
   },
+
+  mounted() {
+    let userInfo = this.$localData('get', 'userInfo')
+    if (userInfo && Object.keys(userInfo).length > 0) {
+      this.form = userInfo
+    }
+  },
+
   computed: {
     rules() {
       return {

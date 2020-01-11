@@ -4,7 +4,7 @@
       <i-col>
         <Card>
           <p slot="title">
-            <Icon type="android-create"></Icon>企业负责人{{
+            <Icon type="android-create"></Icon>{{ merchName }}负责人{{
               disabled ? '详情' : updateFlag ? '信息修改' : '新增'
             }}
           </p>
@@ -54,6 +54,7 @@
 <script>
 import { enterpriseDirectorInsert, enterpriseDirectorUpdate } from '@/api/user'
 import { mapGetters } from 'vuex'
+import { checkID } from '@/libs/util'
 
 export default {
   name: 'searchable-table',
@@ -63,12 +64,14 @@ export default {
       certNo: '',
       disabled: false,
       updateFlag: false,
-      popTitle: '您确认增加当前负责人吗？'
+      popTitle: '您确认增加当前负责人吗？',
+      merchName: '',
+      merchId: ''
     }
   },
   mounted() {
     const beforePageData = this.$route.query
-    if (beforePageData && Object.keys(beforePageData).length > 0) {
+    if (beforePageData.flag !== 'add') {
       if (beforePageData.flag === 'detail') {
         this.disabled = true
       } else {
@@ -77,6 +80,9 @@ export default {
       }
       this.merchCharge = beforePageData.params.merchCharge
       this.certNo = beforePageData.params.certNo
+    } else {
+      this.merchName = beforePageData.params.label
+      this.merchId = beforePageData.params.value
     }
   },
   methods: {
@@ -84,6 +90,24 @@ export default {
       this.$router.go(-1)
     },
     addMerchantManage() {
+      if (!this.merchCharge) {
+        this.$Message.error({
+          content: '请输入企业负责人姓名'
+        })
+        return
+      }
+      if (!this.certNo) {
+        this.$Message.error({
+          content: '请输入企业负责人身份证号码'
+        })
+        return
+      }
+      if (!checkID(this.certNo)) {
+        this.$Message.error({
+          content: '身份证号码不正确'
+        })
+        return
+      }
       if (this.updateFlag) {
         enterpriseDirectorUpdate().then(res => {
           if (res.data && res.data.retCode === '00000') {
@@ -103,7 +127,9 @@ export default {
         })
       } else {
         enterpriseDirectorInsert({
-          merchId: this.getCookieToken.loginNo,
+          // merchId: this.getCookieToken.loginNo,
+          merchId: this.merchId,
+          merchName: this.merchName,
           merchCharge: this.merchCharge,
           certNo: this.certNo
         }).then(res => {

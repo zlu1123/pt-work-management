@@ -3,8 +3,31 @@
     <i-col>
       <Card>
         <Row>
-          <Button type="primary" icon="md-add" @click="addManageInfo"
-            >企业负责人新增</Button
+          <label>请选择企业：</label>
+          <Select
+            v-model="mainTenance"
+            style="width:200px"
+            clearable
+            not-found-text
+            :label-in-value="true"
+            @on-change="chooseMerch"
+          >
+            <Option
+              v-for="item in businessList"
+              :value="item.merchId"
+              :key="item.merchId"
+              >{{ item.merchName }}</Option
+            >
+          </Select>
+          <Button type="primary" style="margin-left: 30px" @click="queryList"
+            >查询当前企业负责人</Button
+          >
+          <Button
+            type="primary"
+            style="margin-left: 30px"
+            icon="md-add"
+            @click="addManageInfo"
+            >当前企业负责人新增</Button
           >
         </Row>
       </Card>
@@ -41,7 +64,12 @@
 </template>
 
 <script>
-import { enterpriseDirectorPage, enterpriseDirectorDelete } from '@/api/user'
+import {
+  enterpriseDirectorPage,
+  enterpriseDirectorDelete,
+  queryEnterpriseRelease
+} from '@/api/user'
+import { mapGetters } from 'vuex'
 export default {
   name: 'job-posting',
   data() {
@@ -59,6 +87,9 @@ export default {
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
       totalCount: 0,
+      mainTenance: '',
+      businessItem: '',
+      businessList: [],
       orderListTitle: [
         {
           title: '序号',
@@ -140,6 +171,10 @@ export default {
     }
   },
   methods: {
+    chooseMerch(item) {
+      this.mainTenance = item.value
+      this.businessItem = item
+    },
     goToPage(val) {
       // 获取当前页
       this.pageNo = val
@@ -168,8 +203,19 @@ export default {
     },
 
     addManageInfo() {
+      if (!this.mainTenance) {
+        this.$Notice.error({
+          title: '提醒',
+          desc: '请先选择企业'
+        })
+        return
+      }
       this.$router.push({
-        path: '/business_person_add'
+        path: '/business_person_add',
+        query: {
+          flag: 'add',
+          params: this.businessItem
+        }
       })
     },
 
@@ -192,9 +238,27 @@ export default {
       })
     },
 
+    getBusinessList() {
+      queryEnterpriseRelease({}).then(res => {
+        if (res.data) {
+          if (res.data.retCode === '00000') {
+            this.businessList = res.data.data
+          }
+        }
+      })
+    },
+
     queryList() {
+      if (!this.mainTenance) {
+        this.$Notice.error({
+          title: '提醒',
+          desc: '请先选择企业'
+        })
+        return
+      }
       enterpriseDirectorPage({
-        merchId: '202001060064'
+        // merchId: this.getCookieToken.loginNo
+        merchId: this.mainTenance
       }).then(res => {
         if (res.data && res.data.retCode === '00000') {
           this.orderList = res.data.data
@@ -204,7 +268,12 @@ export default {
   },
   mounted() {
     // session loginNo
-    this.queryList()
+    // this.queryList()
+    this.getBusinessList()
+  },
+
+  computed: {
+    ...mapGetters(['getCookieToken'])
   }
 }
 </script>

@@ -268,8 +268,7 @@ export default {
     }
   },
   mounted() {
-    // this.queryList();
-    this.orderList = [{ orderStatus: 2 }]
+    this.queryList()
   },
 
   computed: {
