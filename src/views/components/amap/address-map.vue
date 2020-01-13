@@ -27,6 +27,14 @@ export default {
     modelShow: {
       type: Boolean,
       default: false
+    },
+    markerPosition: {
+      type: Array,
+      default: () => [108.93977, 34.341574]
+    },
+    address: {
+      type: String,
+      default: '陕西省西安市未央区张家堡街道西安市城管执法局西安市人民政府'
     }
   },
   data() {
@@ -35,8 +43,6 @@ export default {
       mapModel: self.modelShow,
       zoom: 12,
       center: [108.93977, 34.341574],
-      markerPosition: [108.93977, 34.341574],
-      address: '陕西省西安市未央区张家堡街道西安市城管执法局西安市人民政府',
       lng: 0,
       lat: 0,
       events: {

@@ -31,6 +31,7 @@
               <lsg-upload
                 :imgUrl.sync="merchImg"
                 @getImgUrl="uploadImgMethod"
+                :uploadImg="updateFlag"
               ></lsg-upload>
             </i-col>
             <div style="margin-top: 20px;">
@@ -58,6 +59,8 @@
       :model-show="showMap"
       @chooseMapLocation="chooseMapLocation"
       @modelChange="mapModelChange"
+      :markerPosition="markerPosition"
+      :address="merchAddrName"
     ></address-map>
   </div>
 </template>
@@ -79,7 +82,8 @@ export default {
       updateFlag: false,
       popTitle: '您确认增加当前企业吗？',
       showMap: false,
-      merchImg: ''
+      merchImg: '',
+      markerPosition: []
     }
   },
 
@@ -99,7 +103,11 @@ export default {
       }
       this.merchName = beforePageData.params.merchName
       this.merchCharge = beforePageData.params.merchId
-      this.merchAddr = beforePageData.params.merchAddr
+      this.merchImg = beforePageData.params.merchImg
+      let merchAddrList = beforePageData.params.merchAddr.split(',')
+      this.merchAddr = `${merchAddrList[0]}${merchAddrList[1]}`
+      this.markerPosition = [`${merchAddrList[0]}`, `${merchAddrList[1]}`]
+      this.merchAddrName = merchAddrList[merchAddrList.length - 1]
     }
   },
   methods: {
@@ -107,9 +115,8 @@ export default {
       this.showMap = value
     },
     chooseMapLocation(item) {
-      console.log(item)
       this.merchAddrName = item.address
-      this.merchAddr = item.location.join(',')
+      this.merchAddr = item.location.join(',') + `,${this.merchAddrName}`
     },
     uploadImgMethod(item) {
       this.merchImg = item
@@ -121,12 +128,31 @@ export default {
       this.$router.go(-1)
     },
     addMerchant() {
+      if (!this.merchName) {
+        this.$Message.error({
+          content: '请输入企业名称'
+        })
+        return
+      }
+      if (!this.merchAddr) {
+        this.$Message.error({
+          content: '请选取企业地点'
+        })
+        return
+      }
+      if (!this.merchImg) {
+        this.$Message.error({
+          content: '请上传企业图片'
+        })
+        return
+      }
       if (this.updateFlag) {
         // 更新
         enterpriseReleaseUpdate({
           merchName: this.merchName,
           merchAddr: this.merchAddr,
-          merchId: this.merchCharge
+          merchId: this.merchCharge,
+          merchImg: this.merchImg
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({

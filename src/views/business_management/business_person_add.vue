@@ -34,6 +34,7 @@
                   :title="popTitle"
                   @on-ok="addMerchantManage"
                   @on-cancel="cancel"
+                  v-if="!disabled"
                 >
                   <Button type="primary">{{
                     updateFlag ? '更新' : '新增'
@@ -72,7 +73,6 @@ export default {
     }
   },
   mounted() {
-    debugger
     const beforePageData = this.$route.query
     if (beforePageData.flag !== 'add') {
       if (beforePageData.flag === 'detail') {

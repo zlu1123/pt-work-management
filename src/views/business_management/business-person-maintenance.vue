@@ -70,6 +70,7 @@ import {
   queryEnterpriseRelease
 } from '@/api/user'
 import { mapGetters } from 'vuex'
+import { formatDateTime } from '@/libs/util'
 export default {
   name: 'job-posting',
   data() {
@@ -94,7 +95,8 @@ export default {
         {
           title: '序号',
           type: 'index',
-          align: 'center'
+          align: 'center',
+          width: '60'
         },
         {
           title: '企业负责人ID',
@@ -107,9 +109,24 @@ export default {
           align: 'center'
         },
         {
+          title: '负责人身份证号码',
+          key: 'loginId',
+          align: 'center'
+        },
+        {
+          title: '创建时间',
+          key: 'createTime',
+          align: 'center',
+          width: '180',
+          render: (h, params) => {
+            return h('div', formatDateTime(params.row.createTime))
+          }
+        },
+        {
           title: '操作',
           key: 'action',
           align: 'center',
+          width: '200',
           render: (h, params) => {
             return h('div', [
               h(
@@ -247,6 +264,8 @@ export default {
         if (res.data) {
           if (res.data.retCode === '00000') {
             this.businessList = res.data.data
+            this.mainTenance = res.data.data[0].merchId
+            this.queryList()
           }
         }
       })

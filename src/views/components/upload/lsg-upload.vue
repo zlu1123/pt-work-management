@@ -5,6 +5,11 @@
         <img :src="imgUrl" />
         <div class="demo-upload-list-cover">
           <Icon type="ios-eye-outline" @click.native="handleView"></Icon>
+          <Icon
+            v-if="uploadImg"
+            type="ios-trash-outline"
+            @click.native="handleRemove"
+          ></Icon>
         </div>
       </template>
       <Upload
@@ -41,6 +46,10 @@ export default {
     imgUrl: {
       type: String,
       default: ''
+    },
+    uploadImg: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -53,6 +62,9 @@ export default {
     }
   },
   methods: {
+    handleRemove() {
+      this.$emit('getImgUrl', '')
+    },
     handleSuccess(res) {
       if (res && res.retCode === '00000') {
         let imgURL = config.baseUrl.imgUrl + res.data[0].imgUrl

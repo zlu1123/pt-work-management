@@ -37,11 +37,24 @@
         </div>
       </Card>
     </i-col>
+    <Modal
+      v-model="isShowImgModal"
+      title="图片"
+      @on-ok="isShowImgModal = false"
+      @on-cancel="isShowImgModal = false"
+      width="332"
+    >
+      <img
+        :src="imageUrl"
+        style="width: 300px; height: 400px;margin-left: auto;margin-right: auto;"
+      />
+    </Modal>
   </div>
 </template>
 
 <script>
 import { queryEnterpriseRelease, enterpriseManageDelete } from '@/api/user'
+import { formatDateTime } from '@/libs/util'
 export default {
   name: 'job-posting',
   data() {
@@ -59,10 +72,13 @@ export default {
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
       totalCount: 0,
+      imageUrl: '',
+      isShowImgModal: false,
       orderListTitle: [
         {
           title: '序号',
           type: 'index',
+          width: 50,
           align: 'center'
         },
         {
@@ -71,13 +87,67 @@ export default {
           align: 'center'
         },
         {
+          title: '企业创建时间',
+          key: 'createTime',
+          width: 180,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', formatDateTime(params.row.createTime))
+          }
+        },
+
+        {
+          title: '企业图片',
+          key: 'merchImg',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('Img', {
+                attrs: {
+                  src: params.row.merchImg
+                },
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  width: '30px',
+                  height: '30px',
+                  marginTop: '6px'
+                },
+                on: {
+                  click: () => {
+                    this.imageUrl = params.row.merchImg
+                    if (
+                      this.imageUrl != '' ||
+                      this.imageUrl != null ||
+                      this.imageUrl != undefined
+                    ) {
+                      this.showImgModal()
+                    }
+                  }
+                }
+              })
+            ])
+          }
+        },
+        {
           title: '企业地址',
           key: 'merchAddr',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h(
+              'div',
+              params.row.merchAddr.split(',')[
+                params.row.merchAddr.split(',').length - 1
+              ]
+            )
+          }
         },
         {
           title: '操作',
           key: 'action',
+          width: 200,
           align: 'center',
           render: (h, params) => {
             return h('div', [
@@ -140,6 +210,10 @@ export default {
     }
   },
   methods: {
+    //点击图片显示
+    showImgModal() {
+      this.isShowImgModal = true
+    },
     goToPage(val) {
       // 获取当前页
       this.pageNo = val
