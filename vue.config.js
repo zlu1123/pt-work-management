@@ -40,7 +40,7 @@ module.exports = {
   // }
   devServer: {
     port: process.env.PORT,
-    proxy: 'http://test.coa.police.adxinfo.cn:8811/'
+    proxy: 'http://test.coa.police.adxinfo.cn:8811/lsg/'
     // proxy: {
     //   '/lsgService': {
     //     target: 'http://test.coa.police.adxinfo.cn:8811/',

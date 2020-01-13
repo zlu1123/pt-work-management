@@ -10,62 +10,84 @@
           </p>
           <Row class="margin-top-10">
             <i-col span="24">
-              <ul>
-                <li>
-                  <label class="label-line">企业名称：</label>
-                  <Input
-                    :disabled="disabled"
-                    v-model="merchName"
-                    style="width: 200px"
-                  />
-                  <label class="label-line">企业地址：</label>
-                  <Input
-                    :disabled="disabled"
-                    v-model="merchAddr"
-                    style="width: 200px"
-                  />
-                </li>
-              </ul>
-              <div style="margin-top: 20px;">
-                <Poptip
-                  placement="top-start"
-                  confirm
-                  :title="popTitle"
-                  @on-ok="addMerchant"
-                  @on-cancel="cancel"
-                  v-if="!disabled"
-                >
-                  <Button type="primary">{{
-                    updateFlag ? '更新' : '新增'
-                  }}</Button>
-                </Poptip>
-                <Button style="margin: 0 10px;" @click="returnLastPage"
-                  >返回</Button
-                >
+              <div>
+                <label class="label-line">企业名称：</label>
+                <Input
+                  :disabled="disabled"
+                  v-model="merchName"
+                  style="width: 200px"
+                />
+                <label class="label-line">企业地址：</label>
+                <Input
+                  :disabled="disabled"
+                  v-model="merchAddrName"
+                  style="width: 200px"
+                  @on-focus="chooseAddr"
+                />
               </div>
             </i-col>
+            <i-col span="24" class="col-upload-lsg">
+              <label class="label-line">请上传企业图片</label>
+              <lsg-upload
+                :imgUrl.sync="merchImg"
+                @getImgUrl="uploadImgMethod"
+              ></lsg-upload>
+            </i-col>
+            <div style="margin-top: 20px;">
+              <Poptip
+                placement="top-start"
+                confirm
+                :title="popTitle"
+                @on-ok="addMerchant"
+                @on-cancel="cancel"
+                v-if="!disabled"
+              >
+                <Button type="primary">{{
+                  updateFlag ? '更新' : '新增'
+                }}</Button>
+              </Poptip>
+              <Button style="margin: 0 10px;" @click="returnLastPage"
+                >返回</Button
+              >
+            </div>
           </Row>
         </Card>
       </i-col>
     </Row>
+    <address-map
+      :model-show="showMap"
+      @chooseMapLocation="chooseMapLocation"
+      @modelChange="mapModelChange"
+    ></address-map>
   </div>
 </template>
 
 <script>
 import { enterpriseManageInsert, enterpriseReleaseUpdate } from '@/api/user'
+import addressMap from '../components/amap/address-map.vue'
+import lsgUpload from '../components/upload/lsg-upload.vue'
 
 export default {
   name: 'searchable-table',
   data() {
     return {
       merchCharge: '',
+      merchAddr: '',
+      merchAddrName: '',
       merchName: '',
-      merchImg: 'https://www.baidu.com',
       disabled: false,
       updateFlag: false,
-      popTitle: '您确认增加当前企业吗？'
+      popTitle: '您确认增加当前企业吗？',
+      showMap: false,
+      merchImg: ''
     }
   },
+
+  components: {
+    addressMap,
+    lsgUpload
+  },
+
   mounted() {
     const beforePageData = this.$route.query
     if (beforePageData && Object.keys(beforePageData).length > 0) {
@@ -81,6 +103,20 @@ export default {
     }
   },
   methods: {
+    mapModelChange(value) {
+      this.showMap = value
+    },
+    chooseMapLocation(item) {
+      console.log(item)
+      this.merchAddrName = item.address
+      this.merchAddr = item.location.join(',')
+    },
+    uploadImgMethod(item) {
+      this.merchImg = item
+    },
+    chooseAddr() {
+      this.showMap = true
+    },
     returnLastPage() {
       this.$router.go(-1)
     },
@@ -127,6 +163,12 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.col-upload-lsg {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+
 .vertical-center-modal {
   display: flex;
   align-items: center;

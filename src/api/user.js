@@ -335,3 +335,14 @@ export const platformUserDelete = params => {
     method: 'post'
   })
 }
+
+// 公共图片上传
+export const uploadImageUpload = params => {
+  return axios.request({
+    url: '/uploadImage/upload',
+    data: params,
+    method: 'post'
+  })
+}
+
+export const uploadImageUrl = '/uploadImage/upload'

@@ -51,46 +51,6 @@ export default [
     ]
   },
   {
-    path: '/position_management',
-    name: 'position_management',
-    meta: {
-      icon: 'logo-buffer',
-      title: '职位管理',
-      access: ['01', '03']
-    },
-    component: Main,
-    children: [
-      {
-        path: '/job_posting',
-        name: 'job_posting',
-        meta: {
-          icon: 'ios-exit',
-          title: '职位发布维护'
-        },
-        component: () => import('@/views/position-management/job-posting.vue')
-      },
-      {
-        path: '/job_application',
-        name: 'job_application',
-        meta: {
-          icon: 'md-cafe',
-          title: '职位申请维护'
-        },
-        component: () =>
-          import('@/views/position-management/job-application.vue')
-      },
-      {
-        path: '/job_add',
-        name: 'job_add',
-        meta: {
-          hideInMenu: true,
-          title: '职位新增'
-        },
-        component: () => import('@/views/position-management/job-add.vue')
-      }
-    ]
-  },
-  {
     path: '/business_management',
     name: 'business_management',
     meta: {
@@ -149,10 +109,50 @@ export default [
         name: 'business_person_add',
         meta: {
           hideInMenu: true,
-          title: '企业新增'
+          title: '企业负责人新增'
         },
         component: () =>
           import('@/views/business_management/business_person_add.vue')
+      }
+    ]
+  },
+  {
+    path: '/position_management',
+    name: 'position_management',
+    meta: {
+      icon: 'logo-buffer',
+      title: '职位管理',
+      access: ['01', '03']
+    },
+    component: Main,
+    children: [
+      {
+        path: '/job_posting',
+        name: 'job_posting',
+        meta: {
+          icon: 'ios-exit',
+          title: '职位发布维护'
+        },
+        component: () => import('@/views/position-management/job-posting.vue')
+      },
+      {
+        path: '/job_application',
+        name: 'job_application',
+        meta: {
+          icon: 'md-cafe',
+          title: '职位申请维护'
+        },
+        component: () =>
+          import('@/views/position-management/job-application.vue')
+      },
+      {
+        path: '/job_add',
+        name: 'job_add',
+        meta: {
+          hideInMenu: true,
+          title: '职位新增'
+        },
+        component: () => import('@/views/position-management/job-add.vue')
       }
     ]
   },

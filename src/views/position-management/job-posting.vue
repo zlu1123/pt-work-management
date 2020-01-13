@@ -92,18 +92,18 @@ export default {
         {
           title: '工作开始日期',
           key: 'payType',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', this.payTypeStr(params.row.payType))
-          }
+          align: 'center'
+          // render: (h, params) => {
+          //   return h('div', this.payTypeStr(params.row.payType))
+          // }
         },
         {
           title: '工作结束日期',
           key: 'payStatus',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', this.payStatusStr(params.row.payStatus))
-          }
+          align: 'center'
+          // render: (h, params) => {
+          //   return h('div', this.payStatusStr(params.row.payStatus))
+          // }
         },
         // {
         //   title: '上班打卡时间',

@@ -48,7 +48,7 @@
             <i-col span="12" class="mar-top-10">
               <label>工作开始日期：</label>
               <DatePicker
-                :value="positionInfo.shelfLifeTime"
+                :value="positionInfo.workBeginDate"
                 format="yyyy年MM月dd日"
                 type="date"
                 placeholder="请选择开始日期"
@@ -58,7 +58,7 @@
             <i-col span="12" class="mar-top-10">
               <label>工作结束日期：</label>
               <DatePicker
-                :value="positionInfo.shelfLifeTime"
+                :value="positionInfo.workEndDate"
                 format="yyyy年MM月dd日"
                 type="date"
                 placeholder="请选择结束日期"
@@ -68,6 +68,7 @@
             <i-col span="12" class="mar-top-10">
               <label>上班打卡时间：</label>
               <TimePicker
+                :value="positionInfo.clockBeginDate"
                 format="HH:mm"
                 placeholder="请选择上班打卡时间"
                 class="width-200"
@@ -76,6 +77,7 @@
             <i-col span="12" class="mar-top-10">
               <label>下班打卡时间：</label>
               <TimePicker
+                :value="positionInfo.clockEndDate"
                 format="HH:mm"
                 placeholder="请选择下班打卡时间"
                 class="width-200"
@@ -92,7 +94,7 @@
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>结算方式：</label>
-              <Select v-model="positionInfo.billType" style="width:200px">
+              <Select v-model="positionInfo.billtype" style="width:200px">
                 <Option
                   v-for="item in settlementMethodList"
                   :value="item.value"
@@ -112,7 +114,7 @@
             <!-- <i-col span="12" class="mar-top-10">
               <label class="label-line">健康选择：</label>
               <Select
-                v-model="positionInfo.deliveryGoodsType"
+                v-model="positionInfo.health"
                 clearable
                 style="width:200px;"
               >
@@ -187,24 +189,12 @@
       </i-col>
     </Row>
     <Modal
-      title="修改配送地址"
+      title="选取地址"
       v-model="modelShow"
       width="900"
       @on-ok="confirmEditScope"
       class-name="vertical-center-modal"
     >
-      <div style="height: 500px">
-        <el-amap vid="amapDemo" :center="center" :zoom="zoom" :events="events">
-          <el-amap-marker
-            vid="component-marker"
-            :position="markerPosition"
-          ></el-amap-marker>
-        </el-amap>
-        <div class="toolbar">
-          <!-- position: [{{ lng }}, {{ lat }}]  -->
-          address: {{ address }}
-        </div>
-      </div>
     </Modal>
   </div>
 </template>
@@ -216,7 +206,6 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'searchable-table',
   data() {
-    let self = this
     return {
       positionInfo: {}, // 工作信息
       postionWelfareList: [
@@ -249,34 +238,7 @@ export default {
       disabled: false,
       updateFlag: false,
       popTitle: '您确认增加当前职位吗？',
-      modelShow: false,
-      zoom: 12,
-      center: [108.93977, 34.341574],
-      markerPosition: [108.93977, 34.341574],
-      address: '',
-      lng: 0,
-      lat: 0,
-      events: {
-        click(e) {
-          let { lng, lat } = e.lnglat
-          self.lng = lng
-          self.lat = lat
-          self.markerPosition = [lng, lat]
-          // 这里通过高德 SDK 完成。
-          var geocoder = new AMap.Geocoder({
-            radius: 1000,
-            extensions: 'all'
-          })
-          geocoder.getAddress([lng, lat], function(status, result) {
-            if (status === 'complete' && result.info === 'OK') {
-              if (result && result.regeocode) {
-                self.address = result.regeocode.formattedAddress
-                self.$nextTick()
-              }
-            }
-          })
-        }
-      }
+      modelShow: false
     }
   },
   mounted() {
