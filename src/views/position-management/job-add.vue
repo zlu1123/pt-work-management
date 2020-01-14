@@ -7,11 +7,19 @@
           <Row class="margin-top-10">
             <i-col span="12" class="mar-top-10">
               <label>职位名称：</label>
-              <Input v-model="positionInfo.postionName" class="width-200" />
+              <Input
+                v-model="positionInfo.postionName"
+                :disabled="disabled"
+                class="width-200"
+              />
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>职位类型：</label>
-              <Select v-model="positionInfo.postionType" style="width:200px">
+              <Select
+                v-model="positionInfo.postionType"
+                class="width-200"
+                :disabled="disabled"
+              >
                 <Option
                   v-for="item in postionTypeList"
                   :value="item.value"
@@ -28,6 +36,7 @@
                 :max-tag-count="2"
                 class="width-200"
                 label-in-value
+                :disabled="disabled"
               >
                 <Option
                   v-for="item in postionWelfareList"
@@ -45,6 +54,7 @@
                 :max-tag-count="2"
                 style="width:200px;"
                 label-in-value
+                :disabled="disabled"
               >
                 <Option
                   v-for="item in postionRequireList"
@@ -63,6 +73,7 @@
                 placeholder="请选择开始日期"
                 class="width-200"
                 @on-change="beginDateChange"
+                :disabled="disabled"
               ></DatePicker>
             </i-col>
             <i-col span="12" class="mar-top-10">
@@ -74,6 +85,7 @@
                 placeholder="请选择结束日期"
                 class="width-200"
                 @on-change="endDateChange"
+                :disabled="disabled"
               ></DatePicker>
             </i-col>
             <i-col span="12" class="mar-top-10">
@@ -83,6 +95,7 @@
                 format="HH:mm"
                 placeholder="请选择上班打卡时间"
                 class="width-200"
+                :disabled="disabled"
               ></TimePicker>
             </i-col>
             <i-col span="12" class="mar-top-10">
@@ -92,25 +105,42 @@
                 format="HH:mm"
                 placeholder="请选择下班打卡时间"
                 class="width-200"
+                :disabled="disabled"
               ></TimePicker>
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>单价：</label>
-              <Input v-model="positionInfo.price" style="width: 50px" />
+              <Input
+                v-model="positionInfo.price"
+                style="width: 80px"
+                :disabled="disabled"
+              />
               <label>元/小时</label>
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>工作时间：</label>
-              <Input v-model="positionInfo.workTime" style="width: 50px" />
+              <Input
+                v-model="positionInfo.workTime"
+                style="width: 80px"
+                :disabled="disabled"
+              />
               <label>小时</label>
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>需求人数：</label>
-              <Input v-model="positionInfo.workCount" class="width-200" />
+              <Input
+                v-model="positionInfo.workCount"
+                class="width-200"
+                :disabled="disabled"
+              />
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>结算方式：</label>
-              <Select v-model="positionInfo.billtype" style="width:200px">
+              <Select
+                v-model="positionInfo.billtype"
+                class="width-200"
+                :disabled="disabled"
+              >
                 <Option
                   v-for="item in billtypeList"
                   :value="item.value"
@@ -121,7 +151,16 @@
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>保证金：</label>
-              <Input v-model="positionInfo.margin" class="width-200" />
+              <i-switch
+                size="large"
+                v-model="positionInfo.margin"
+                true-value="1"
+                false-value="0"
+                :disabled="disabled"
+              >
+                <span slot="open">需要</span>
+                <span slot="close">不要</span>
+              </i-switch>
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>请选择职位地址：</label>
@@ -130,6 +169,7 @@
                 placeholder="请选择地址"
                 @on-focus="chooseAddr"
                 class="width-200"
+                :disabled="disabled"
               />
             </i-col>
             <i-col span="12" class="mar-top-10">
@@ -139,6 +179,7 @@
                 v-model="positionInfo.health"
                 true-value="1"
                 false-value="0"
+                :disabled="disabled"
               >
                 <span slot="open">开启</span>
                 <span slot="close">关闭</span>
@@ -151,6 +192,7 @@
                 v-model="positionInfo.insurance"
                 true-value="1"
                 false-value="0"
+                :disabled="disabled"
               >
                 <span slot="open">开启</span>
                 <span slot="close">关闭</span>
@@ -198,6 +240,7 @@
                 show-word-limit
                 type="textarea"
                 class="width-800"
+                :disabled="disabled"
               />
             </i-col>
           </Row>
@@ -208,6 +251,7 @@
               :title="popTitle"
               @on-ok="insertPositon"
               @on-cancel="cancel"
+              v-if="!disabled"
             >
               <Button type="primary">{{ updateFlag ? '更新' : '新增' }}</Button>
             </Poptip>
@@ -242,7 +286,6 @@ export default {
   data() {
     return {
       showMap: false,
-      merchImg: '',
       releasEmerchImg: '',
       postionLngLat: [108.93977, 34.341574],
       positionInfo: {}, // 工作信息
@@ -250,34 +293,35 @@ export default {
       postionWelfareList: [
         {
           label: '五险一金',
-          value: '0'
+          value: '01'
         },
         {
           label: '餐补',
-          value: '1'
+          value: '02'
         }
       ],
       postionRequireList: [
         {
           label: '体力好',
-          value: '0'
+          value: '01'
         },
         {
-          label: '肌肉好',
-          value: '1'
+          label: '认真',
+          value: '02'
         }
       ],
       billtypeList: [
-        { text: '完工结', value: 2 },
-        { text: '次日结', value: 3 },
-        { text: '周结', value: 4 },
-        { text: '半月结', value: 5 },
-        { text: '月结', value: 6 }
+        { text: '完工结', value: '01' },
+        { text: '次日结', value: '02' },
+        { text: '周结', value: '03' },
+        { text: '半月结', value: '04' },
+        { text: '月结', value: '05' }
       ],
       postionTypeList: [
-        { text: '餐饮', value: 2 },
-        { text: '快递', value: 3 },
-        { text: '客房', value: 4 }
+        { text: '餐饮', value: '01' },
+        { text: '快递', value: '02' },
+        { text: '客房', value: '03' },
+        { text: '其他', value: '04' }
       ],
       disabled: false,
       updateFlag: false,
@@ -294,8 +338,19 @@ export default {
         this.updateFlag = true
         this.popTitle = '您确认更新当前职位信息吗？'
       }
-      // this.merchCharge = beforePageData.params.merchCharge
-      // this.certNo = beforePageData.params.certNo
+      this.positionInfo = { ...beforePageData.params }
+      this.positionInfo.postionWelfare = beforePageData.params.postionWelfare.split(
+        ','
+      )
+      this.positionInfo.postionRequire = beforePageData.params.postionRequire.split(
+        ','
+      )
+      this.positionInfo.postionLngLat = beforePageData.params.postionLngLat.split(
+        ','
+      )
+      this.releasEmerchImg = beforePageData.params.releasEmerchImg
+      this.postionAddr = beforePageData.params.postionAddr
+      this.postionLngLat = beforePageData.params.postionLngLat.split(',')
     }
   },
   methods: {
@@ -327,21 +382,26 @@ export default {
     },
     insertPositon() {
       if (this.updateFlag) {
+        let insertForm = { ...this.positionInfo }
+        insertForm.merchId = this.getCookieToken.loginNo
+        insertForm.postionRequire = insertForm.postionRequire.join(',')
+        insertForm.postionWelfare = insertForm.postionWelfare.join(',')
+        insertForm.workBeginDate = formatDate(insertForm.workBeginDate)
+        insertForm.workEndDate = formatDate(insertForm.workEndDate)
+        insertForm.postionLngLat = insertForm.postionLngLat.join(',')
         // 更新
-        postionReleaseUpdate({}).then(res => {
+        postionReleaseUpdate(insertForm).then(res => {
           if (res.data && res.data.retCode === '00000') {
-            if (res.data && res.data.retCode === '00000') {
-              this.$Notice.success({
-                title: '提醒',
-                desc: '职位信息变更成功'
-              })
-              this.$router.go(-1)
-            } else {
-              this.$Notice.error({
-                title: '提醒',
-                desc: '职位信息变更失败'
-              })
-            }
+            this.$Notice.success({
+              title: '提醒',
+              desc: '职位信息变更成功'
+            })
+            this.$router.go(-1)
+          } else {
+            this.$Notice.error({
+              title: '提醒',
+              desc: '职位信息变更失败'
+            })
           }
         })
       } else {

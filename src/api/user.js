@@ -240,16 +240,25 @@ export const financeReportFormPage = params => {
 // 轮播图列表
 export const noticeOrAdPage = params => {
   return axios.request({
-    url: '/noticeOrAd/page',
+    url: '/noticeAd/page',
     data: params,
     method: 'post'
   })
 }
 
-// 轮播图编辑、停用/启用
+// 轮播图编辑
 export const noticeOrAdUpdate = params => {
   return axios.request({
-    url: '/noticeOrAd/update',
+    url: '/noticeAd/update',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 停用/启用
+export const noticeOrAdChangeStatue = params => {
+  return axios.request({
+    url: '/noticeAd/changeStatue',
     data: params,
     method: 'post'
   })
@@ -258,7 +267,7 @@ export const noticeOrAdUpdate = params => {
 // 轮播图新增
 export const noticeOrAdInsert = params => {
   return axios.request({
-    url: '/noticeOrAd/insert',
+    url: '/noticeAd/insert',
     data: params,
     method: 'post'
   })
@@ -267,7 +276,7 @@ export const noticeOrAdInsert = params => {
 // 轮播图删除
 export const noticeOrAdDelete = params => {
   return axios.request({
-    url: '/noticeOrAd/delete',
+    url: '/noticeAd/delete',
     data: params,
     method: 'post'
   })

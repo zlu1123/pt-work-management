@@ -35,24 +35,29 @@
         </div>
       </Card>
     </i-col>
+    <Modal
+      v-model="isShowImgModal"
+      title="图片"
+      @on-ok="isShowImgModal = false"
+      @on-cancel="isShowImgModal = false"
+      width="332"
+    >
+      <img
+        :src="imageUrl"
+        style="width: 300px; height: 400px;margin-left: auto;margin-right: auto;"
+      />
+    </Modal>
   </div>
 </template>
 
 <script>
-import { noticeOrAdPage } from '@/api/user'
+import { noticeOrAdPage, noticeOrAdDelete } from '@/api/user'
 export default {
   name: 'job-posting',
   data() {
     return {
-      payStatus: '',
-      orderNum: null,
-      storeName: null,
-      deliveryPhone: null,
-      orderStatus: '',
-      orderType: '',
-      startTime: null,
-      endTime: null,
-      spanNum: 24,
+      imageUrl: '',
+      isShowImgModal: false,
       pageNo: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
@@ -64,13 +69,56 @@ export default {
           align: 'center'
         },
         {
-          title: '是否启用',
-          key: 'merchName',
-          align: 'center'
+          title: '启用状态',
+          key: 'status',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', params.row.status === '0' ? '停用' : '启用')
+          }
         },
         {
           title: '图片',
-          key: 'merchCharge',
+          key: 'imgUrl',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('Img', {
+                attrs: {
+                  src: params.row.imgUrl
+                },
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  width: '30px',
+                  height: '30px',
+                  marginTop: '6px'
+                },
+                on: {
+                  click: () => {
+                    this.imageUrl = params.row.imgUrl
+                    if (
+                      this.imageUrl !== '' ||
+                      this.imageUrl !== null ||
+                      this.imageUrl !== undefined
+                    ) {
+                      this.isShowImgModal = true
+                    }
+                  }
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '轮播图内容',
+          key: 'info',
+          align: 'center'
+        },
+        {
+          title: '轮播图排序',
+          key: 'seq',
           align: 'center'
         },
         {
@@ -92,8 +140,8 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.salaryReview(params.row.id, params.row.orderType)
                       // 跳转到详情页面
+                      this.goDetail(params.row, 'detail')
                     }
                   }
                 },
@@ -111,8 +159,8 @@ export default {
                   },
                   on: {
                     click: () => {
-                      // this.salaryReview(params.row.id, params.row.orderType)
                       // 跳转到编辑页面
+                      this.goDetail(params.row, 'update')
                     }
                   }
                 },
@@ -122,7 +170,7 @@ export default {
                 'Button',
                 {
                   props: {
-                    type: 'primary',
+                    type: params.row.status === '0' ? 'primary' : 'warning',
                     size: 'small'
                   },
                   style: {
@@ -132,16 +180,17 @@ export default {
                     click: () => {
                       // this.salaryReview(params.row.id, params.row.orderType)
                       // 跳转到编辑页面
+                      this.changeAdStatus(params.row.id, params.row.status)
                     }
                   }
                 },
-                '启用'
+                params.row.status === '0' ? '启用' : '停用'
               ),
               h(
                 'Button',
                 {
                   props: {
-                    type: 'primary',
+                    type: 'error',
                     size: 'small'
                   },
                   style: {
@@ -149,12 +198,11 @@ export default {
                   },
                   on: {
                     click: () => {
-                      // this.salaryReview(params.row.id, params.row.orderType)
-                      // 跳转到编辑页面
+                      this.deleteItem(params.row.id)
                     }
                   }
                 },
-                '停用'
+                '删除'
               )
             ])
           }
@@ -173,12 +221,22 @@ export default {
     queryOrderInfo() {
       // 查询按钮
       this.pageNo = 1
-      this.queryOrderList()
+      this.getAdList()
     },
     getMaxRows(val) {
       // 获取当前页最大条数
       this.maxRows = val
-      this.queryOrderList()
+      this.getAdList()
+    },
+
+    goDetail(item, flag) {
+      this.$router.push({
+        path: '/advertising_maintenance_add',
+        query: {
+          flag,
+          params: item
+        }
+      })
     },
 
     // 审核工资单
@@ -186,11 +244,65 @@ export default {
       this.$router.push({
         path: '/advertising_maintenance_add'
       })
+    },
+
+    getAdList() {
+      noticeOrAdPage({
+        // "info": "",
+        // "seq": "",
+        pageSize: this.maxRows,
+        pageNum: this.pageNo
+      }).then(res => {
+        if (res && res.data.retCode === '00000') {
+          this.orderList = res.data.data.list
+        }
+      })
+    },
+
+    changeAdStatus(id, status) {
+      let content = status === '0' ? '启用' : '停用'
+      this.$Modal.confirm({
+        title: '提醒',
+        content: `<p>确认${content}当前轮播图吗？</p>`,
+        loading: true,
+        onOk: () => {
+          noticeOrAdDelete({
+            id: id,
+            status: status === '0' ? '1' : '0'
+          }).then(res => {
+            if (res.data && res.data.retCode === '00000') {
+              this.$Modal.remove()
+              this.$Message.info(`${content}成功`)
+              this.pageNo = 1
+              this.getAdList()
+            }
+          })
+        }
+      })
+    },
+
+    deleteItem(id) {
+      this.$Modal.confirm({
+        title: '提醒',
+        content: '<p>确认删除当前企业负责人吗？</p>',
+        loading: true,
+        onOk: () => {
+          noticeOrAdDelete({
+            id: id
+          }).then(res => {
+            if (res.data && res.data.retCode === '00000') {
+              this.$Modal.remove()
+              this.$Message.info('删除成功')
+              this.pageNo = 1
+              this.getAdList()
+            }
+          })
+        }
+      })
     }
   },
   mounted() {
-    noticeOrAdPage()
-    this.orderList = [{}]
+    this.getAdList()
   }
 }
 </script>

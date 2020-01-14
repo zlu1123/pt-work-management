@@ -63,7 +63,8 @@ export default {
         {
           title: '职位信息',
           key: 'postionName',
-          align: 'center'
+          align: 'center',
+          fixed: 'left'
         },
         {
           title: '工作地点',
@@ -109,6 +110,7 @@ export default {
           key: 'action',
           width: 200,
           align: 'center',
+          fixed: 'right',
           render: (h, params) => {
             if (params.row.applyExemStat === '1') {
               return h('div', [

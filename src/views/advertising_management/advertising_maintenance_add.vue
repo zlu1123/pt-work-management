@@ -1,31 +1,51 @@
 <template>
   <div>
-    <Row class="margin-top-10">
+    <Row class="mar-top-10">
       <i-col>
         <Card>
-          <p slot="title"><Icon type="android-create"></Icon>新增首页图</p>
-          <Row class="margin-top-10" type="flex" justify="center">
-            <i-col :span="14">
-              <Upload
-                multiple
-                type="drag"
-                :format="['jpg', 'jpeg', 'png']"
-                max-size="10240"
-                action="//jsonplaceholder.typicode.com/posts/"
-              >
-                <div style="padding: 20px 0">
-                  <Icon
-                    type="ios-cloud-upload"
-                    size="52"
-                    style="color: #3399ff"
-                  ></Icon>
-                  <p>点击或者拖拽上传</p>
-                </div>
-              </Upload>
+          <p slot="title"><Icon type="android-create"></Icon>新增轮播图</p>
+          <Row>
+            <i-col :span="12">
+              <label>请输入轮播图顺序：</label>
+              <Input
+                v-model="seq"
+                :disabled="disabled"
+                class="width-200"
+                type="number"
+                :number="true"
+                placeholder="请输入轮播图顺序"
+              />
+            </i-col>
+            <i-col :span="12">
+              <label>请输入轮播图信息：</label>
+              <Input
+                v-model="info"
+                :disabled="disabled"
+                class="width-200"
+                placeholder="请输入轮播图信息"
+              />
+            </i-col>
+            <i-col :span="24" class="mar-top-10" style="display: flex;">
+              <label>请上传轮播图图片：</label>
+              <lsg-upload
+                :imgUrl.sync="adImgUrl"
+                @getImgUrl="uploadImgMethod"
+                :uploadImg="updateFlag"
+                style="display: inline-block"
+              ></lsg-upload>
             </i-col>
           </Row>
           <div class="mar-top-10 space-around">
-            <Button type="primary" @click="insertPositon">确认</Button>
+            <Poptip
+              placement="top-start"
+              confirm
+              :title="popTitle"
+              @on-ok="insertAdImg"
+              @on-cancel="cancel"
+              v-if="!disabled"
+            >
+              <Button type="primary">{{ updateFlag ? '更新' : '新增' }}</Button>
+            </Poptip>
             <Button @click="returnLastPage">返回</Button>
           </div>
         </Card>
@@ -35,64 +55,103 @@
 </template>
 
 <script>
-import { insertPostionRelease } from '@/api/user'
+import { noticeOrAdInsert, noticeOrAdUpdate } from '@/api/user'
+import lsgUpload from '../components/upload/lsg-upload'
 
 export default {
   name: 'searchable-table',
+  components: {
+    lsgUpload
+  },
   data() {
     return {
-      positionInfo: {}, // 工作信息
-      postionWelfareList: [
-        {
-          label: '五险一金',
-          value: '0'
-        },
-        {
-          label: '餐补',
-          value: '1'
-        }
-      ],
-      postionRequireList: [
-        {
-          label: '体力好',
-          value: '0'
-        },
-        {
-          label: '肌肉好',
-          value: '1'
-        }
-      ],
-      settlementMethodList: [
-        { text: '完工结', value: 2 },
-        { text: '次日结', value: 3 },
-        { text: '周结', value: 4 },
-        { text: '半月结', value: 5 },
-        { text: '月结', value: 6 }
-      ]
+      adImgUrl: '',
+      updateFlag: false,
+      popTitle: '您确认增加当前轮播图吗？',
+      disabled: false,
+      seq: '',
+      info: '',
+      id: ''
     }
   },
-  mounted() {},
+  mounted() {
+    const beforePageData = this.$route.query
+    if (beforePageData && Object.keys(beforePageData).length > 0) {
+      if (beforePageData.flag === 'detail') {
+        this.disabled = true
+      } else {
+        this.updateFlag = true
+        this.id = this.info = beforePageData.params.id
+        this.popTitle = '您确认更新当前轮播图吗？'
+      }
+      debugger
+      this.adImgUrl = beforePageData.params.imgUrl
+      this.seq = beforePageData.params.seq
+      this.info = beforePageData.params.info
+    }
+  },
   methods: {
+    uploadImgMethod(item) {
+      this.adImgUrl = item
+    },
     returnLastPage() {
       this.$router.go(-1)
     },
-    insertPositon() {
-      // {
-      //   merchId: '202001019536',
-      //   postionName: '揽货员',
-      //   postionAddr: '西安',
-      //   postionWelfare: '五险一金',
-      //   postionRequire: '身体好',
-      //   workTime: '8',
-      //   price: '30',
-      //   priceUnit: '时',
-      //   billtype: '日结',
-      //   positiondes: '帮助揽货,装货',
-      //   insurance: '1',
-      //   margin: '1',
-      //   health: '1'
-      // }
-      insertPostionRelease()
+    insertAdImg() {
+      if (!this.adImgUrl) {
+        this.$Message.error({
+          content: '请先上传图片'
+        })
+        return
+      }
+      if (!this.seq) {
+        this.$Message.error({
+          content: '请选择轮播顺序'
+        })
+        return
+      }
+      if (!this.info) {
+        this.$Message.error({
+          content: '请输入轮播图信息'
+        })
+        return
+      }
+
+      if (this.updateFlag) {
+        noticeOrAdUpdate({
+          id: this.id,
+          info: this.info,
+          seq: this.seq,
+          imgUrl: this.adImgUrl
+        }).then(res => {
+          if (res.data && res.data.retCode === '00000') {
+            this.$Notice.success({
+              title: '提醒',
+              desc: '轮播图信息变更成功'
+            })
+            this.$router.go(-1)
+          } else {
+            this.$Notice.error({
+              title: '提醒',
+              desc: '轮播图信息变更失败'
+            })
+          }
+        })
+      } else {
+        noticeOrAdInsert({
+          info: this.info,
+          seq: this.seq,
+          imgUrl: this.adImgUrl
+        }).then(res => {
+          if (res.data.retCode === '00000') {
+            this.$Notice.success({
+              title: '提醒',
+              desc: '轮播图新增成功'
+            })
+            this.$router.go(-1)
+          }
+        })
+      }
     },
     cancel() {}
   }

@@ -42,6 +42,7 @@
 <script>
 import { postionReleasePage, insertPostionDelete } from '@/api/user'
 import { mapGetters } from 'vuex'
+import { formatDateYYYYMMDD } from '@/libs/util'
 export default {
   name: 'job-posting',
   data() {
@@ -64,85 +65,132 @@ export default {
           title: '序号',
           type: 'index',
           width: 70,
-          align: 'center'
+          align: 'center',
+          fixed: 'left'
         },
         {
           title: '商户名称',
           key: 'releasEmerchName',
-          align: 'center'
+          align: 'center',
+          fixed: 'left',
+          width: '150'
         },
         {
           title: '职位名称',
-          key: 'postionName'
+          key: 'postionName',
+          align: 'center',
+          width: '150'
         },
-        // {
-        //   title: '职位类型',
-        //   key: 'postionType',
-        //   align: 'center',
-        //   render: (h, params) => {
-        //     return h('div', this.postionTypeDes(params.row.postionType))
-        //   }
-        // },
+        {
+          title: '职位类型',
+          key: 'postionType',
+          align: 'center',
+          width: '150',
+          render: (h, params) => {
+            return h('div', this.postionTypeDes(params.row.postionType))
+          }
+        },
         {
           title: '职位福利',
           key: 'postionWelfare',
-          align: 'center'
+          align: 'center',
+          width: '150',
+          render: (h, params) => {
+            return h('div', this.getPosition(params.row.postionWelfare, 0))
+          }
         },
         {
           title: '职位要求',
           key: 'postionRequire',
-          align: 'center'
+          align: 'center',
+          width: '150',
+          render: (h, params) => {
+            return h('div', this.getPosition(params.row.postionRequire, 1))
+          }
         },
         {
           title: '工作开始日期',
           key: 'workBeginDate',
-          align: 'center'
-          // render: (h, params) => {
-          //   return h('div', this.payTypeStr(params.row.payType))
-          // }
+          align: 'center',
+          width: '150',
+          render: (h, params) => {
+            return h('div', formatDateYYYYMMDD(params.row.workBeginDate))
+          }
         },
         {
           title: '工作结束日期',
           key: 'workEndDate',
-          align: 'center'
-          // render: (h, params) => {
-          //   return h('div', this.payStatusStr(params.row.payStatus))
-          // }
+          align: 'center',
+          width: '150',
+          render: (h, params) => {
+            return h('div', formatDateYYYYMMDD(params.row.workEndDate))
+          }
         },
         {
           title: '上班打卡时间',
           key: 'clockBeginDate',
-          align: 'center'
+          align: 'center',
+          width: '150'
         },
         {
           title: '下班打卡时间',
           key: 'clockEndDate',
-          align: 'center'
+          align: 'center',
+          width: '150'
         },
         {
-          title: '单价',
+          title: '单价(元/小时)',
           key: 'price',
-          align: 'center'
+          align: 'center',
+          width: '150'
         },
         {
           title: '需求人数',
           key: 'workCount',
-          align: 'center'
+          align: 'center',
+          width: '150'
         },
         {
           title: '结算方式',
           key: 'billtype',
-          align: 'center'
+          align: 'center',
+          width: '150',
+          render: (h, params) => {
+            return h('div', this.billType(params.row.billtype))
+          }
         },
         {
           title: '是否需要保证金',
-          key: 'orderStatus',
-          align: 'center'
+          key: 'margin',
+          align: 'center',
+          width: '150',
+          render: (h, params) => {
+            return h('div', params.row.margin === '1' ? '需要' : '不需要')
+          }
+        },
+        {
+          title: '是否有保险',
+          key: 'insurance',
+          align: 'center',
+          width: '150',
+          render: (h, params) => {
+            return h('div', params.row.insurance === '1' ? '有' : '没有')
+          }
+        },
+        {
+          title: '是否需要健康证',
+          key: 'health',
+          align: 'center',
+          width: '150',
+          render: (h, params) => {
+            return h('div', params.row.health === '1' ? '需要' : '不需要')
+          }
         },
         {
           title: '操作',
           key: 'action',
           align: 'center',
+          fixed: 'right',
           width: '200',
           render: (h, params) => {
             return h('div', [
@@ -191,7 +239,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.deleteItem(params.row.merchId)
+                      this.deleteItem(params.row.releasEmerch, params.row.postionId)
                     }
                   }
                 },
@@ -205,17 +253,84 @@ export default {
     }
   },
   methods: {
+    getPosition(type, flag) {
+      if (type) {
+        let typeList = type.split(',')
+        let positionWelfare = ''
+        for (let i = 0; i < typeList.length; i++) {
+          positionWelfare += (i !== 0 ? '、' : '') + `${flag === 0 ? this.getWelfareName(typeList[i]) : this.getRequireName(typeList[i])}`
+        }
+        return positionWelfare
+      }
+    },
+
+    getRequireName(type) {
+      let name = ''
+      switch (type) {
+        case '01':
+          name = '体力好'
+          break
+        case '02':
+          name = '认真'
+          break
+        default:
+          break
+      }
+      return name
+    },
+
+    getWelfareName(type) {
+      let name = ''
+      switch (type) {
+        case '01':
+          name = '餐补'
+          break
+        case '02':
+          name = '五险一金'
+          break
+        default:
+          break
+      }
+      return name
+    },
+
+    billType(type) {
+      let billType = ''
+      switch (type) {
+        case '01':
+          billType = '完工结'
+          break
+        case '02':
+          billType = '次日结'
+          break
+        case '03':
+          billType = '周结'
+          break
+        case '04':
+          billType = '半月结'
+          break
+        case '05':
+          billType = '月结'
+          break
+        default:
+          break
+      }
+      return billType
+    },
     postionTypeDes(type) {
       let postionType = ''
       switch (type) {
-        case '2':
+        case '01':
           postionType = '餐饮'
           break
-        case '3':
+        case '02':
           postionType = '快递'
           break
-        case '4':
+        case '03':
           postionType = '客房'
+          break
+        case '04':
+          postionType = '其他'
           break
         default:
           break
@@ -255,14 +370,15 @@ export default {
       })
     },
 
-    deleteItem(id) {
+    deleteItem(merchId, postionId) {
       this.$Modal.confirm({
         title: '提醒',
         content: '<p>确认删除当前职位吗？</p>',
         loading: true,
         onOk: () => {
           insertPostionDelete({
-            merchId: id
+            merchId,
+            postionId
           }).then(res => {
             if (res.data && res.data.retCode === '00000') {
               this.$Modal.remove()

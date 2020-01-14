@@ -521,3 +521,10 @@ export const formatDate = date => {
   let D = addZero(time.getDate())
   return Y + M + D
 }
+
+/**
+ * return YYYY年MM月DD
+ */
+export const formatDateYYYYMMDD = date => {
+  return date.slice(0,4) + '年' + date.slice(5,6) + '月' + date.slice(7,8) + '日'
+}

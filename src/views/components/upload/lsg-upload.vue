@@ -91,9 +91,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.lsg__upload {
-  // display: inline-block;
-}
 .demo-upload-list {
   display: inline-block;
   width: 202px;
