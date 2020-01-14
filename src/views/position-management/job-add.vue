@@ -11,7 +11,14 @@
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>职位类型：</label>
-              <Input v-model="positionInfo.postionType" class="width-200" />
+              <Select v-model="positionInfo.postionType" style="width:200px">
+                <Option
+                  v-for="item in postionTypeList"
+                  :value="item.value"
+                  :key="item.value"
+                  >{{ item.text }}</Option
+                >
+              </Select>
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>职位福利：</label>
@@ -20,6 +27,7 @@
                 multiple
                 :max-tag-count="2"
                 class="width-200"
+                label-in-value
               >
                 <Option
                   v-for="item in postionWelfareList"
@@ -36,6 +44,7 @@
                 multiple
                 :max-tag-count="2"
                 style="width:200px;"
+                label-in-value
               >
                 <Option
                   v-for="item in postionRequireList"
@@ -48,27 +57,29 @@
             <i-col span="12" class="mar-top-10">
               <label>工作开始日期：</label>
               <DatePicker
-                :value="positionInfo.workBeginDate"
-                format="yyyy年MM月dd日"
+                v-model="positionInfo.workBeginDate"
+                format="yyyy-MM-dd"
                 type="date"
                 placeholder="请选择开始日期"
                 class="width-200"
+                @on-change="beginDateChange"
               ></DatePicker>
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>工作结束日期：</label>
               <DatePicker
-                :value="positionInfo.workEndDate"
-                format="yyyy年MM月dd日"
+                v-model="positionInfo.workEndDate"
+                format="yyyy-MM-dd"
                 type="date"
                 placeholder="请选择结束日期"
                 class="width-200"
+                @on-change="endDateChange"
               ></DatePicker>
             </i-col>
             <i-col span="12" class="mar-top-10">
               <label>上班打卡时间：</label>
               <TimePicker
-                :value="positionInfo.clockBeginDate"
+                v-model="positionInfo.clockBeginDate"
                 format="HH:mm"
                 placeholder="请选择上班打卡时间"
                 class="width-200"
@@ -77,7 +88,7 @@
             <i-col span="12" class="mar-top-10">
               <label>下班打卡时间：</label>
               <TimePicker
-                :value="positionInfo.clockEndDate"
+                v-model="positionInfo.clockEndDate"
                 format="HH:mm"
                 placeholder="请选择下班打卡时间"
                 class="width-200"
@@ -89,6 +100,11 @@
               <label>元/小时</label>
             </i-col>
             <i-col span="12" class="mar-top-10">
+              <label>工作时间：</label>
+              <Input v-model="positionInfo.workTime" style="width: 50px" />
+              <label>小时</label>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
               <label>需求人数：</label>
               <Input v-model="positionInfo.workCount" class="width-200" />
             </i-col>
@@ -96,7 +112,7 @@
               <label>结算方式：</label>
               <Select v-model="positionInfo.billtype" style="width:200px">
                 <Option
-                  v-for="item in settlementMethodList"
+                  v-for="item in billtypeList"
                   :value="item.value"
                   :key="item.value"
                   >{{ item.text }}</Option
@@ -104,51 +120,73 @@
               </Select>
             </i-col>
             <i-col span="12" class="mar-top-10">
-              <label>保险选择：</label>
-              <Input v-model="positionInfo.health" class="width-200" />
-            </i-col>
-            <i-col span="12" class="mar-top-10">
               <label>保证金：</label>
               <Input v-model="positionInfo.margin" class="width-200" />
             </i-col>
-            <!-- <i-col span="12" class="mar-top-10">
-              <label class="label-line">健康选择：</label>
-              <Select
-                v-model="positionInfo.health"
-                clearable
-                style="width:200px;"
-              >
-                <Option
-                  v-for="item in deliveryGoodsTypeList"
-                  :value="item.value"
-                  :key="item.value"
-                  >{{ item.label }}</Option
-                >
-              </Select>
-            </i-col> -->
             <i-col span="12" class="mar-top-10">
+              <label>请选择职位地址：</label>
+              <Input
+                v-model="positionInfo.postionAddr"
+                placeholder="请选择地址"
+                @on-focus="chooseAddr"
+                class="width-200"
+              />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>健康证选择：</label>
+              <i-switch
+                size="large"
+                v-model="positionInfo.health"
+                true-value="1"
+                false-value="0"
+              >
+                <span slot="open">开启</span>
+                <span slot="close">关闭</span>
+              </i-switch>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>保险选择：</label>
+              <i-switch
+                size="large"
+                v-model="positionInfo.insurance"
+                true-value="1"
+                false-value="0"
+              >
+                <span slot="open">开启</span>
+                <span slot="close">关闭</span>
+              </i-switch>
+            </i-col>
+            <!-- <i-col span="12" class="mar-top-10">
               <label>发布企业：</label>
               <Input
                 v-model="positionInfo.releaseMerch"
                 placeholder="请输入企业名称"
                 class="width-200"
               />
-            </i-col>
-            <i-col span="12" class="mar-top-10">
+            </i-col> -->
+            <!-- <i-col span="12" class="mar-top-10">
               <label>企业负责人：</label>
               <Input
-                v-model="positionInfo.thirdQty"
+                v-model="positionInfo.merchCharge"
                 placeholder="请输入企业名称"
                 class="width-200"
               />
-            </i-col>
-            <i-col span="12" class="mar-top-10">
+            </i-col> -->
+            <!-- <i-col span="12" class="mar-top-10">
               <label>平台负责人：</label>
               <Input
                 v-model="positionInfo.platformCharge1"
                 placeholder="请输入平台负责人"
                 class="width-200"
               />
+            </i-col> -->
+            <i-col span="24" class="mar-top-10 col-upload-lsg">
+              <label>请上传职位图片：</label>
+              <lsg-upload
+                :imgUrl.sync="releasEmerchImg"
+                @getImgUrl="uploadImgMethod"
+                :uploadImg="updateFlag"
+              ></lsg-upload>
             </i-col>
             <i-col span="24" class="mar-top-10">
               <label>职位描述：</label>
@@ -159,20 +197,10 @@
                 :autosize="{ minRows: 5, maxRows: 10 }"
                 show-word-limit
                 type="textarea"
-                class="width-500"
-              />
-            </i-col>
-            <i-col span="24">
-              <label>请选择地址：</label>
-              <Input
-                @on-focus="modelShow = true"
-                v-model="positionInfo.des"
-                placeholder="请选择地址"
-                class="width-200"
+                class="width-800"
               />
             </i-col>
           </Row>
-
           <div class="mar-top-10 space-around">
             <Poptip
               placement="top-start"
@@ -188,26 +216,37 @@
         </Card>
       </i-col>
     </Row>
-    <Modal
-      title="选取地址"
-      v-model="modelShow"
-      width="900"
-      @on-ok="confirmEditScope"
-      class-name="vertical-center-modal"
-    >
-    </Modal>
+    <address-map
+      :model-show="showMap"
+      @chooseMapLocation="chooseMapLocation"
+      @modelChange="mapModelChange"
+      :markerPosition.sync="postionLngLat"
+      :address.sync="postionAddr"
+    ></address-map>
   </div>
 </template>
 
 <script>
 import { insertPostionRelease, postionReleaseUpdate } from '@/api/user'
 import { mapGetters } from 'vuex'
+import addressMap from '../components/amap/address-map.vue'
+import lsgUpload from '../components/upload/lsg-upload.vue'
+import { formatDate } from '@/libs/util'
 
 export default {
   name: 'searchable-table',
+  components: {
+    addressMap,
+    lsgUpload
+  },
   data() {
     return {
+      showMap: false,
+      merchImg: '',
+      releasEmerchImg: '',
+      postionLngLat: [108.93977, 34.341574],
       positionInfo: {}, // 工作信息
+      postionAddr: '',
       postionWelfareList: [
         {
           label: '五险一金',
@@ -228,12 +267,17 @@ export default {
           value: '1'
         }
       ],
-      settlementMethodList: [
+      billtypeList: [
         { text: '完工结', value: 2 },
         { text: '次日结', value: 3 },
         { text: '周结', value: 4 },
         { text: '半月结', value: 5 },
         { text: '月结', value: 6 }
+      ],
+      postionTypeList: [
+        { text: '餐饮', value: 2 },
+        { text: '快递', value: 3 },
+        { text: '客房', value: 4 }
       ],
       disabled: false,
       updateFlag: false,
@@ -255,6 +299,28 @@ export default {
     }
   },
   methods: {
+    beginDateChange(date) {
+      console.log(date)
+    },
+    endDateChange(date) {
+      console.log(date)
+    },
+    uploadImgMethod(item) {
+      this.positionInfo.releasEmerchImg = item
+      this.releasEmerchImg = item
+    },
+    chooseAddr() {
+      this.showMap = true
+    },
+    mapModelChange(value) {
+      this.showMap = value
+    },
+    chooseMapLocation(item) {
+      this.postionLngLat = item.location
+      this.postionAddr = item.address
+      this.positionInfo.postionAddr = item.address
+      this.positionInfo.postionLngLat = item.location
+    },
     confirmEditScope() {},
     returnLastPage() {
       this.$router.go(-1)
@@ -279,28 +345,35 @@ export default {
           }
         })
       } else {
-        insertPostionRelease({
-          merchId: this.getCookieToken.loginNo,
-          postionName: '送水懂得多员',
-          postionAddr: '渭南发发发',
-          postionWelfare: '五险一金',
-          postionRequire: '身体好',
-          workTime: '8',
-          price: '20',
-          priceUnit: '时',
-          billtype: '日结',
-          positiondes: '送水懂得多,装水',
-          insurance: '1',
-          margin: '1',
-          health: '1',
-          // releasEmerchAddr: "'1', '2'",
-          workCount: '20',
-          // releasEmerchImg: 'http://baidu.com',
-          workBeginDate: '20200102',
-          workEndDate: '20200501',
-          clockBeginDate: '09:00',
-          clockEndDate: '17:00'
-        }).then(res => {
+        let insertForm = { ...this.positionInfo }
+        // merchId: this.getCookieToken.loginNo,
+        //   postionName: '送水懂得多员',
+        //   postionAddr: '渭南发发发',
+        //   postionLngLat: '', // 职位经纬度
+        //   postionWelfare: '五险一金',
+        //   postionRequire: '身体好',
+        //   workTime: '8',
+        //   price: '20',
+        //   priceUnit: '时',
+        //   billtype: '日结',
+        //   positiondes: '送水懂得多,装水',
+        //   insurance: '1',
+        //   margin: '1',
+        //   health: '1',
+        //   releasEmerchAddr: "'1', '2'", // 职位地址
+        //   workCount: '20',
+        //   releasEmerchImg: 'http://baidu.com', // 职位图片
+        //   workBeginDate: '20200102',
+        //   workEndDate: '20200501',
+        //   clockBeginDate: '09:00',
+        //   clockEndDate: '17:00'
+        insertForm.merchId = this.getCookieToken.loginNo
+        insertForm.postionRequire = insertForm.postionRequire.join(',')
+        insertForm.postionWelfare = insertForm.postionWelfare.join(',')
+        insertForm.workBeginDate = formatDate(insertForm.workBeginDate)
+        insertForm.workEndDate = formatDate(insertForm.workEndDate)
+        insertForm.postionLngLat = insertForm.postionLngLat.join(',')
+        insertPostionRelease(insertForm).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({
               title: '提醒',
@@ -328,13 +401,26 @@ export default {
   width: 200px;
 }
 
+.width-400 {
+  width: 400px;
+}
+
 .width-500 {
   width: 500px;
+}
+
+.width-800 {
+  width: 800px;
 }
 
 .space-around {
   display: flex;
   align-items: center;
   justify-content: space-around;
+}
+
+.col-upload-lsg {
+  display: flex;
+  align-items: center;
 }
 </style>

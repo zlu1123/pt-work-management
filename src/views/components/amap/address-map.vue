@@ -50,7 +50,7 @@ export default {
           let { lng, lat } = e.lnglat
           self.lng = lng
           self.lat = lat
-          self.markerPosition = [lng, lat]
+          // self.markerPosition = [lng, lat]
           // 这里通过高德 SDK 完成。
           var geocoder = new AMap.Geocoder({
             radius: 1000,
@@ -59,7 +59,11 @@ export default {
           geocoder.getAddress([lng, lat], function(status, result) {
             if (status === 'complete' && result.info === 'OK') {
               if (result && result.regeocode) {
-                self.address = result.regeocode.formattedAddress
+                // self.address = result.regeocode.formattedAddress
+                self.$emit('chooseMapLocation', {
+                  address: result.regeocode.formattedAddress,
+                  location: [self.lng, self.lat]
+                })
                 self.$nextTick()
               }
             }

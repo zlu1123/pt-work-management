@@ -59,8 +59,8 @@
       :model-show="showMap"
       @chooseMapLocation="chooseMapLocation"
       @modelChange="mapModelChange"
-      :markerPosition="markerPosition"
-      :address="merchAddrName"
+      :markerPosition.sync="markerPosition"
+      :address.sync="merchAddrName"
     ></address-map>
   </div>
 </template>
@@ -83,7 +83,7 @@ export default {
       popTitle: '您确认增加当前企业吗？',
       showMap: false,
       merchImg: '',
-      markerPosition: []
+      markerPosition: [108.93977, 34.341574]
     }
   },
 
@@ -117,6 +117,7 @@ export default {
     chooseMapLocation(item) {
       this.merchAddrName = item.address
       this.merchAddr = item.location.join(',') + `,${this.merchAddrName}`
+      this.markerPosition = item.location
     },
     uploadImgMethod(item) {
       this.merchImg = item

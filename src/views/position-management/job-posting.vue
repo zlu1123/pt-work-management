@@ -75,23 +75,27 @@ export default {
           title: '职位名称',
           key: 'postionName'
         },
+        // {
+        //   title: '职位类型',
+        //   key: 'postionType',
+        //   align: 'center',
+        //   render: (h, params) => {
+        //     return h('div', this.postionTypeDes(params.row.postionType))
+        //   }
+        // },
         {
-          title: '职位类型',
-          key: 'positiondes',
+          title: '职位福利',
+          key: 'postionWelfare',
           align: 'center'
         },
-        // {
-        //   title: '职位福利',
-        //   key: 'postionWelfare'
-        // },
-        // {
-        //   title: '职位要求',
-        //   key: 'postionRequire',
-        //   align: 'center'
-        // },
+        {
+          title: '职位要求',
+          key: 'postionRequire',
+          align: 'center'
+        },
         {
           title: '工作开始日期',
-          key: 'payType',
+          key: 'workBeginDate',
           align: 'center'
           // render: (h, params) => {
           //   return h('div', this.payTypeStr(params.row.payType))
@@ -99,36 +103,30 @@ export default {
         },
         {
           title: '工作结束日期',
-          key: 'payStatus',
+          key: 'workEndDate',
           align: 'center'
           // render: (h, params) => {
           //   return h('div', this.payStatusStr(params.row.payStatus))
           // }
         },
-        // {
-        //   title: '上班打卡时间',
-        //   key: 'orderStatus',
-        //   align: 'center',
-        //   render: (h, params) => {
-        //     return h('div', this.orderStatusStr(params.row.orderStatus))
-        //   }
-        // },
-        // {
-        //   title: '下班打卡时间',
-        //   key: 'orderStatus',
-        //   align: 'center',
-        //   render: (h, params) => {
-        //     return h('div', this.orderStatusStr(params.row.orderStatus))
-        //   }
-        // },
-        // {
-        //   title: '单价',
-        //   key: 'price',
-        //   align: 'center'
-        // },
+        {
+          title: '上班打卡时间',
+          key: 'clockBeginDate',
+          align: 'center'
+        },
+        {
+          title: '下班打卡时间',
+          key: 'clockEndDate',
+          align: 'center'
+        },
+        {
+          title: '单价',
+          key: 'price',
+          align: 'center'
+        },
         {
           title: '需求人数',
-          key: 'orderStatus',
+          key: 'workCount',
           align: 'center'
         },
         {
@@ -136,11 +134,11 @@ export default {
           key: 'billtype',
           align: 'center'
         },
-        // {
-        //   title: '保证金',
-        //   key: 'orderStatus',
-        //   align: 'center'
-        // },
+        {
+          title: '是否需要保证金',
+          key: 'orderStatus',
+          align: 'center'
+        },
         {
           title: '操作',
           key: 'action',
@@ -207,6 +205,23 @@ export default {
     }
   },
   methods: {
+    postionTypeDes(type) {
+      let postionType = ''
+      switch (type) {
+        case '2':
+          postionType = '餐饮'
+          break
+        case '3':
+          postionType = '快递'
+          break
+        case '4':
+          postionType = '客房'
+          break
+        default:
+          break
+      }
+      return postionType
+    },
     goToPage(val) {
       // 获取当前页
       this.pageNo = val

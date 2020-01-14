@@ -502,10 +502,22 @@ export const formatDateTime = date => {
   let m = addZero(time.getMinutes()) + ':'
   let s = addZero(time.getSeconds())
   return Y + M + D + h + m + s
-  // }
 }
 
 // 数字补0操作
 export const addZero = num => {
   return num < 10 ? '0' + num : num
+}
+
+/**
+ * return YYYYMMDD
+ */
+export const formatDate = date => {
+  let time = new Date(Date.parse(date))
+  time.setTime(time.setHours(time.getHours() + 8))
+
+  let Y = time.getFullYear()
+  let M = addZero(time.getMonth() + 1)
+  let D = addZero(time.getDate())
+  return Y + M + D
 }
