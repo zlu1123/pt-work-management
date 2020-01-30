@@ -265,6 +265,10 @@ export default {
           if (res.data.retCode === '00000') {
             this.businessList = res.data.data
             this.mainTenance = res.data.data[0].merchId
+            this.businessItem = {
+              value: this.mainTenance,
+              label: res.data.data[0].merchName
+            }
             this.queryList()
           }
         }

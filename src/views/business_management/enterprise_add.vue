@@ -26,10 +26,44 @@
                 />
               </div>
             </i-col>
+            <i-col span="24" class="margin-top-10">
+              <div>
+                <label class="label-line">企业邮箱：</label>
+                <Input
+                  :disabled="disabled"
+                  v-model="merchEmail"
+                  style="width: 200px"
+                  type="email"
+                />
+                <label class="label-line">企业电话：</label>
+                <Input
+                  :disabled="disabled"
+                  v-model="merchMobile"
+                  style="width: 200px"
+                  type="tel"
+                />
+              </div>
+            </i-col>
+            <i-col span="24" class="margin-top-10">
+              <div>
+                <label class="label-line">企业说明：</label>
+                <Input
+                  :disabled="disabled"
+                  v-model="merchInfo"
+                  style="width: 200px"
+                  placeholder="请输入企业说明"
+                  maxlength="1000"
+                  :autosize="{ minRows: 5, maxRows: 10 }"
+                  show-word-limit
+                  type="textarea"
+                  class="width-800"
+                />
+              </div>
+            </i-col>
             <i-col span="24" class="col-upload-lsg">
               <label class="label-line">请上传企业图片</label>
               <lsg-upload
-                :imgUrl.sync="merchImg"
+                :imgUrl.sync="merchShowImg"
                 @getImgUrl="uploadImgMethod"
                 :uploadImg="updateFlag"
               ></lsg-upload>
@@ -59,7 +93,7 @@
       :model-show="showMap"
       @chooseMapLocation="chooseMapLocation"
       @modelChange="mapModelChange"
-      :markerPosition.sync="markerPosition"
+      :markerPosition.sync="merchLngLat"
       :address.sync="merchAddrName"
     ></address-map>
   </div>
@@ -69,6 +103,7 @@
 import { enterpriseManageInsert, enterpriseReleaseUpdate } from '@/api/user'
 import addressMap from '../components/amap/address-map.vue'
 import lsgUpload from '../components/upload/lsg-upload.vue'
+import config from '@/config'
 
 export default {
   name: 'searchable-table',
@@ -78,12 +113,16 @@ export default {
       merchAddr: '',
       merchAddrName: '',
       merchName: '',
+      merchEmail: '',
+      merchMobile: '',
       disabled: false,
       updateFlag: false,
       popTitle: '您确认增加当前企业吗？',
       showMap: false,
       merchImg: '',
-      markerPosition: [108.93977, 34.341574]
+      merchShowImg: '',
+      merchLngLat: [108.93977, 34.341574],
+      merchInfo: ''
     }
   },
 
@@ -104,10 +143,12 @@ export default {
       this.merchName = beforePageData.params.merchName
       this.merchCharge = beforePageData.params.merchId
       this.merchImg = beforePageData.params.merchImg
-      let merchAddrList = beforePageData.params.merchAddr.split(',')
-      this.merchAddr = `${merchAddrList[0]}${merchAddrList[1]}`
-      this.markerPosition = [`${merchAddrList[0]}`, `${merchAddrList[1]}`]
-      this.merchAddrName = merchAddrList[merchAddrList.length - 1]
+      this.merchEmail = beforePageData.params.merchEmail
+      this.merchMobile = beforePageData.params.merchMobile
+      this.merchShowImg = config.baseUrl.imgUrl + this.merchImg
+      this.merchAddr = beforePageData.params.merchAddr
+      this.merchLngLat = beforePageData.params.merchLngLat
+      this.merchAddrName = beforePageData.params.merchAddr
     }
   },
   methods: {
@@ -116,11 +157,12 @@ export default {
     },
     chooseMapLocation(item) {
       this.merchAddrName = item.address
-      this.merchAddr = item.location.join(',') + `,${this.merchAddrName}`
-      this.markerPosition = item.location
+      this.merchAddr = this.merchAddrName
+      this.merchLngLat = item.location
     },
     uploadImgMethod(item) {
       this.merchImg = item
+      this.merchShowImg = config.baseUrl.imgUrl + item
     },
     chooseAddr() {
       this.showMap = true
@@ -147,13 +189,27 @@ export default {
         })
         return
       }
+      if (!this.merchEmail) {
+        this.$Message.error({
+          content: '请输入企业邮箱'
+        })
+        return
+      }
+      if (!this.merchMobile) {
+        this.$Message.error({
+          content: '请输入企业联系方式'
+        })
+        return
+      }
       if (this.updateFlag) {
         // 更新
         enterpriseReleaseUpdate({
           merchName: this.merchName,
           merchAddr: this.merchAddr,
           merchId: this.merchCharge,
-          merchImg: this.merchImg
+          merchImg: this.merchImg,
+          merchMobile: this.merchMobile,
+          merchEmail: this.merchEmail
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({
@@ -173,7 +229,9 @@ export default {
         enterpriseManageInsert({
           merchName: this.merchName,
           merchAddr: this.merchAddr,
-          merchImg: this.merchImg
+          merchImg: this.merchImg,
+          merchMobile: this.merchMobile,
+          merchEmail: this.merchEmail
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({
@@ -190,6 +248,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.margin-top-10 {
+  margin-top: 10px;
+}
 .col-upload-lsg {
   margin-top: 20px;
   display: flex;

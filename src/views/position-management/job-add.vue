@@ -225,7 +225,7 @@
             <i-col span="24" class="mar-top-10 col-upload-lsg">
               <label>请上传职位图片：</label>
               <lsg-upload
-                :imgUrl.sync="releasEmerchImg"
+                :imgUrl.sync="postionImg"
                 @getImgUrl="uploadImgMethod"
                 :uploadImg="updateFlag"
               ></lsg-upload>
@@ -276,6 +276,7 @@ import { mapGetters } from 'vuex'
 import addressMap from '../components/amap/address-map.vue'
 import lsgUpload from '../components/upload/lsg-upload.vue'
 import { formatDate } from '@/libs/util'
+import config from '@/config'
 
 export default {
   name: 'searchable-table',
@@ -286,7 +287,7 @@ export default {
   data() {
     return {
       showMap: false,
-      releasEmerchImg: '',
+      postionImg: '',
       postionLngLat: [108.93977, 34.341574],
       positionInfo: {}, // 工作信息
       postionAddr: '',
@@ -348,7 +349,7 @@ export default {
       this.positionInfo.postionLngLat = beforePageData.params.postionLngLat.split(
         ','
       )
-      this.releasEmerchImg = beforePageData.params.releasEmerchImg
+      this.postionImg = config.baseUrl.imgUrl + beforePageData.params.postionImg
       this.postionAddr = beforePageData.params.postionAddr
       this.postionLngLat = beforePageData.params.postionLngLat.split(',')
     }
@@ -361,8 +362,8 @@ export default {
       console.log(date)
     },
     uploadImgMethod(item) {
-      this.positionInfo.releasEmerchImg = item
-      this.releasEmerchImg = item
+      this.positionInfo.postionImg = item
+      this.postionImg = config.baseUrl.imgUrl + item
     },
     chooseAddr() {
       this.showMap = true
@@ -381,6 +382,13 @@ export default {
       this.$router.go(-1)
     },
     insertPositon() {
+      let tipContent = this.checkParamData(this.positionInfo)
+      if (tipContent) {
+        this.$Message.error({
+          content: tipContent
+        })
+        return
+      }
       if (this.updateFlag) {
         let insertForm = { ...this.positionInfo }
         insertForm.merchId = this.getCookieToken.loginNo
@@ -422,7 +430,7 @@ export default {
         //   health: '1',
         //   releasEmerchAddr: "'1', '2'", // 职位地址
         //   workCount: '20',
-        //   releasEmerchImg: 'http://baidu.com', // 职位图片
+        //   postionImg: 'http://baidu.com', // 职位图片
         //   workBeginDate: '20200102',
         //   workEndDate: '20200501',
         //   clockBeginDate: '09:00',
@@ -444,7 +452,60 @@ export default {
         })
       }
     },
-    cancel() {}
+    cancel() {},
+
+    checkParamData(data) {
+      let tipContent = ''
+      if (!data.postionName) {
+        tipContent = '职位名称不能为空'
+      }
+      if (!data.postionAddr || !data.postionLngLat) {
+        tipContent = '职位地址不能为空'
+      }
+      if (!data.postionWelfare) {
+        tipContent = '职位福利不能为空'
+      }
+      if (!data.postionRequire) {
+        tipContent = '职位要求不能为空'
+      }
+      if (!data.workTime) {
+        tipContent = '工作时间不能为空'
+      }
+      if (!data.price) {
+        tipContent = '工作单价不能为空'
+      }
+      if (!data.billtype) {
+        tipContent = '职位类型不能为空'
+      }
+      if (!data.positiondes) {
+        tipContent = '工作说明不能为空'
+      }
+      // if (!data.insurance) {
+      //   checkResult.tipContent = '工作说明不能为空'
+      // }
+      // if (!data.margin) {
+      //   checkResult.tipContent = '工作说明不能为空'
+      // }
+      // if (!data.health) {
+      //   checkResult.tipContent = '工作说明不能为空'
+      // }
+      if (!data.workCount) {
+        tipContent = '工作需求人数不能为空'
+      }
+      if (!data.workBeginDate) {
+        tipContent = '工作开始日期不能为空'
+      }
+      if (!data.workEndDate) {
+        tipContent = '工作结束日期不能为空'
+      }
+      if (!data.clockBeginDate) {
+        tipContent = '工作开始时间不能为空'
+      }
+      if (!data.clockEndDate) {
+        tipContent = '工作结束时间不能为空'
+      }
+      return tipContent
+    }
   },
 
   computed: {

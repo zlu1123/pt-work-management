@@ -55,6 +55,8 @@
 <script>
 import { queryEnterpriseRelease, enterpriseManageDelete } from '@/api/user'
 import { formatDateTime } from '@/libs/util'
+import config from '@/config'
+
 export default {
   name: 'job-posting',
   data() {
@@ -104,7 +106,7 @@ export default {
             return h('div', [
               h('Img', {
                 attrs: {
-                  src: params.row.merchImg
+                  src: config.baseUrl.imgUrl + params.row.merchImg
                 },
                 props: {
                   type: 'primary',
@@ -117,7 +119,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.imageUrl = params.row.merchImg
+                    this.imageUrl = config.baseUrl.imgUrl + params.row.merchImg
                     if (
                       this.imageUrl != '' ||
                       this.imageUrl != null ||
@@ -134,15 +136,7 @@ export default {
         {
           title: '企业地址',
           key: 'merchAddr',
-          align: 'center',
-          render: (h, params) => {
-            return h(
-              'div',
-              params.row.merchAddr.split(',')[
-                params.row.merchAddr.split(',').length - 1
-              ]
-            )
-          }
+          align: 'center'
         },
         {
           title: '操作',

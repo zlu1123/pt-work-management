@@ -86,6 +86,7 @@ export default {
       this.merchChargeId = beforePageData.params.merchChargeId
       this.merchId = beforePageData.params.merchId
     } else {
+      debugger
       this.merchName = beforePageData.params.label
       this.merchId = beforePageData.params.value
     }

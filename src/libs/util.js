@@ -526,5 +526,7 @@ export const formatDate = date => {
  * return YYYY年MM月DD
  */
 export const formatDateYYYYMMDD = date => {
-  return date.slice(0,4) + '年' + date.slice(5,6) + '月' + date.slice(7,8) + '日'
+  return (
+    date.slice(0, 4) + '年' + date.slice(5, 6) + '月' + date.slice(7, 8) + '日'
+  )
 }

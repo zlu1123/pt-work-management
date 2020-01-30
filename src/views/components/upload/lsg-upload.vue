@@ -40,7 +40,7 @@
 
 <script>
 import { uploadImageUrl } from '@/api/user'
-import config from '@/config'
+// import config from '@/config'
 export default {
   props: {
     imgUrl: {
@@ -66,9 +66,16 @@ export default {
       this.$emit('getImgUrl', '')
     },
     handleSuccess(res) {
-      if (res && res.retCode === '00000') {
-        let imgURL = config.baseUrl.imgUrl + res.data[0].imgUrl
-        this.$emit('getImgUrl', imgURL)
+      if (res) {
+        if (res.retCode === '00000') {
+          // let imgURL = config.baseUrl.imgUrl + res.data[0].imgUrl
+          let imgURL = res.data[0].imgUrl
+          this.$emit('getImgUrl', imgURL)
+        } else {
+          this.$Notice.warning({
+            desc: res.retInfo
+          })
+        }
       }
     },
     handleView() {
