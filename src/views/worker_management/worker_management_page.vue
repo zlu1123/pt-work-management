@@ -1,6 +1,6 @@
 <template>
   <div>
-    <i-col :span="spanNum">
+    <i-col span="24">
       <Card>
         <p slot="title">
           <Icon type="navicon-round"></Icon>
@@ -18,7 +18,7 @@
         <div style="border: 1px solid #e9eaec; padding: 10px;">
           <Page
             :total="totalCount"
-            :current="pageNo"
+            :current="pageNum"
             show-total
             show-elevator
             show-sizer
@@ -29,28 +29,33 @@
         </div>
       </Card>
     </i-col>
-    <i-col :span="24 - spanNum">
-      详细内容
-    </i-col>
+    <Modal
+      v-model="isShowImgModal"
+      title="图片"
+      @on-ok="isShowImgModal = false"
+      @on-cancel="isShowImgModal = false"
+      width="332"
+    >
+      <img
+        :src="imageUrl"
+        style="width: 300px; height: 400px;margin-left: auto;margin-right: auto;"
+      />
+    </Modal>
   </div>
 </template>
 
 <script>
 import { workManageList } from '@/api/user'
+import config from '@/config'
+import { isNotEmpty } from '@/libs/util'
+
 export default {
-  name: 'job-posting',
+  name: 'worker_management_page',
   data() {
     return {
-      payStatus: '',
-      orderNum: null,
-      storeName: null,
-      deliveryPhone: null,
-      orderStatus: '',
-      orderType: '',
-      startTime: null,
-      endTime: null,
-      spanNum: 24,
-      pageNo: 1,
+      isShowImgModal: false,
+      imageUrl: '',
+      pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
       totalCount: 0,
@@ -63,90 +68,135 @@ export default {
           align: 'center'
         },
         {
-          title: '务工人员名称',
-          key: 'merchId',
+          title: '微信昵称',
+          key: 'userName',
+          width: 150,
+          align: 'center'
+        },
+        {
+          title: '微信头像',
+          key: 'logoAddr',
+          width: 180,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('Img', {
+                attrs: {
+                  src: config.baseUrl.imgUrl + params.row.logoAddr
+                },
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  width: '30px',
+                  height: '30px',
+                  marginTop: '6px'
+                },
+                on: {
+                  click: () => {
+                    this.imageUrl = config.baseUrl.imgUrl + params.row.logoAddr
+                    if (isNotEmpty(params.row.logoAddr)) {
+                      this.isShowImgModal = true
+                    }
+                  }
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '身份证号码',
+          key: 'certNo',
+          width: 180,
+          align: 'center'
+        },
+        {
+          title: '姓名',
+          key: 'custName',
           width: 180,
           align: 'center'
         },
         {
           title: '年龄',
-          key: 'postionId',
-          width: 150,
+          key: 'birthDay',
+          width: 180,
           align: 'center'
         },
         {
           title: '性别',
-          key: 'exemStat',
-          width: 150,
+          key: 'userSex',
           align: 'center',
           render: (h, params) => {
-            return h('div', params.row.exemStat === '1' ? '待申请' : '申请通过')
+            return h('div', params.row.userSex === '1' ? '男' : '女')
           }
         },
         {
           title: '身高',
           key: 'postionId',
+          width: 180,
           align: 'center'
         },
         {
           title: '籍贯',
           key: 'postionId',
+          width: 180,
           align: 'center'
         },
-        // {
-        //   title: '身份证号码',
-        //   key: 'certNo'
-        // },
-        // {
-        //   title: '姓名',
-        //   key: 'certName',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '性别',
-        //   key: 'sex'
-        // },
-        // {
-        //   title: '头像',
-        //   key: 'headImage',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '身高',
-        //   key: 'hign',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '年龄',
-        //   key: 'age',
-        //   align: 'center'
-        // },
         {
-          title: '操作',
-          key: 'action',
-          width: 100,
+          title: '手机号',
+          key: 'mainMobile',
+          width: 180,
+          align: 'center'
+        },
+        {
+          title: '是否实名',
+          key: 'isCert',
+          width: 180,
           align: 'center',
-          render: h => {
+          render: (h, params) => {
+            return h('div', params.row.isCert === '1' ? '是' : '否')
+          }
+        },
+        {
+          title: '是否健康审核',
+          key: 'isHealth',
+          width: 180,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', params.row.isHealth === '1' ? '是' : '否')
+          }
+        },
+        {
+          title: '身份证照片',
+          key: 'identImageAddr',
+          width: 180,
+          align: 'center',
+          render: (h, params) => {
             return h('div', [
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      // this.postionApplyApplyExam(
-                      //   params.row.applyUserId,
-                      //   params.row.postionApplyId
-                      // )
-                      this.spanNum = 12
+              h('Img', {
+                attrs: {
+                  src: config.baseUrl.imgUrl + params.row.identImageAddr
+                },
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  width: '30px',
+                  height: '30px',
+                  marginTop: '6px'
+                },
+                on: {
+                  click: () => {
+                    this.imageUrl =
+                      config.baseUrl.imgUrl + params.row.identImageAddr
+                    if (isNotEmpty(params.row.identImageAddr)) {
+                      this.isShowImgModal = true
                     }
                   }
-                },
-                '详情'
-              )
+                }
+              })
             ])
           }
         }
@@ -157,26 +207,18 @@ export default {
     goToPage(val) {
       // 获取当前页
       this.pageNo = val
-      // this.queryOrderList()
-    },
-    payStatusStr(val) {
-      // 转义支付状态
-      if (val == 0) {
-        return '未支付'
-      } else if (val == 1) {
-        return '已支付'
-      }
+      this.querWorkerList()
     },
 
     queryOrderInfo() {
       // 查询按钮
-      this.pageNo = 1
-      this.queryOrderList()
+      this.pageNum = 1
+      this.querWorkerList()
     },
     getMaxRows(val) {
       // 获取当前页最大条数
       this.maxRows = val
-      this.queryOrderList()
+      this.querWorkerList()
     },
 
     goDetail(orderId, orderType) {
@@ -190,26 +232,20 @@ export default {
       this.$router.push({
         path: '/job_add'
       })
+    },
+    querWorkerList() {
+      workManageList({
+        pageNum: this.pageNum,
+        pageSize: this.maxRows
+      }).then(res => {
+        if (res && res.data.retCode === '00000') {
+          this.orderList = res.data.data
+        }
+      })
     }
-    // postionApplyApplyExam(applyUserId, postionApplyId) {
-    //   postionApplyApplyExam({
-    //     postionApplyId: postionApplyId
-    //   })
-    // }
   },
   mounted() {
-    // postionApplyApplyList().then(res => {
-    //   // { applyExemStat: 1 }
-    //   console.log(res)
-    //   this.orderList = res.data.data
-    // })
-    this.orderList = [
-      {
-        merchId: '谢明刚'
-      }
-    ]
-
-    workManageList()
+    this.querWorkerList()
   }
 }
 </script>

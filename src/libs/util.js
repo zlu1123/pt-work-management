@@ -530,3 +530,13 @@ export const formatDateYYYYMMDD = date => {
     date.slice(0, 4) + '年' + date.slice(5, 6) + '月' + date.slice(7, 8) + '日'
   )
 }
+
+/**
+ * return YYYY年MM月DD
+ */
+export const isNotEmpty = str => {
+  if (str !== '' && str !== null && str !== undefined) {
+    return true
+  }
+  return false
+}

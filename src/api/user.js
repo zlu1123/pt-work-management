@@ -186,7 +186,7 @@ export const enterpriseRechargeWeChatPay = params => {
 // 工资审核-发放工资职位列表
 export const queryfinanceWageAuditPage = params => {
   return axios.request({
-    url: '/financeWageAudit/page',
+    url: '/finance/page',
     data: params,
     method: 'post'
   })
@@ -195,7 +195,7 @@ export const queryfinanceWageAuditPage = params => {
 // 工资审核-职位工作人员工资审核
 export const financeWageAudit = params => {
   return axios.request({
-    url: '/financeWageAudit/audit',
+    url: '/finance/audit',
     data: params,
     method: 'post'
   })
@@ -285,7 +285,7 @@ export const noticeOrAdDelete = params => {
 // 务工人员列表
 export const workManageList = params => {
   return axios.request({
-    url: '/workManage/list',
+    url: '/worker/list',
     data: params,
     method: 'post'
   })
@@ -294,7 +294,7 @@ export const workManageList = params => {
 // 务工人员详细信息
 export const workManageInfo = params => {
   return axios.request({
-    url: '/workManage/info',
+    url: '/worker/info',
     data: params,
     method: 'post'
   })
@@ -303,7 +303,7 @@ export const workManageInfo = params => {
 // 务工人员实名认证信息
 export const workManageIdtfy = params => {
   return axios.request({
-    url: '/workManage/idtfy',
+    url: '/worker/idtfy',
     data: params,
     method: 'post'
   })
@@ -312,7 +312,7 @@ export const workManageIdtfy = params => {
 // 平台用户列表
 export const platformUserPage = params => {
   return axios.request({
-    url: '/platformUser/page',
+    url: '/platformer/page',
     data: params,
     method: 'post'
   })
@@ -321,7 +321,7 @@ export const platformUserPage = params => {
 // 平台用户新增
 export const platformUserInsert = params => {
   return axios.request({
-    url: '/platformUser/insert',
+    url: '/platformer/insert',
     data: params,
     method: 'post'
   })
@@ -330,7 +330,7 @@ export const platformUserInsert = params => {
 // 平台用户更新
 export const platformUserUpdate = params => {
   return axios.request({
-    url: '/platformUser/update',
+    url: '/platformer/update',
     data: params,
     method: 'post'
   })
@@ -339,7 +339,7 @@ export const platformUserUpdate = params => {
 // 平台用户删除
 export const platformUserDelete = params => {
   return axios.request({
-    url: '/platformUser/delete',
+    url: '/platformer/delete',
     data: params,
     method: 'post'
   })
@@ -355,3 +355,48 @@ export const uploadImageUpload = params => {
 }
 
 export const uploadImageUrl = '/uploadImage/upload'
+
+// 首页接口1
+export const getIndexFirst = params => {
+  return axios.request({
+    url: '/common/index/page1',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 首页接口2
+export const getIndexSecond = params => {
+  return axios.request({
+    url: '/common/index/page2',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 首页接口3
+export const getIndexThird = params => {
+  return axios.request({
+    url: '/common/index/page3',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 首页接口4
+export const getIndexFourth = params => {
+  return axios.request({
+    url: '/common/index/page4',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 财务报表
+export const financeReportForm = params => {
+  return axios.request({
+    url: '/financeReportForm/page',
+    data: params,
+    method: 'post'
+  })
+}

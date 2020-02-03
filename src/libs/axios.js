@@ -30,7 +30,8 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         //
-      }
+      },
+      data: {}
     }
     return config
   }
@@ -49,6 +50,9 @@ class HttpRequest {
           // Spin.show() // 不建议开启，因为界面不友好
         }
         this.queue[url] = true
+        if (!config.data) {
+          config.data = {}
+        }
         return config
       },
       error => {

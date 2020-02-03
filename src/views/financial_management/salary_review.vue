@@ -141,7 +141,11 @@ export default {
     //     this.endTime = this.$route.query.endTime;
     // }
     // this.queryOrderList();
-    queryfinanceWageAuditPage()
+    queryfinanceWageAuditPage({
+      financer: this.getCookieToken.loginNo
+    }).then(res => {
+      console.log(res)
+    })
   }
 }
 </script>

@@ -3,7 +3,7 @@
     <i-col>
       <Card>
         <Row>
-          <Button type="primary" icon="md-add" @click="addJobInfo"
+          <Button type="primary" icon="md-add" @click="addPlatformInfo"
             >平台用户新增</Button
           >
         </Row>
@@ -29,7 +29,7 @@
         <div style="border: 1px solid #e9eaec; padding: 10px;">
           <Page
             :total="totalCount"
-            :current="pageNo"
+            :current="pageNum"
             show-total
             show-elevator
             show-sizer
@@ -58,7 +58,7 @@ export default {
       startTime: null,
       endTime: null,
       spanNum: 24,
-      pageNo: 1,
+      pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
       totalCount: 0,
@@ -71,17 +71,21 @@ export default {
         },
         {
           title: '平台用户名称',
-          key: 'crmMerchantName',
+          key: 'loginNo',
           align: 'center'
         },
         {
-          title: '平台用户ID',
-          key: 'storeName'
+          title: '平台用户类型',
+          key: 'userType',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', this.getUserType(params.row.userType))
+          }
         },
         {
           title: '操作',
           key: 'action',
-          width: 150,
+          width: 200,
           align: 'center',
           render: (h, params) => {
             return h('div', [
@@ -97,11 +101,29 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.goDetail(params.row.id, params.row.orderType)
+                      this.goDetail(params.row, 'detail')
                     }
                   }
                 },
-                '编辑'
+                '详情'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '10px'
+                  },
+                  on: {
+                    click: () => {
+                      this.goDetail(params.row, 'update')
+                    }
+                  }
+                },
+                '更新'
               ),
               h(
                 'Button',
@@ -110,12 +132,12 @@ export default {
                     type: 'error',
                     size: 'small'
                   },
-                  style: {
-                    marginRight: '0px'
-                  },
                   on: {
                     click: () => {
-                      this.goDetail(params.row.id, params.row.orderType)
+                      this.deleteItem(
+                        params.row.releasEmerch,
+                        params.row.postionId
+                      )
                     }
                   }
                 },
@@ -129,39 +151,111 @@ export default {
     }
   },
   methods: {
+    getUserType(userType) {
+      let typeName = ''
+      switch (userType) {
+        case '00':
+          typeName = '系统管理员'
+          break
+        case '01':
+          typeName = '务工'
+          break
+        case '02':
+          typeName = '商户'
+          break
+        case '03':
+          typeName = '平台'
+          break
+        case '04':
+          typeName = '财务'
+          break
+        default:
+          break
+      }
+      return typeName
+    },
     goToPage(val) {
       // 获取当前页
-      this.pageNo = val
+      this.pageNum = val
       // this.queryOrderList()
     },
 
     queryOrderInfo() {
       // 查询按钮
-      this.pageNo = 1
-      this.queryOrderList()
+      this.pageNum = 1
+      this.queryPlatformUser()
     },
     getMaxRows(val) {
       // 获取当前页最大条数
       this.maxRows = val
-      this.queryOrderList()
+      this.queryPlatformUser()
     },
 
-    goDetail(orderId, orderType) {
+    goDetail(item, flag) {
       this.$router.push({
-        name: 'order-details',
-        query: { orderId: orderId, orderType: orderType }
+        path: '/platform_user_maintenance_add',
+        query: {
+          flag: flag,
+          params: item
+        }
       })
     },
 
-    addJobInfo() {
+    addPlatformInfo() {
       this.$router.push({
-        path: '/job_add'
+        path: '/platform_user_maintenance_add',
+        query: {
+          flag: 'add',
+          params: this.businessItem
+        }
+      })
+    },
+
+    // deleteItem(merchId, merchChargeId) {
+    //   this.$Modal.confirm({
+    //     title: '提醒',
+    //     content: '<p>确认删除当前企业负责人吗？</p>',
+    //     loading: true,
+    //     onOk: () => {
+    //       enterpriseDirectorDelete({
+    //         merchId: merchId,
+    //         merchChargeId: merchChargeId
+    //       }).then(res => {
+    //         if (res.data && res.data.retCode === '00000') {
+    //           this.$Modal.remove()
+    //           this.$Message.info('删除成功')
+    //           this.queryList()
+    //         }
+    //       })
+    //     }
+    //   })
+    // },
+
+    getNoAdminUser(list) {
+      let arrayList = []
+      if (list && list.length > 0) {
+        for (let item of list) {
+          if (item.userType !== '00') {
+            arrayList.push(item)
+          }
+        }
+      }
+      return arrayList
+    },
+
+    queryPlatformUser() {
+      platformUserPage({
+        pageNum: this.pageNum,
+        pageSize: this.maxRows
+      }).then(res => {
+        if (res && res.data.retCode === '00000') {
+          this.orderList = this.getNoAdminUser(res.data.data.list)
+        }
       })
     }
   },
   mounted() {
-    platformUserPage()
-    this.orderList = [{ crmMerchantName: 'test1' }]
+    this.queryPlatformUser()
   }
 }
 </script>

@@ -3,7 +3,20 @@
 </template>
 
 <script>
-export default {}
+import { financeReportForm } from '@/api/user'
+export default {
+  mounted() {
+    this.requestInfo()
+  },
+
+  methods: {
+    requestInfo() {
+      financeReportForm().then(res => {
+        console.log(res)
+      })
+    }
+  }
+}
 </script>
 
 <style></style>

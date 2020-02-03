@@ -289,6 +289,18 @@ export default [
         },
         component: () =>
           import('@/views/platform_management/address_management.vue')
+      },
+      {
+        path: '/platform_user_maintenance_add',
+        name: 'platform_user_maintenance_add',
+        meta: {
+          hideInMenu: true,
+          title: '务工人员新增'
+        },
+        component: () =>
+          import(
+            '@/views/platform_management/platform_user_maintenance_add.vue'
+          )
       }
     ]
   },
@@ -379,6 +391,12 @@ export const otherRouter = {
       name: 'advertising_maintenance_add',
       component: () =>
         import('@/views/advertising_management/advertising_maintenance_add.vue')
+    },
+    {
+      path: '/platform_user_maintenance_add',
+      name: 'platform_user_maintenance_add',
+      component: () =>
+        import('@/views/platform_management/platform_user_maintenance_add.vue')
     }
   ]
 }
