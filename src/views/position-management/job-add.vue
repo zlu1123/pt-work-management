@@ -363,7 +363,7 @@ export default {
     },
     uploadImgMethod(item) {
       this.positionInfo.postionImg = item
-      this.postionImg = config.baseUrl.imgUrl + item
+      this.postionImg = item ? config.baseUrl.imgUrl + item : ''
     },
     chooseAddr() {
       this.showMap = true

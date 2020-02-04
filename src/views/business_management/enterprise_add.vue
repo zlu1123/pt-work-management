@@ -147,8 +147,9 @@ export default {
       this.merchMobile = beforePageData.params.merchMobile
       this.merchShowImg = config.baseUrl.imgUrl + this.merchImg
       this.merchAddr = beforePageData.params.merchAddr
-      this.merchLngLat = beforePageData.params.merchLngLat
+      this.merchLngLat = beforePageData.params.merchLngLat.split(',')
       this.merchAddrName = beforePageData.params.merchAddr
+      this.merchInfo = beforePageData.params.merchInfo
     }
   },
   methods: {
@@ -162,7 +163,7 @@ export default {
     },
     uploadImgMethod(item) {
       this.merchImg = item
-      this.merchShowImg = config.baseUrl.imgUrl + item
+      this.merchShowImg = item ? config.baseUrl.imgUrl + item : ''
     },
     chooseAddr() {
       this.showMap = true
@@ -210,7 +211,7 @@ export default {
           merchImg: this.merchImg,
           merchMobile: this.merchMobile,
           merchEmail: this.merchEmail,
-          merchLngLat: this.merchLngLat,
+          merchLngLat: this.merchLngLat.join(','),
           merchInfo: this.merchInfo
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
@@ -234,7 +235,7 @@ export default {
           merchImg: this.merchImg,
           merchMobile: this.merchMobile,
           merchEmail: this.merchEmail,
-          merchLngLat: this.merchLngLat,
+          merchLngLat: this.merchLngLat.join(','),
           merchInfo: this.merchInfo
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {

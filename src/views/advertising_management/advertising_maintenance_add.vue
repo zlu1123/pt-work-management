@@ -28,7 +28,7 @@
             <i-col :span="24" class="mar-top-10" style="display: flex;">
               <label>请上传轮播图图片：</label>
               <lsg-upload
-                :imgUrl.sync="adImgUrl"
+                :imgUrl.sync="adImg"
                 @getImgUrl="uploadImgMethod"
                 :uploadImg="updateFlag"
                 style="display: inline-block"
@@ -57,6 +57,7 @@
 <script>
 import { noticeOrAdInsert, noticeOrAdUpdate } from '@/api/user'
 import lsgUpload from '../components/upload/lsg-upload'
+import config from '@/config'
 
 export default {
   name: 'searchable-table',
@@ -66,6 +67,7 @@ export default {
   data() {
     return {
       adImgUrl: '',
+      adImg: '',
       updateFlag: false,
       popTitle: '您确认增加当前轮播图吗？',
       disabled: false,
@@ -84,8 +86,8 @@ export default {
         this.id = this.info = beforePageData.params.id
         this.popTitle = '您确认更新当前轮播图吗？'
       }
-      debugger
       this.adImgUrl = beforePageData.params.imgUrl
+      this.adImg = config.baseUrl.imgUrl + beforePageData.params.imgUrl
       this.seq = beforePageData.params.seq
       this.info = beforePageData.params.info
     }
@@ -93,6 +95,7 @@ export default {
   methods: {
     uploadImgMethod(item) {
       this.adImgUrl = item
+      this.adImg = item ? config.baseUrl.imgUrl + item : ''
     },
     returnLastPage() {
       this.$router.go(-1)
