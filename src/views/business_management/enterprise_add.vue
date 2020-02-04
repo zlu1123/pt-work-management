@@ -104,6 +104,7 @@ import { enterpriseManageInsert, enterpriseReleaseUpdate } from '@/api/user'
 import addressMap from '../components/amap/address-map.vue'
 import lsgUpload from '../components/upload/lsg-upload.vue'
 import config from '@/config'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'searchable-table',
@@ -249,6 +250,9 @@ export default {
       }
     },
     cancel() {}
+  },
+  computed: {
+    ...mapGetters(['getCookieToken'])
   }
 }
 </script>

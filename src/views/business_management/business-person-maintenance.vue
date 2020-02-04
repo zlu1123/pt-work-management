@@ -11,6 +11,7 @@
             not-found-text
             :label-in-value="true"
             @on-change="chooseMerch"
+            :disabled="getCookieToken.userType === '03'"
           >
             <Option
               v-for="item in businessList"
@@ -297,13 +298,21 @@ export default {
     }
   },
   mounted() {
-    // session loginNo
-    // this.queryList()
-    this.getBusinessList()
+    if (this.getCookieToken.userType !== '03') {
+      this.getBusinessList()
+    } else {
+      this.businessList = [this.getMerchInfo]
+      this.mainTenance = this.getMerchInfo.merchId
+      this.businessItem = {
+        value: this.getMerchInfo.merchId,
+        label: this.getMerchInfo.merchName
+      }
+      this.queryList()
+    }
   },
 
   computed: {
-    ...mapGetters(['getCookieToken'])
+    ...mapGetters(['getCookieToken', 'getMerchInfo'])
   }
 }
 </script>

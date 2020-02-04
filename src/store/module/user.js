@@ -19,7 +19,8 @@ export default {
     messageUnreadList: [],
     messageReadedList: [],
     messageTrashList: [],
-    messageContentStore: {}
+    messageContentStore: {},
+    merchInfo: {}
   },
   mutations: {
     setAvatar(state, avatarPath) {
@@ -62,13 +63,17 @@ export default {
       const msgItem = state[from].splice(index, 1)[0]
       msgItem.loading = false
       state[to].unshift(msgItem)
+    },
+    setMerchInfo(state, data) {
+      state.merchInfo = Object.assign({}, state.merchInfo, data)
     }
   },
   getters: {
     messageUnreadCount: state => state.messageUnreadList.length,
     messageReadedCount: state => state.messageReadedList.length,
     messageTrashCount: state => state.messageTrashList.length,
-    getCookieToken: state => state.token
+    getCookieToken: state => state.token,
+    getMerchInfo: state => state.merchInfo
   },
   actions: {
     // 登录
@@ -80,24 +85,26 @@ export default {
           pwd: password
         })
           .then(res => {
-            const userInfo = res.data.data
-            commit('setToken', userInfo)
-            commit('setUserId', userInfo.loginNo)
-            // 角色：
-            // 超级管理员：所有权限
-            // 平台管理员：所有权限
-            // 平台用户：除过财务管理所有模块
-            // 平台财务：首页、财务管理
-            // 企业管理员：首页（企业职位统计、职位报名实到统计）、职位管理、企业管理（企业负责人维护、企业充值维护）
-            if (userInfo.userType === '00') {
-              commit('setAccess', ['00', '01', '03'])
-            } else if (userInfo.userType === '01') {
-              commit('setAccess', ['01'])
-            } else if (userInfo.userType === '03') {
-              commit('setAccess', ['03'])
+            if (res && res.data.retCode === '00000') {
+              const userInfo = res.data.data
+              commit('setToken', userInfo)
+              commit('setUserId', userInfo.loginNo)
+              // 角色：
+              // 超级管理员：所有权限
+              // 平台管理员：所有权限
+              // 平台用户：除过财务管理所有模块
+              // 平台财务：首页、财务管理
+              // 企业管理员：首页（企业职位统计、职位报名实到统计）、职位管理、企业管理（企业负责人维护、企业充值维护）
+              if (userInfo.userType === '00') {
+                commit('setAccess', ['00', '01', '03'])
+              } else if (userInfo.userType === '01') {
+                commit('setAccess', ['01'])
+              } else if (userInfo.userType === '03') {
+                commit('setAccess', ['03'])
+              }
+              commit('setHasGetInfo', true)
+              resolve(res)
             }
-            commit('setHasGetInfo', true)
-            resolve(res)
           })
           .catch(err => {
             reject(err)

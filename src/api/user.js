@@ -400,3 +400,11 @@ export const financeReportForm = params => {
     method: 'post'
   })
 }
+
+export const positionApplyUserList = params => {
+  return axios.request({
+    url: '/postionApply/positionApplyUserList',
+    data: params,
+    method: 'post'
+  })
+}

@@ -1,6 +1,7 @@
 import axios from 'axios'
 // import store from '@/store'
 // import { Spin } from 'iview'
+import { Notice } from 'iview'
 // const addErrorLog = errorInfo => {
 //   const {
 //     statusText,
@@ -64,6 +65,12 @@ class HttpRequest {
       res => {
         this.destroy(url)
         const { data, status } = res
+        if (res.data.retCode !== '00000') {
+          Notice.error({
+            title: '提醒',
+            desc: res.data.retInfo
+          })
+        }
         return { data, status }
       },
       error => {

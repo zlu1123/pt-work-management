@@ -1,5 +1,49 @@
 <template>
   <div>
+    <i-col>
+      <Card>
+        <Row>
+          <i-col span="12">
+            <label>请选择企业：</label>
+            <Select
+              v-model="merchId"
+              style="width:200px"
+              clearable
+              not-found-text
+              :label-in-value="true"
+              @on-change="chooseMerch"
+              :disabled="getCookieToken.userType === '03'"
+            >
+              <Option
+                v-for="item in merchList"
+                :value="item.merchId"
+                :key="item.merchId"
+                >{{ item.merchName }}</Option
+              >
+            </Select>
+          </i-col>
+          <i-col span="12">
+            <label>请选择职位：</label>
+            <Select
+              v-model="postionId"
+              style="width:200px"
+              clearable
+              not-found-text
+              :label-in-value="true"
+              @on-change="choosePostion"
+              :disabled="getCookieToken.userType === '03'"
+            >
+              <Option
+                v-for="item in positionList"
+                :value="item.postionId"
+                :key="item.postionId"
+                >{{ item.postionName }}</Option
+              >
+            </Select>
+          </i-col>
+        </Row>
+      </Card>
+    </i-col>
     <i-col :span="24">
       <Card>
         <p slot="title">
@@ -33,21 +77,21 @@
 </template>
 
 <script>
-import { postionApplyApplyList, postionApplyApplyExam } from '@/api/user'
+import {
+  postionApplyApplyExam,
+  queryEnterpriseRelease,
+  postionReleasePage,
+  positionApplyUserList
+} from '@/api/user'
 import { mapGetters } from 'vuex'
 export default {
   name: 'job-posting',
   data() {
     return {
-      payStatus: '',
-      orderNum: null,
-      storeName: null,
-      deliveryPhone: null,
-      orderStatus: '',
-      orderType: '',
-      startTime: null,
-      endTime: null,
-      spanNum: 24,
+      merchId: '',
+      merchList: [],
+      postionId: '',
+      positionList: [],
       pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
@@ -229,22 +273,80 @@ export default {
     queryList() {
       let queryParams = {
         pageNum: this.pageNum,
-        pageSize: this.maxRows
+        pageSize: this.maxRows,
+        postionId: this.postionId,
+        merchId: this.merchId,
+        exemStat: '1'
       }
       if (this.getCookieToken.userType === '03') {
         queryParams.merchId = this.getCookieToken.loginNo
       }
-      postionApplyApplyList(queryParams).then(res => {
+      positionApplyUserList(queryParams).then(res => {
         const data = res.data.data
         if (data) {
           this.totalCount = data.total
           this.orderList = data.list
         }
       })
+    },
+
+    getBusinessList() {
+      queryEnterpriseRelease({}).then(res => {
+        if (res.data) {
+          if (res.data.retCode === '00000') {
+            this.merchList = res.data.data.list
+            this.merchId = this.merchList[0].merchId
+            this.queryPostionList()
+          }
+        }
+      })
+    },
+
+    queryPostionList() {
+      let queryParams = {}
+      if (this.getCookieToken.userType !== '03') {
+        queryParams.merchId = this.merchId
+      }
+      postionReleasePage(queryParams).then(res => {
+        if (res.data) {
+          if (res.data.retCode === '00000') {
+            this.positionList = res.data.data.list
+            if (this.positionList.length > 0) {
+              this.postionId = res.data.data.list[0].postionId
+              this.queryList()
+            } else {
+              this.postionId = ''
+            }
+          } else {
+            this.positionList = []
+            this.postionId = ''
+          }
+        } else {
+          this.positionList = []
+          this.postionId = ''
+        }
+      })
+    },
+
+    chooseMerch(item) {
+      if (item && item.value) {
+        this.merchId = item.value
+        this.queryPostionList()
+      }
+    },
+
+    choosePostion(item) {
+      if (item && item.value) {
+        this.postionId = item.value
+        this.queryList()
+      } else {
+        this.orderList = []
+      }
     }
   },
   mounted() {
-    this.queryList()
+    // this.queryList()
+    this.getBusinessList()
   },
   computed: {
     ...mapGetters(['getCookieToken'])

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <i-col>
+    <i-col v-if="getCookieToken.userType !== '03'">
       <Card>
         <Row>
           <Button type="primary" icon="md-add" @click="addJobInfo"
@@ -54,8 +54,9 @@
 
 <script>
 import { queryEnterpriseRelease, enterpriseManageDelete } from '@/api/user'
-import { formatDateTime } from '@/libs/util'
+// import { formatDateTime } from '@/libs/util'
 import config from '@/config'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'job-posting',
@@ -89,17 +90,21 @@ export default {
           align: 'center'
         },
         {
-          title: '企业创建时间',
-          key: 'createTime',
-          width: 180,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', formatDateTime(params.row.createTime))
-          }
+          title: '企业邮箱',
+          key: 'merchEmail',
+          align: 'center'
         },
-
+        // {
+        //   title: '企业创建时间',
+        //   key: 'createTime',
+        //   width: 180,
+        //   align: 'center',
+        //   render: (h, params) => {
+        //     return h('div', formatDateTime(params.row.createTime))
+        //   }
+        // },
         {
-          title: '企业图片',
+          title: '企业LOGO',
           key: 'merchImg',
           align: 'center',
           render: (h, params) => {
@@ -267,15 +272,35 @@ export default {
       }).then(res => {
         if (res.data) {
           if (res.data.retCode === '00000') {
-            this.totalCount = res.data.data.total
-            this.orderList = res.data.data.list
+            if (this.getCookieToken.userType !== '03') {
+              this.totalCount = res.data.data.total
+              this.orderList = res.data.data.list
+            } else {
+              this.totalCount = 1
+              this.orderList = this.getMerchInfo(res.data.data.list)
+            }
           }
         }
       })
+    },
+
+    getMerchInfo(list) {
+      let newArray = []
+      for (let item of list) {
+        if (item.merchId === this.getCookieToken.loginNo) {
+          this.$store.commit('setMerchInfo', item)
+          newArray.push(item)
+          break
+        }
+      }
+      return newArray
     }
   },
   mounted() {
     this.getListInfo()
+  },
+  computed: {
+    ...mapGetters(['getCookieToken'])
   }
 }
 </script>
