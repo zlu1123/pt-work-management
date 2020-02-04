@@ -18,7 +18,7 @@
         <div style="border: 1px solid #e9eaec; padding: 10px;">
           <Page
             :total="totalCount"
-            :current="pageNo"
+            :current="pageNum"
             show-total
             show-elevator
             show-sizer
@@ -48,7 +48,7 @@ export default {
       startTime: null,
       endTime: null,
       spanNum: 24,
-      pageNo: 1,
+      pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
       totalCount: 0,
@@ -165,8 +165,8 @@ export default {
   methods: {
     goToPage(val) {
       // 获取当前页
-      this.pageNo = val
-      // this.queryOrderList()
+      this.pageNum = val
+      this.queryList()
     },
     payStatusStr(val) {
       // 转义支付状态
@@ -179,13 +179,13 @@ export default {
 
     queryOrderInfo() {
       // 查询按钮
-      this.pageNo = 1
-      this.queryOrderList()
+      this.pageNum = 1
+      this.queryList()
     },
     getMaxRows(val) {
       // 获取当前页最大条数
       this.maxRows = val
-      this.queryOrderList()
+      this.queryList()
     },
 
     goDetail(orderId, orderType) {
@@ -228,13 +228,14 @@ export default {
 
     queryList() {
       postionApplyApplyList({
-        merchId: this.getCookieToken.loginNo
+        merchId: this.getCookieToken.loginNo,
+        pageNum: this.pageNum,
+        pageSize: this.maxRows
       }).then(res => {
         const data = res.data.data
         if (data) {
-          if (Object.keys(data[0]).length > 0) {
-            this.orderList = data
-          }
+          this.totalCount = data.total
+          this.orderList = data.list
         }
       })
     }

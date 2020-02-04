@@ -209,7 +209,9 @@ export default {
           merchId: this.merchCharge,
           merchImg: this.merchImg,
           merchMobile: this.merchMobile,
-          merchEmail: this.merchEmail
+          merchEmail: this.merchEmail,
+          merchLngLat: this.merchLngLat,
+          merchInfo: this.merchInfo
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({
@@ -231,7 +233,9 @@ export default {
           merchAddr: this.merchAddr,
           merchImg: this.merchImg,
           merchMobile: this.merchMobile,
-          merchEmail: this.merchEmail
+          merchEmail: this.merchEmail,
+          merchLngLat: this.merchLngLat,
+          merchInfo: this.merchInfo
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({

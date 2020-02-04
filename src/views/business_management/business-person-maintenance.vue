@@ -49,7 +49,7 @@
         <div style="border: 1px solid #e9eaec; padding: 10px;">
           <Page
             :total="totalCount"
-            :current="pageNo"
+            :current="pageNum"
             show-total
             show-elevator
             show-sizer
@@ -84,7 +84,7 @@ export default {
       startTime: null,
       endTime: null,
       spanNum: 24,
-      pageNo: 1,
+      pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
       totalCount: 0,
@@ -197,19 +197,19 @@ export default {
     },
     goToPage(val) {
       // 获取当前页
-      this.pageNo = val
-      // this.queryOrderList()
+      this.pageNum = val
+      this.queryList()
     },
 
     queryOrderInfo() {
       // 查询按钮
-      this.pageNo = 1
-      this.queryOrderList()
+      this.pageNum = 1
+      this.queryList()
     },
     getMaxRows(val) {
       // 获取当前页最大条数
       this.maxRows = val
-      this.queryOrderList()
+      this.queryList()
     },
 
     goDetail(item, flag) {
@@ -263,11 +263,11 @@ export default {
       queryEnterpriseRelease({}).then(res => {
         if (res.data) {
           if (res.data.retCode === '00000') {
-            this.businessList = res.data.data
-            this.mainTenance = res.data.data[0].merchId
+            this.businessList = res.data.data.list
+            this.mainTenance = res.data.data.list[0].merchId
             this.businessItem = {
               value: this.mainTenance,
-              label: res.data.data[0].merchName
+              label: res.data.data.list[0].merchName
             }
             this.queryList()
           }
@@ -285,10 +285,13 @@ export default {
       }
       enterpriseDirectorPage({
         // merchId: this.getCookieToken.loginNo
-        merchId: this.mainTenance
+        merchId: this.mainTenance,
+        pageNum: this.pageNum,
+        pageSize: this.maxRows
       }).then(res => {
         if (res.data && res.data.retCode === '00000') {
-          this.orderList = res.data.data
+          this.totalCount = res.data.data.total
+          this.orderList = res.data.data.list
         }
       })
     }

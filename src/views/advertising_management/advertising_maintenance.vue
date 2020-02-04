@@ -252,6 +252,7 @@ export default {
         pageNum: this.pageNo
       }).then(res => {
         if (res && res.data.retCode === '00000') {
+          this.totalCount = res.data.data.total
           this.orderList = res.data.data.list
         }
       })

@@ -26,7 +26,7 @@
         <div style="border: 1px solid #e9eaec; padding: 10px;">
           <Page
             :total="totalCount"
-            :current="pageNo"
+            :current="pageNum"
             show-total
             show-elevator
             show-sizer
@@ -211,18 +211,18 @@ export default {
     goToPage(val) {
       // 获取当前页
       this.pageNum = val
-      this.queryOrderList()
+      this.getListInfo()
     },
 
     queryOrderInfo() {
       // 查询按钮
       this.pageNum = 1
-      this.queryOrderList()
+      this.getListInfo()
     },
     getMaxRows(val) {
       // 获取当前页最大条数
       this.maxRows = val
-      this.queryOrderList()
+      this.getListInfo()
     },
 
     deleteItem(id) {
@@ -267,6 +267,7 @@ export default {
       }).then(res => {
         if (res.data) {
           if (res.data.retCode === '00000') {
+            this.totalCount = res.data.data.total
             this.orderList = res.data.data.list
           }
         }

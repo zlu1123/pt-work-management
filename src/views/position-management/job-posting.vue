@@ -25,7 +25,7 @@
         <div style="border: 1px solid #e9eaec; padding: 10px;">
           <Page
             :total="totalCount"
-            :current="pageNo"
+            :current="pageNum"
             show-total
             show-elevator
             show-sizer
@@ -56,7 +56,7 @@ export default {
       startTime: null,
       endTime: null,
       spanNum: 24,
-      pageNo: 1,
+      pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
       totalCount: 0,
@@ -239,7 +239,10 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.deleteItem(params.row.releasEmerch, params.row.postionId)
+                      this.deleteItem(
+                        params.row.releasEmerch,
+                        params.row.postionId
+                      )
                     }
                   }
                 },
@@ -258,7 +261,13 @@ export default {
         let typeList = type.split(',')
         let positionWelfare = ''
         for (let i = 0; i < typeList.length; i++) {
-          positionWelfare += (i !== 0 ? '、' : '') + `${flag === 0 ? this.getWelfareName(typeList[i]) : this.getRequireName(typeList[i])}`
+          positionWelfare +=
+            (i !== 0 ? '、' : '') +
+            `${
+              flag === 0
+                ? this.getWelfareName(typeList[i])
+                : this.getRequireName(typeList[i])
+            }`
         }
         return positionWelfare
       }
@@ -339,19 +348,19 @@ export default {
     },
     goToPage(val) {
       // 获取当前页
-      this.pageNo = val
-      // this.queryOrderList()
+      this.pageNum = val
+      this.queryList()
     },
 
     queryOrderInfo() {
       // 查询按钮
-      this.pageNo = 1
-      this.queryOrderList()
+      this.pageNum = 1
+      this.queryList()
     },
     getMaxRows(val) {
       // 获取当前页最大条数
       this.maxRows = val
-      this.queryOrderList()
+      this.queryList()
     },
 
     goDetail(item, flag) {
@@ -392,9 +401,12 @@ export default {
 
     queryList() {
       postionReleasePage({
-        merchId: this.getCookieToken.loginNo
+        merchId: this.getCookieToken.loginNo,
+        pageNum: this.pageNum,
+        pageSize: this.maxRows
       }).then(res => {
-        this.orderList = res.data.data
+        this.totalCount = res.data.data.total
+        this.orderList = res.data.data.list
       })
     }
   },
