@@ -56,7 +56,7 @@ export default [
     meta: {
       icon: 'md-briefcase',
       title: '企业管理',
-      access: ['00', '01']
+      access: ['00', '01', '03']
     },
     component: Main,
     children: [

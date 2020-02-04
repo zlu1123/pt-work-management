@@ -400,11 +400,14 @@ export default {
     },
 
     queryList() {
-      postionReleasePage({
-        merchId: this.getCookieToken.loginNo,
+      let queryParams = {
         pageNum: this.pageNum,
         pageSize: this.maxRows
-      }).then(res => {
+      }
+      if (this.getCookieToken.userType === '03') {
+        queryParams.merchId = this.getCookieToken.loginNo
+      }
+      postionReleasePage(queryParams).then(res => {
         this.totalCount = res.data.data.total
         this.orderList = res.data.data.list
       })
