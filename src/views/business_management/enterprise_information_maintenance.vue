@@ -70,7 +70,7 @@ export default {
       startTime: null,
       endTime: null,
       spanNum: 24,
-      pageNo: 1,
+      pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
       totalCount: 0,
@@ -210,13 +210,13 @@ export default {
     },
     goToPage(val) {
       // 获取当前页
-      this.pageNo = val
-      // this.queryOrderList()
+      this.pageNum = val
+      this.queryOrderList()
     },
 
     queryOrderInfo() {
       // 查询按钮
-      this.pageNo = 1
+      this.pageNum = 1
       this.queryOrderList()
     },
     getMaxRows(val) {
@@ -261,10 +261,13 @@ export default {
     },
 
     getListInfo() {
-      queryEnterpriseRelease({}).then(res => {
+      queryEnterpriseRelease({
+        pageNum: this.pageNum,
+        pageSize: this.maxRows
+      }).then(res => {
         if (res.data) {
           if (res.data.retCode === '00000') {
-            this.orderList = res.data.data
+            this.orderList = res.data.data.list
           }
         }
       })

@@ -16,8 +16,6 @@
           平台用户列表
         </p>
         <div style="overflow: auto;height: 540px;" class="margin-top-5">
-          <!-- // <Table style="min-width: 1000px;" v-if="!queryDetailAuth" highlight-row  border :columns="orderListTitle1" :data="orderList"></Table>
-                    // <Table style="min-width: 1000px;" v-if="queryDetailAuth" highlight-row  border :columns="orderListTitle" :data="orderList"></Table> -->
           <i-table
             style="min-width: 1000px;"
             highlight-row
@@ -46,18 +44,9 @@
 <script>
 import { platformUserPage } from '@/api/user'
 export default {
-  name: 'job-posting',
+  name: 'platform_user_maintenance',
   data() {
     return {
-      payStatus: '',
-      orderNum: null,
-      storeName: null,
-      deliveryPhone: null,
-      orderStatus: '',
-      orderType: '',
-      startTime: null,
-      endTime: null,
-      spanNum: 24,
       pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
@@ -65,9 +54,16 @@ export default {
       orderListTitle: [
         {
           title: '序号',
-          type: 'index',
+          // type: 'index',
           width: 70,
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            let pageNo = this.pageNum
+            let maxRows = this.maxRows
+            let index = params.index
+            let showIndex = (pageNo - 1) * maxRows + index + 1
+            return h('div', showIndex)
+          }
         },
         {
           title: '平台用户名称',
@@ -177,7 +173,7 @@ export default {
     goToPage(val) {
       // 获取当前页
       this.pageNum = val
-      // this.queryOrderList()
+      this.queryPlatformUser()
     },
 
     queryOrderInfo() {
@@ -249,6 +245,7 @@ export default {
         pageSize: this.maxRows
       }).then(res => {
         if (res && res.data.retCode === '00000') {
+          this.totalCount = res.data.data.total
           this.orderList = this.getNoAdminUser(res.data.data.list)
         }
       })

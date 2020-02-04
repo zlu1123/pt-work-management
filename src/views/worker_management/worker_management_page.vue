@@ -95,9 +95,10 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.imageUrl = config.baseUrl.imgUrl + params.row.logoAddr
                     if (isNotEmpty(params.row.logoAddr)) {
                       this.isShowImgModal = true
+                      this.imageUrl =
+                        config.baseUrl.imgUrl + params.row.logoAddr
                     }
                   }
                 }
@@ -189,10 +190,10 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.imageUrl =
-                      config.baseUrl.imgUrl + params.row.identImageAddr
                     if (isNotEmpty(params.row.identImageAddr)) {
                       this.isShowImgModal = true
+                      this.imageUrl =
+                        config.baseUrl.imgUrl + params.row.identImageAddr
                     }
                   }
                 }
@@ -206,13 +207,7 @@ export default {
   methods: {
     goToPage(val) {
       // 获取当前页
-      this.pageNo = val
-      this.querWorkerList()
-    },
-
-    queryOrderInfo() {
-      // 查询按钮
-      this.pageNum = 1
+      this.pageNum = val
       this.querWorkerList()
     },
     getMaxRows(val) {
@@ -239,7 +234,8 @@ export default {
         pageSize: this.maxRows
       }).then(res => {
         if (res && res.data.retCode === '00000') {
-          this.orderList = res.data.data
+          this.totalCount = res.data.data.total
+          this.orderList = res.data.data.list
         }
       })
     }

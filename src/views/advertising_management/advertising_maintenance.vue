@@ -52,6 +52,8 @@
 
 <script>
 import { noticeOrAdPage, noticeOrAdDelete } from '@/api/user'
+import config from '@/config'
+import { isNotEmpty } from '@/libs/util'
 export default {
   name: 'job-posting',
   data() {
@@ -84,7 +86,7 @@ export default {
             return h('div', [
               h('Img', {
                 attrs: {
-                  src: params.row.imgUrl
+                  src: config.baseUrl.imgUrl + params.row.imgUrl
                 },
                 props: {
                   type: 'primary',
@@ -97,13 +99,9 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.imageUrl = params.row.imgUrl
-                    if (
-                      this.imageUrl !== '' ||
-                      this.imageUrl !== null ||
-                      this.imageUrl !== undefined
-                    ) {
+                    if (isNotEmpty(params.row.imgUrl)) {
                       this.isShowImgModal = true
+                      this.imageUrl = config.baseUrl.imgUrl + params.row.imgUrl
                     }
                   }
                 }
@@ -215,7 +213,7 @@ export default {
     goToPage(val) {
       // 获取当前页
       this.pageNo = val
-      // this.queryOrderList()
+      this.queryOrderList()
     },
 
     queryOrderInfo() {
