@@ -3,7 +3,9 @@
     <Row class="margin-top-10">
       <i-col>
         <Card>
-          <p slot="title"><Icon type="android-create"></Icon>新增职位</p>
+          <p slot="title">
+            <Icon type="android-create"></Icon>{{ merchName }}新增职位
+          </p>
           <Row class="margin-top-10">
             <i-col span="12" class="mar-top-10">
               <label>职位名称：</label>
@@ -287,6 +289,8 @@ export default {
   data() {
     return {
       showMap: false,
+      merchId: '',
+      merchName: '',
       postionImg: '',
       postionLngLat: [108.93977, 34.341574],
       positionInfo: {}, // 工作信息
@@ -335,6 +339,10 @@ export default {
     if (beforePageData && Object.keys(beforePageData).length > 0) {
       if (beforePageData.flag === 'detail') {
         this.disabled = true
+      } else if (beforePageData.flag === 'add') {
+        this.merchId = beforePageData.params.merchId
+        this.merchName = beforePageData.params.merchName
+        return
       } else {
         this.updateFlag = true
         this.popTitle = '您确认更新当前职位信息吗？'
@@ -391,7 +399,7 @@ export default {
       }
       if (this.updateFlag) {
         let insertForm = { ...this.positionInfo }
-        insertForm.merchId = this.getCookieToken.loginNo
+        insertForm.merchId = this.merchId
         insertForm.postionRequire = insertForm.postionRequire.join(',')
         insertForm.postionWelfare = insertForm.postionWelfare.join(',')
         insertForm.workBeginDate = formatDate(insertForm.workBeginDate)
@@ -435,7 +443,7 @@ export default {
         //   workEndDate: '20200501',
         //   clockBeginDate: '09:00',
         //   clockEndDate: '17:00'
-        insertForm.merchId = this.getCookieToken.loginNo
+        insertForm.merchId = this.merchId
         insertForm.postionRequire = insertForm.postionRequire.join(',')
         insertForm.postionWelfare = insertForm.postionWelfare.join(',')
         insertForm.workBeginDate = formatDate(insertForm.workBeginDate)

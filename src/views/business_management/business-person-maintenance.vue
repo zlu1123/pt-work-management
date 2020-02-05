@@ -20,9 +20,6 @@
               >{{ item.merchName }}</Option
             >
           </Select>
-          <Button type="primary" style="margin-left: 30px" @click="queryList"
-            >查询当前企业负责人</Button
-          >
           <Button
             type="primary"
             style="margin-left: 30px"
@@ -195,6 +192,8 @@ export default {
     chooseMerch(item) {
       this.mainTenance = item.value
       this.businessItem = item
+      this.pageNum = 1
+      this.queryList()
     },
     goToPage(val) {
       // 获取当前页

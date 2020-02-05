@@ -1,5 +1,6 @@
 import {
   login,
+  queryEnterpriseRelease,
   // eslint-disable-next-line no-unused-vars
   logout
 } from '@/api/user'
@@ -20,7 +21,8 @@ export default {
     messageReadedList: [],
     messageTrashList: [],
     messageContentStore: {},
-    merchInfo: {}
+    merchInfo: {},
+    allMerchList: []
   },
   mutations: {
     setAvatar(state, avatarPath) {
@@ -66,6 +68,9 @@ export default {
     },
     setMerchInfo(state, data) {
       state.merchInfo = Object.assign({}, state.merchInfo, data)
+    },
+    setAllMerchList(state, data) {
+      state.allMerchList = data
     }
   },
   getters: {
@@ -73,11 +78,12 @@ export default {
     messageReadedCount: state => state.messageReadedList.length,
     messageTrashCount: state => state.messageTrashList.length,
     getCookieToken: state => state.token,
-    getMerchInfo: state => state.merchInfo
+    getMerchInfo: state => state.merchInfo,
+    getAllMerchList: state => state.allMerchList
   },
   actions: {
     // 登录
-    handleLogin({ commit }, { userName, password }) {
+    async handleLogin({ commit, dispatch }, { userName, password }) {
       userName = userName.trim()
       return new Promise((resolve, reject) => {
         login({
@@ -95,6 +101,7 @@ export default {
               // 平台用户：除过财务管理所有模块
               // 平台财务：首页、财务管理
               // 企业管理员：首页（企业职位统计、职位报名实到统计）、职位管理、企业管理（企业负责人维护、企业充值维护）
+              dispatch('requestAllMerchInfo')
               if (userInfo.userType === '00') {
                 commit('setAccess', ['00', '01', '03'])
               } else if (userInfo.userType === '01') {
@@ -129,6 +136,35 @@ export default {
         // commit('setToken', '')
         // commit('setAccess', [])
         // resolve()
+      })
+    },
+    // 获取企业相关信息
+    async requestAllMerchInfo({ state, commit }) {
+      return new Promise((resolve, reject) => {
+        try {
+          // eslint-disable-next-line no-undef
+          queryEnterpriseRelease({
+            pageNum: 1,
+            pageSize: 100
+          })
+            .then(res => {
+              if (res && res.data.data.list.length > 0) {
+                commit('setAllMerchList', res.data.data.list)
+                for (let item of res.data.data.list) {
+                  if (item.merchId === state.token.loginNo) {
+                    commit('setMerchInfo', item)
+                    break
+                  }
+                }
+              }
+              resolve(res)
+            })
+            .catch(err => {
+              reject(err)
+            })
+        } catch (error) {
+          reject(error)
+        }
       })
     }
     // 获取用户相关信息

@@ -285,7 +285,16 @@ export const noticeOrAdDelete = params => {
 // 务工人员列表
 export const workManageList = params => {
   return axios.request({
-    url: '/worker/list',
+    url: '/platformer/certExemList',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 务工人员实名认证审核
+export const workerCertExem = params => {
+  return axios.request({
+    url: '/platformer/certExem',
     data: params,
     method: 'post'
   })
@@ -401,9 +410,46 @@ export const financeReportForm = params => {
   })
 }
 
+// 职位申请查询
 export const positionApplyUserList = params => {
   return axios.request({
     url: '/postionApply/positionApplyUserList',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 地址查询
+export const addrQuery = params => {
+  return axios.request({
+    url: '/platformer/addrQuery',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 地址新增
+export const addrMatn = params => {
+  return axios.request({
+    url: '/platformer/addrMatn',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 地址删除
+export const addrDel = params => {
+  return axios.request({
+    url: '/platformer/addrDel',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 企业充值
+export const enterpiseRecharge = params => {
+  return axios.request({
+    url: '/enterpise/recharge',
     data: params,
     method: 'post'
   })

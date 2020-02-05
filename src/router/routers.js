@@ -153,6 +153,16 @@ export default [
           title: '职位新增'
         },
         component: () => import('@/views/position-management/job-add.vue')
+      },
+      {
+        path: '/job_application_detail',
+        name: 'job_application_detail',
+        meta: {
+          hideInMenu: true,
+          title: '职位申请详情'
+        },
+        component: () =>
+          import('@/views/position-management/job-application-detail.vue')
       }
     ]
   },

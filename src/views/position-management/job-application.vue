@@ -3,7 +3,7 @@
     <i-col>
       <Card>
         <Row>
-          <i-col span="12">
+          <i-col span="8">
             <label>请选择企业：</label>
             <Select
               v-model="merchId"
@@ -22,7 +22,7 @@
               >
             </Select>
           </i-col>
-          <i-col span="12">
+          <i-col span="8">
             <label>请选择职位：</label>
             <Select
               v-model="postionId"
@@ -31,13 +31,30 @@
               not-found-text
               :label-in-value="true"
               @on-change="choosePostion"
-              :disabled="getCookieToken.userType === '03'"
             >
               <Option
                 v-for="item in positionList"
                 :value="item.postionId"
                 :key="item.postionId"
                 >{{ item.postionName }}</Option
+              >
+            </Select>
+          </i-col>
+          <i-col span="8">
+            <label>请选择职位：</label>
+            <Select
+              v-model="exemStat"
+              style="width:200px"
+              clearable
+              not-found-text
+              :label-in-value="true"
+              @on-change="chooseExemStat"
+            >
+              <Option
+                v-for="item in exemStatList"
+                :value="item.exemStat"
+                :key="item.exemStat"
+                >{{ item.exemStatName }}</Option
               >
             </Select>
           </i-col>
@@ -57,7 +74,32 @@
             border
             :columns="orderListTitle"
             :data="orderList"
-          ></Table>
+          >
+            <template slot-scope="{ row }" slot="action">
+              <Button
+                type="primary"
+                size="small"
+                style="margin-right: 10px"
+                @click="goDetail(row)"
+                >详情</Button
+              >
+              <Button
+                v-if="row.applyExemStat === '1'"
+                type="primary"
+                size="small"
+                style="margin-right: 10px"
+                @click="confirmApply(row.applyUserId, row.postionApplyId, 'is')"
+                >通过</Button
+              >
+              <Button
+                v-if="row.applyExemStat === '1'"
+                type="error"
+                size="small"
+                @click="confirmApply(row.applyUserId, row.postionApplyId, 'no')"
+                >拒绝</Button
+              >
+            </template></Table
+          >
         </div>
         <div style="border: 1px solid #e9eaec; padding: 10px;">
           <Page
@@ -92,6 +134,21 @@ export default {
       merchList: [],
       postionId: '',
       positionList: [],
+      exemStat: '',
+      exemStatList: [
+        {
+          exemStat: '1',
+          exemStatName: '待审核'
+        },
+        {
+          exemStat: '2',
+          exemStatName: '审核通过'
+        },
+        {
+          exemStat: '3',
+          exemStatName: '审核拒绝'
+        }
+      ],
       pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
@@ -102,7 +159,15 @@ export default {
           title: '序号',
           type: 'index',
           width: 70,
-          align: 'center'
+          align: 'center',
+          fixed: 'left',
+          render: (h, params) => {
+            let pageNo = this.pageNum
+            let maxRows = this.maxRows
+            let index = params.index
+            let showIndex = (pageNo - 1) * maxRows + index + 1
+            return h('div', showIndex)
+          }
         },
         {
           title: '职位信息',
@@ -111,26 +176,23 @@ export default {
           fixed: 'left'
         },
         {
-          title: '工作地点',
-          key: 'postionAddr'
-        },
-        {
-          title: '结算方式',
-          key: 'billtype',
+          title: '微信昵称',
+          key: 'userName',
           align: 'center'
         },
         {
-          title: '工作内容',
-          key: 'positiondes'
-        },
-        {
-          title: '位置图像',
-          key: 'releasEmerchImg',
+          title: '务工人员姓名',
+          key: 'custName',
           align: 'center'
         },
         {
-          title: '需求人数',
-          key: 'workCount',
+          title: '申请时间',
+          key: 'applyTime',
+          align: 'center'
+        },
+        {
+          title: '审核时间',
+          key: 'approveTime',
           align: 'center'
         },
         {
@@ -148,60 +210,13 @@ export default {
             )
           }
         },
-
         {
-          title: '审核',
+          title: '操作',
           key: 'action',
+          slot: 'action',
           width: 200,
           align: 'center',
-          fixed: 'right',
-          render: (h, params) => {
-            if (params.row.applyExemStat === '1') {
-              return h('div', [
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '10px'
-                    },
-                    on: {
-                      click: () => {
-                        this.confirmApply(
-                          params.row.applyUserId,
-                          params.row.postionApplyId,
-                          'is'
-                        )
-                      }
-                    }
-                  },
-                  '通过'
-                ),
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'error',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.confirmApply(
-                          params.row.applyUserId,
-                          params.row.postionApplyId,
-                          'no'
-                        )
-                      }
-                    }
-                  },
-                  '拒绝'
-                )
-              ])
-            }
-          }
+          fixed: 'right'
         }
       ]
     }
@@ -232,16 +247,10 @@ export default {
       this.queryList()
     },
 
-    goDetail(orderId, orderType) {
+    goDetail(params) {
       this.$router.push({
-        name: 'order-details',
-        query: { orderId: orderId, orderType: orderType }
-      })
-    },
-
-    addJobInfo() {
-      this.$router.push({
-        path: '/job_add'
+        name: 'job_application_detail',
+        params
       })
     },
 
@@ -276,7 +285,7 @@ export default {
         pageSize: this.maxRows,
         postionId: this.postionId,
         merchId: this.merchId,
-        exemStat: '1'
+        applyExemStat: this.exemStat
       }
       if (this.getCookieToken.userType === '03') {
         queryParams.merchId = this.getCookieToken.loginNo
@@ -303,16 +312,15 @@ export default {
     },
 
     queryPostionList() {
-      let queryParams = {}
-      if (this.getCookieToken.userType !== '03') {
-        queryParams.merchId = this.merchId
-      }
-      postionReleasePage(queryParams).then(res => {
+      postionReleasePage({
+        merchId: this.merchId
+      }).then(res => {
         if (res.data) {
           if (res.data.retCode === '00000') {
             this.positionList = res.data.data.list
             if (this.positionList.length > 0) {
               this.postionId = res.data.data.list[0].postionId
+              this.exemStat = '1'
               this.queryList()
             } else {
               this.postionId = ''
@@ -338,18 +346,30 @@ export default {
     choosePostion(item) {
       if (item && item.value) {
         this.postionId = item.value
-        this.queryList()
+        if (this.exemStat) {
+          this.queryList()
+        }
       } else {
         this.orderList = []
       }
+    },
+    chooseExemStat(item) {
+      this.exemStat = item.value
+      this.queryList()
     }
   },
   mounted() {
     // this.queryList()
-    this.getBusinessList()
+    if (this.getCookieToken.userType === '03') {
+      this.merchList = [this.getMerchInfo]
+      this.merchId = this.getMerchInfo.merchId
+      this.queryPostionList()
+    } else {
+      this.getBusinessList()
+    }
   },
   computed: {
-    ...mapGetters(['getCookieToken'])
+    ...mapGetters(['getCookieToken', 'getMerchInfo'])
   }
 }
 </script>

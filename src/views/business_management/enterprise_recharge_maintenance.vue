@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { queryEnterpriseRechargeRecords } from '@/api/user'
+import { queryEnterpriseRechargeRecords, enterpiseRecharge } from '@/api/user'
 export default {
   name: 'job-posting',
   data() {
@@ -147,7 +147,9 @@ export default {
       // this.$router.push({
       //   path: '/enterprise_add'
       // })
-      this.$toast('充值')
+      enterpiseRecharge().then(res => {
+        console.log(res)
+      })
     }
   },
   mounted() {

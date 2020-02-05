@@ -3,7 +3,28 @@
     <i-col>
       <Card>
         <Row>
-          <Button type="primary" icon="md-add" @click="addJobInfo">新增</Button>
+          <i-col span="8">
+            <label>请选择企业：</label>
+            <Select
+              v-model="merchId"
+              style="width:200px"
+              clearable
+              not-found-text
+              :label-in-value="true"
+              @on-change="chooseMerch"
+              :disabled="getCookieToken.userType === '03'"
+            >
+              <Option
+                v-for="item in merchList"
+                :value="item.merchId"
+                :key="item.merchId"
+                >{{ item.merchName }}</Option
+              >
+            </Select>
+          </i-col>
+          <Button type="primary" icon="md-add" @click="addJobInfo"
+            >新增职位</Button
+          >
         </Row>
       </Card>
     </i-col>
@@ -47,15 +68,9 @@ export default {
   name: 'job-posting',
   data() {
     return {
-      payStatus: '',
-      orderNum: null,
-      storeName: null,
-      deliveryPhone: null,
-      orderStatus: '',
-      orderType: '',
-      startTime: null,
-      endTime: null,
-      spanNum: 24,
+      merchId: '',
+      addMerchName: '',
+      merchList: [],
       pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
@@ -375,7 +390,14 @@ export default {
 
     addJobInfo() {
       this.$router.push({
-        path: '/job_add'
+        path: '/job_add',
+        query: {
+          flag: 'add',
+          params: {
+            merchId: this.merchId,
+            merchName: this.addMerchName
+          }
+        }
       })
     },
 
@@ -402,7 +424,8 @@ export default {
     queryList() {
       let queryParams = {
         pageNum: this.pageNum,
-        pageSize: this.maxRows
+        pageSize: this.maxRows,
+        merchId: this.merchId
       }
       if (this.getCookieToken.userType === '03') {
         queryParams.merchId = this.getCookieToken.loginNo
@@ -411,14 +434,31 @@ export default {
         this.totalCount = res.data.data.total
         this.orderList = res.data.data.list
       })
+    },
+
+    chooseMerch(item) {
+      if (item && item.value) {
+        this.merchId = item.value
+        this.addMerchName = item.label
+        this.queryList()
+      }
     }
   },
   mounted() {
+    if (this.getCookieToken.userType === '03') {
+      this.merchId = this.getMerchInfo.merchId
+      this.addMerchName = this.getMerchInfo.merchName
+      this.merchList = [this.getMerchInfo]
+    } else {
+      this.merchId = this.getAllMerchList[0].merchId
+      this.addMerchName = this.getAllMerchList[0].merchName
+      this.merchList = this.getAllMerchList
+    }
     this.queryList()
   },
 
   computed: {
-    ...mapGetters(['getCookieToken'])
+    ...mapGetters(['getCookieToken', 'getMerchInfo', 'getAllMerchList'])
   }
 }
 </script>

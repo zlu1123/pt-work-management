@@ -18,7 +18,7 @@
               />
             </i-col>
             <i-col span="12">
-              <label>企业负责人身份证号：</label>
+              <label>企业负责人手机号：</label>
               <Input
                 v-model="certNo"
                 :disabled="disabled"
