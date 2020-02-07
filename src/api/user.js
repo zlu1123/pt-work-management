@@ -454,3 +454,12 @@ export const enterpiseRecharge = params => {
     method: 'post'
   })
 }
+
+// 获取企业充值二维码
+export const enterpiseRechargeGetQrCode = params => {
+  return axios.request({
+    url: '/common/getQrCode',
+    data: params,
+    method: 'post'
+  })
+}

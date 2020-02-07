@@ -41,7 +41,7 @@
             </Select>
           </i-col>
           <i-col span="8">
-            <label>请选择职位：</label>
+            <label>请选择审核状态：</label>
             <Select
               v-model="exemStat"
               style="width:200px"

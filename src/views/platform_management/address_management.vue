@@ -6,11 +6,18 @@
           <p slot="title" style="height: auto;">
             <Icon type="navicon-round"></Icon>地址列表
             <Button
-              type="error"
+              type="primary"
               icon="md-add"
               style="margin-left: 20px;"
               @click="addAddress"
               >新增地址</Button
+            >
+            <Button
+              type="error"
+              icon="md-add"
+              style="margin-left: 20px;"
+              @click="delAddress"
+              >删除当前地址</Button
             >
           </p>
         </Card>
@@ -63,7 +70,12 @@
             <Icon type="navicon-round"></Icon>区
           </p>
           <label>区列表：</label>
-          <Select v-model="area" style="width:200px;" label-in-value>
+          <Select
+            v-model="area"
+            style="width:200px;"
+            label-in-value
+            @on-change="changeArea"
+          >
             <Option
               v-for="item in areaList"
               :value="item.area"
@@ -82,12 +94,31 @@
       @on-cancel="showModel = false"
     >
       <div class="margin-bottom-10">
-        <Form>
-          <FormItem label="Name" prop="name">
+        <Form
+          ref="addrContent"
+          :model="addrContent"
+          :rules="ruleValidate"
+          :label-width="150"
+        >
+          <FormItem label="省或直辖市：" prop="province">
             <Input
               v-model="addrContent.province"
-              placeholder="请输入内容"
-              style="width: 100px"
+              placeholder="请输入省或直辖市"
+              style="width: 200px"
+            />
+          </FormItem>
+          <FormItem label="市：" prop="city">
+            <Input
+              v-model="addrContent.city"
+              placeholder="请输入城市名称"
+              style="width: 200px"
+            />
+          </FormItem>
+          <FormItem label="县/区：" prop="area">
+            <Input
+              v-model="addrContent.area"
+              placeholder="请输入区名称"
+              style="width: 200px"
             />
           </FormItem>
         </Form>
@@ -97,7 +128,7 @@
 </template>
 
 <script>
-import { addrQuery, addrMatn } from '@/api/user'
+import { addrQuery, addrMatn, addrDel } from '@/api/user'
 export default {
   data() {
     return {
@@ -109,27 +140,81 @@ export default {
       areaList: [],
       showModel: false,
       loading: true,
-      addrContent: {},
       addAddrFlag: '0',
-      allData: []
+      allData: [],
+      addrContent: {
+        province: '',
+        city: '',
+        area: ''
+      },
+      ruleValidate: {
+        province: [
+          {
+            required: true,
+            message: '省或直辖市不能为空',
+            trigger: 'blur'
+          }
+        ],
+        city: [
+          {
+            required: true,
+            message: '城市不能为空',
+            trigger: 'blur'
+          }
+        ],
+        area: [
+          {
+            required: true,
+            message: '区名称不能为空',
+            trigger: 'blur'
+          }
+        ]
+      },
+      provinceData: [],
+      cityData: [],
+      areaData: []
     }
   },
   mounted() {
-    this.getAddressList()
-    // addrDel({
-    //   province: '河南'
-    // }).then(res => {
-    //   console.log(res)
-    // })
+    this.getAllAddr()
   },
   methods: {
-    addAddrDes() {
-      if (!this.addrContent) {
-        this.$Message.error({
-          content: '输入内容不能为空'
-        })
+    getAllAddr() {
+      this.province = ''
+      this.city = ''
+      this.area = ''
+      this.getAddressList()
+    },
+    handleReset(name) {
+      this.$refs[name].resetFields()
+    },
+    delAddress() {
+      if (!this.province) {
         return
       }
+      if (!this.city) {
+        return
+      }
+      this.$Modal.confirm({
+        title: '提醒',
+        content: `<p>确认删除当前地址吗？</p>`,
+        loading: true,
+        onOk: () => {
+          addrDel({
+            province: this.province,
+            city: this.city,
+            area: this.area
+          }).then(res => {
+            if (res && res.data.retCode === '00000') {
+              this.$Modal.remove()
+              this.$Message.info(`删除地址成功`)
+              this.getAllAddr()
+            }
+          })
+        }
+      })
+    },
+    addAddrDes() {
       addrMatn(this.addrContent).then(res => {
         if (res && res.data.retCode) {
           this.showModel = false
@@ -137,6 +222,7 @@ export default {
             title: '提醒',
             desc: '添加成功'
           })
+          this.getAllAddr()
         } else {
           this.showModel = false
           this.$Notice.error({
@@ -144,100 +230,98 @@ export default {
             desc: '添加失败'
           })
         }
+        this.handleReset('addrContent')
       })
     },
+
     addAddress() {
       this.showModel = true
-      this.addAddrFlag = '1'
     },
-    addCity() {
-      this.showModel = true
-      this.addAddrFlag = '2'
-    },
-    addArea() {
-      this.showModel = true
-      this.addAddrFlag = '3'
-    },
+
     getAddressList() {
-      addrQuery().then(res => {
+      let params = {}
+      if (this.province) {
+        params.province = this.province
+      }
+      if (this.city) {
+        params.city = this.city
+      }
+      addrQuery(params).then(res => {
         if (res && res.data.retCode === '00000') {
-          this.fixProvinceList(res.data.data)
-          this.allData = res.data.data
+          if (!this.province) {
+            this.provinceData = res.data.data
+            this.fixProvinceList()
+          } else if (!this.city) {
+            this.cityData = res.data.data
+            this.fixCityList()
+          } else if (!this.area) {
+            this.areaData = res.data.data
+            this.fixAreaList()
+          }
         }
       })
     },
 
-    fixProvinceList(data) {
-      let provinceArray = []
-      if (data.length > 0) {
-        for (let i = 0; i < data.length; i++) {
-          if (provinceArray.length === 0) {
-            provinceArray.push(data[i])
-          }
-          for (let j = 0; j < provinceArray.length; j++) {
-            if (data[i].province !== provinceArray[j].province) {
-              provinceArray.push(data[i])
-            }
-          }
-        }
-      }
+    fixProvinceList() {
+      let provinceArray = this.uniqueData(this.provinceData, 'province')
       this.provinceList = provinceArray
       this.province = provinceArray[0].province
-      this.fixCityList(data, this.province)
+      this.getAddressList()
     },
 
-    fixCityList(data, province) {
-      let cityArray = []
-      if (data.length > 0) {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].province === province) {
-            if (cityArray.length === 0) {
-              cityArray.push(data[i])
-              for (let j = 0; j < cityArray.length; j++) {
-                if (data[i].city !== cityArray[j].city) {
-                  cityArray.push(data[i])
-                }
-              }
-            }
-          }
-        }
+    fixCityList() {
+      let cityArray = this.uniqueData(this.cityData, 'city')
+      if (cityArray.length > 0) {
+        this.cityList = cityArray
+        this.city = cityArray[0].city
+        this.getAddressList()
       }
-      this.cityList = cityArray
-      this.city = cityArray[0].city
-      this.fixAreaList(data, province, this.city)
     },
 
-    fixAreaList(data, province, city) {
-      let areaArray = []
-      if (data.length > 0) {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].province === province && data[i].city === city) {
-            if (areaArray.length === 0) {
-              areaArray.push(data[i])
-              for (let j = 0; j < areaArray.length; j++) {
-                if (data[i].area !== areaArray[j].area) {
-                  areaArray.push(data[i])
-                }
-              }
-            }
-          }
-        }
+    fixAreaList() {
+      let areaArray = this.uniqueData(this.areaData, 'area')
+      if (areaArray.length > 0) {
+        this.areaList = areaArray
+        this.area = areaArray[0].area
       }
-      this.areaList = areaArray
-      this.area = areaArray[0].area
     },
 
     changeProvince(item) {
       if (item && item.value) {
         this.province = item.value
-        this.fixCityList(this.allData, item.value)
+        this.city = ''
+        this.cityData = []
+        this.area = ''
+        this.areaData = []
+        this.getAddressList()
       }
     },
     changeCity(item) {
       if (item && item.value) {
         this.city = item.value
-        this.fixCityList(this.allData, this.province, item.value)
+        this.area = ''
+        this.areaData = []
+        this.getAddressList()
       }
+    },
+    changeArea(item) {
+      if (item && item.value) {
+        this.area = item.value
+      }
+    },
+    uniqueData(arr, flag) {
+      let result = arr
+        .sort((a, b) => a[flag].localeCompare(b[flag]))
+        .reduce((init, current) => {
+          if (
+            init.length === 0 ||
+            init[init.length - 1][flag] !== current[flag]
+          ) {
+            init.push(current)
+          }
+          return init
+        }, [])
+      return result
     }
   }
 }

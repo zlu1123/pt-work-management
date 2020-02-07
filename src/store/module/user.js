@@ -1,6 +1,7 @@
 import {
   login,
   queryEnterpriseRelease,
+  postionReleasePage,
   // eslint-disable-next-line no-unused-vars
   logout
 } from '@/api/user'
@@ -22,7 +23,8 @@ export default {
     messageTrashList: [],
     messageContentStore: {},
     merchInfo: {},
-    allMerchList: []
+    allMerchList: [],
+    allPositonList: []
   },
   mutations: {
     setAvatar(state, avatarPath) {
@@ -71,6 +73,9 @@ export default {
     },
     setAllMerchList(state, data) {
       state.allMerchList = data
+    },
+    setAllPositonListForMerch(state, data) {
+      state.allPositonList = data
     }
   },
   getters: {
@@ -79,7 +84,8 @@ export default {
     messageTrashCount: state => state.messageTrashList.length,
     getCookieToken: state => state.token,
     getMerchInfo: state => state.merchInfo,
-    getAllMerchList: state => state.allMerchList
+    getAllMerchList: state => state.allMerchList,
+    getAllPositonForMerch: state => state.allPositonList
   },
   actions: {
     // 登录
@@ -156,6 +162,31 @@ export default {
                     break
                   }
                 }
+              }
+              resolve(res)
+            })
+            .catch(err => {
+              reject(err)
+            })
+        } catch (error) {
+          reject(error)
+        }
+      })
+    },
+    // 获取企业下所有职位信息
+    // eslint-disable-next-line no-unused-vars
+    async requestPostionListInfo({ state, commit }, merchId) {
+      return new Promise((resolve, reject) => {
+        try {
+          // eslint-disable-next-line no-undef
+          postionReleasePage({
+            pageNum: 1,
+            pageSize: 200,
+            merchId
+          })
+            .then(res => {
+              if (res && res.data.data.list.length > 0) {
+                commit('setAllPositonListForMerch', res.data.data.list)
               }
               resolve(res)
             })

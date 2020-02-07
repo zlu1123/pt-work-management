@@ -22,6 +22,14 @@
               />
             </i-col>
             <i-col span="12" class="mar-top-10">
+              <label>手机号码：</label>
+              <Input
+                v-model="applyInfo.mainMobile"
+                :disabled="disabled"
+                class="width-200"
+              />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
               <label>审核状态：</label>
               <Select
                 v-model="applyInfo.applyExemStat"
@@ -45,11 +53,86 @@
               />
             </i-col>
             <i-col span="12" class="mar-top-10" v-if="applyInfo.applyTime">
-              <label>申请时间：</label>
+              <label>审核时间：</label>
               <Input
                 v-model="applyInfo.applyTime"
                 :disabled="disabled"
                 class="width-200"
+              />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>实名认证：</label>
+              <i-switch
+                size="large"
+                v-model="applyInfo.isCert"
+                true-value="1"
+                false-value="0"
+                :disabled="disabled"
+              >
+                <span slot="open">是</span>
+                <span slot="close">否</span>
+              </i-switch>
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>姓名：</label>
+              <Input
+                v-model="applyInfo.custName"
+                :disabled="disabled"
+                class="width-200"
+              />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>身份证号码：</label>
+              <Input
+                v-model="applyInfo.certNo"
+                :disabled="disabled"
+                class="width-200"
+              />
+            </i-col>
+            <i-col
+              span="24"
+              class="mar-top-10 col-upload-lsg"
+              v-if="applyInfo.isCert === '1' && applyInfo.identImageAddr"
+            >
+              <label>身份证正面图片：</label>
+              <img
+                class="img-content"
+                :src="`${getImgUrl + applyInfo.identImageAddr}`"
+              />
+            </i-col>
+            <i-col
+              span="24"
+              class="mar-top-10 col-upload-lsg"
+              v-if="applyInfo.isCert === '1' && applyInfo.identImageAddr1"
+            >
+              <label>身份证反面图片：</label>
+              <img
+                class="img-content"
+                :src="`${getImgUrl + applyInfo.identImageAddr1}`"
+              />
+            </i-col>
+            <i-col span="12" class="mar-top-10">
+              <label>健康认证：</label>
+              <i-switch
+                size="large"
+                v-model="applyInfo.isHealth"
+                true-value="1"
+                false-value="0"
+                :disabled="disabled"
+              >
+                <span slot="open">是</span>
+                <span slot="close">否</span>
+              </i-switch>
+            </i-col>
+            <i-col
+              span="24"
+              class="mar-top-10 col-upload-lsg"
+              v-if="applyInfo.isHealth === '1' && applyInfo.healthImageAddr"
+            >
+              <label>健康证图片：</label>
+              <img
+                class="img-content"
+                :src="`${getImgUrl + applyInfo.healthImageAddr}`"
               />
             </i-col>
           </Row>
@@ -81,13 +164,13 @@
 </template>
 
 <script>
-import { insertPostionRelease, postionReleaseUpdate } from '@/api/user'
+import { postionApplyApplyExam } from '@/api/user'
 import { mapGetters } from 'vuex'
-import { formatDate } from '@/libs/util'
 import config from '@/config'
 
 export default {
   name: 'job-application-detail',
+
   data() {
     return {
       showMap: false,
@@ -141,115 +224,39 @@ export default {
   mounted() {
     const beforePageData = this.$route.params
     if (beforePageData && Object.keys(beforePageData).length > 0) {
-      console.log(1)
       this.applyInfo = { ...beforePageData }
     }
   },
   methods: {
-    beginDateChange(date) {
-      console.log(date)
-    },
-    endDateChange(date) {
-      console.log(date)
-    },
-    uploadImgMethod(item) {
-      this.applyInfo.postionImg = item
-      this.postionImg = item ? config.baseUrl.imgUrl + item : ''
-    },
-    chooseAddr() {
-      this.showMap = true
-    },
-    mapModelChange(value) {
-      this.showMap = value
-    },
-    chooseMapLocation(item) {
-      this.postionLngLat = item.location
-      this.postionAddr = item.address
-      this.applyInfo.postionAddr = item.address
-      this.applyInfo.postionLngLat = item.location
-    },
-    confirmEditScope() {},
     returnLastPage() {
       this.$router.go(-1)
     },
-    insertPositon() {
-      let tipContent = this.checkParamData(this.applyInfo)
-      if (tipContent) {
-        this.$Message.error({
-          content: tipContent
-        })
-        return
-      }
-      if (this.updateFlag) {
-        let insertForm = { ...this.applyInfo }
-        insertForm.merchId = this.getCookieToken.loginNo
-        insertForm.postionRequire = insertForm.postionRequire.join(',')
-        insertForm.postionWelfare = insertForm.postionWelfare.join(',')
-        insertForm.workBeginDate = formatDate(insertForm.workBeginDate)
-        insertForm.workEndDate = formatDate(insertForm.workEndDate)
-        insertForm.postionLngLat = insertForm.postionLngLat.join(',')
-        // 更新
-        postionReleaseUpdate(insertForm).then(res => {
-          if (res.data && res.data.retCode === '00000') {
-            this.$Notice.success({
-              title: '提醒',
-              desc: '职位信息变更成功'
-            })
-            this.$router.go(-1)
-          } else {
-            this.$Notice.error({
-              title: '提醒',
-              desc: '职位信息变更失败'
-            })
-          }
-        })
-      } else {
-        let insertForm = { ...this.applyInfo }
-        // merchId: this.getCookieToken.loginNo,
-        //   postionName: '送水懂得多员',
-        //   postionAddr: '渭南发发发',
-        //   postionLngLat: '', // 职位经纬度
-        //   postionWelfare: '五险一金',
-        //   postionRequire: '身体好',
-        //   workTime: '8',
-        //   price: '20',
-        //   priceUnit: '时',
-        //   billtype: '日结',
-        //   positiondes: '送水懂得多,装水',
-        //   insurance: '1',
-        //   margin: '1',
-        //   health: '1',
-        //   releasEmerchAddr: "'1', '2'", // 职位地址
-        //   workCount: '20',
-        //   postionImg: 'http://baidu.com', // 职位图片
-        //   workBeginDate: '20200102',
-        //   workEndDate: '20200501',
-        //   clockBeginDate: '09:00',
-        //   clockEndDate: '17:00'
-        insertForm.merchId = this.getCookieToken.loginNo
-        insertForm.postionRequire = insertForm.postionRequire.join(',')
-        insertForm.postionWelfare = insertForm.postionWelfare.join(',')
-        insertForm.workBeginDate = formatDate(insertForm.workBeginDate)
-        insertForm.workEndDate = formatDate(insertForm.workEndDate)
-        insertForm.postionLngLat = insertForm.postionLngLat.join(',')
-        insertPostionRelease(insertForm).then(res => {
-          if (res.data && res.data.retCode === '00000') {
-            this.$Notice.success({
-              title: '提醒',
-              desc: '职位新增成功'
-            })
-            this.$router.go(-1)
-          }
-        })
-      }
+    agreeApplyInfo() {
+      this.postionApplyApplyExamMethod('2')
     },
-    agreeApplyInfo() {},
-    rejectApplyInfo() {},
-    cancel() {}
+    rejectApplyInfo() {
+      this.postionApplyApplyExamMethod('3')
+    },
+    cancel() {},
+    postionApplyApplyExamMethod(applyExemStat) {
+      postionApplyApplyExam({
+        postionApplyId: this.applyInfo.postionApplyId,
+        applyExemStat // 2 通过 3 拒绝
+      }).then(res => {
+        if (res.data && res.data.retCode === '00000') {
+          this.$Message.info('审核成功')
+          this.returnLastPage()
+        }
+      })
+    }
   },
 
   computed: {
-    ...mapGetters(['getCookieToken'])
+    ...mapGetters(['getCookieToken']),
+
+    getImgUrl() {
+      return config.baseUrl.imgUrl
+    }
   }
 }
 </script>
@@ -278,6 +285,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-around;
+}
+
+.img-content {
+  width: 200px;
+  height: 200px;
 }
 
 .col-upload-lsg {

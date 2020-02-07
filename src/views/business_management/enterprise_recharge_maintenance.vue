@@ -3,16 +3,55 @@
     <i-col>
       <Card>
         <Row>
-          <Button type="primary" icon="md-add" @click="addBusinessRecharge"
-            >企业充值-银行卡</Button
-          >
-          <Button
-            type="primary"
-            icon="md-add"
-            style="margin-left: 20px"
-            @click="addBusinessRecharge"
-            >企业充值-微信</Button
-          >
+          <i-col span="12">
+            <label>请选择企业：</label>
+            <Select
+              v-model="merchId"
+              style="width:200px"
+              clearable
+              not-found-text
+              :label-in-value="true"
+              @on-change="chooseMerch"
+              :disabled="getCookieToken.userType === '03'"
+            >
+              <Option
+                v-for="item in merchList"
+                :value="item.merchId"
+                :key="item.merchId"
+                >{{ item.merchName }}</Option
+              >
+            </Select>
+          </i-col>
+          <i-col span="12">
+            <label>请选择职位：</label>
+            <Select
+              v-model="postionId"
+              style="width:200px"
+              clearable
+              not-found-text
+              :label-in-value="true"
+              @on-change="choosePostion"
+            >
+              <Option
+                v-for="item in positionList"
+                :value="item.postionId"
+                :key="item.postionId"
+                >{{ item.postionName }}</Option
+              >
+            </Select>
+          </i-col>
+          <i-col span="24" style="margin-top: 10px">
+            <!-- <Button type="primary" icon="md-add" @click="addBusinessRecharge"
+              >企业充值-银行卡</Button
+            > -->
+            <Button
+              type="primary"
+              icon="md-add"
+              style="margin-left: 20px"
+              @click="addRechargeWechat"
+              >企业充值-微信</Button
+            >
+          </i-col>
         </Row>
       </Card>
     </i-col>
@@ -44,24 +83,36 @@
         </div>
       </Card>
     </i-col>
+    <Modal
+      v-model="isShowImgModal"
+      title="图片"
+      @on-ok="isShowImgModal = false"
+      @on-cancel="isShowImgModal = false"
+      width="332"
+    >
+      <img
+        :src="imageUrl"
+        style="width: 300px; height: 400px;margin-left: auto;margin-right: auto;"
+      />
+    </Modal>
   </div>
 </template>
 
 <script>
-import { queryEnterpriseRechargeRecords, enterpiseRecharge } from '@/api/user'
+import { enterpiseRechargeGetQrCode } from '@/api/user'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'job-posting',
   data() {
     return {
-      payStatus: '',
-      orderNum: null,
-      storeName: null,
-      deliveryPhone: null,
-      orderStatus: '',
-      orderType: '',
-      startTime: null,
-      endTime: null,
-      spanNum: 24,
+      merchId: '',
+      merchName: '',
+      merchList: [],
+      postionId: '',
+      postionName: '',
+      positionList: [],
+      isShowImgModal: false,
+      imageUrl: '',
       pageNo: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
@@ -119,6 +170,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['requestPostionListInfo']),
+
     goToPage(val) {
       // 获取当前页
       this.pageNo = val
@@ -143,16 +196,39 @@ export default {
       })
     },
 
-    addBusinessRecharge() {
-      // this.$router.push({
-      //   path: '/enterprise_add'
-      // })
-      enterpiseRecharge().then(res => {
+    addRechargeWechat() {
+      enterpiseRechargeGetQrCode({
+        merchId: this.merchId,
+        merchName: this.merchName,
+        postionName: this.postionName,
+        postionId: this.postionId
+      }).then(res => {
         console.log(res)
       })
+    },
+    async chooseMerch(item) {
+      if (item && item.value) {
+        this.merchId = item.value
+        this.merchName = item.label
+        await this.requestPostionListInfo(this.merchId)
+        this.positionList = this.getAllPositonForMerch
+        this.postionId = this.positionList[0].postionId
+      }
+    },
+
+    choosePostion(item) {
+      if (item && item.value) {
+        this.postionId = item.value
+        this.postionName = item.label
+        if (this.exemStat) {
+          // this.queryList()
+        }
+      } else {
+        this.orderList = []
+      }
     }
   },
-  mounted() {
+  async mounted() {
     // var isSkip = this.$route.query.skip;
     // if(isSkip == 1){
     //     this.orderStatus = 2;
@@ -164,7 +240,29 @@ export default {
     //     this.endTime = this.$route.query.endTime;
     // }
     // this.queryOrderList();
-    queryEnterpriseRechargeRecords()
+    // queryEnterpriseRechargeRecords()
+    if (this.getCookieToken.userType === '03') {
+      this.merchId = this.getMerchInfo.merchId
+      this.merchName = this.getMerchInfo.merchName
+      this.merchList = [this.getMerchInfo]
+    } else {
+      this.merchId = this.getAllMerchList[0].merchId
+      this.merchName = this.getAllMerchList[0].merchName
+      this.merchList = this.getAllMerchList
+    }
+    await this.requestPostionListInfo(this.merchId)
+    this.positionList = this.getAllPositonForMerch
+    this.postionId = this.positionList[0].postionId
+    this.postionName = this.positionList[0].postionName
+  },
+
+  computed: {
+    ...mapGetters([
+      'getCookieToken',
+      'getMerchInfo',
+      'getAllMerchList',
+      'getAllPositonForMerch'
+    ])
   }
 }
 </script>
