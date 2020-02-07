@@ -97,11 +97,6 @@ export default {
           width: '60'
         },
         {
-          title: '企业负责人ID',
-          key: 'merchChargeId',
-          align: 'center'
-        },
-        {
           title: '企业负责人名称',
           key: 'merchCharge',
           align: 'center'

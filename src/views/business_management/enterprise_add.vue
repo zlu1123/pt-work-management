@@ -3,72 +3,91 @@
     <Row class="margin-top-10">
       <i-col>
         <Card>
-          <p slot="title">
+          <p slot="title" style="height: auto;">
             <Icon type="android-create"></Icon>企业{{
               disabled ? '详情' : updateFlag ? '信息修改' : '新增'
             }}
+            <Button
+              type="error"
+              style="margin-left: 20px"
+              @click="returnLastPage"
+              >返回</Button
+            >
           </p>
+
           <Row class="margin-top-10">
-            <i-col span="24">
-              <div>
-                <label class="label-line">企业名称：</label>
-                <Input
-                  :disabled="disabled"
-                  v-model="merchName"
-                  style="width: 200px"
-                />
-                <label class="label-line">企业地址：</label>
-                <Input
-                  :disabled="disabled"
-                  v-model="merchAddrName"
-                  style="width: 200px"
-                  @on-focus="chooseAddr"
-                />
-              </div>
-            </i-col>
-            <i-col span="24" class="margin-top-10">
-              <div>
-                <label class="label-line">企业邮箱：</label>
-                <Input
-                  :disabled="disabled"
-                  v-model="merchEmail"
-                  style="width: 200px"
-                  type="email"
-                />
-                <label class="label-line">企业电话：</label>
-                <Input
-                  :disabled="disabled"
-                  v-model="merchMobile"
-                  style="width: 200px"
-                  type="tel"
-                />
-              </div>
-            </i-col>
-            <i-col span="24" class="margin-top-10">
-              <div>
-                <label class="label-line">企业说明：</label>
-                <Input
-                  :disabled="disabled"
-                  v-model="merchInfo"
-                  style="width: 200px"
-                  placeholder="请输入企业说明"
-                  maxlength="1000"
-                  :autosize="{ minRows: 5, maxRows: 10 }"
-                  show-word-limit
-                  type="textarea"
-                  class="width-800"
-                />
-              </div>
-            </i-col>
-            <i-col span="24" class="col-upload-lsg">
-              <label class="label-line">请上传企业图片</label>
-              <lsg-upload
-                :imgUrl.sync="merchShowImg"
-                @getImgUrl="uploadImgMethod"
-                :uploadImg="updateFlag"
-              ></lsg-upload>
-            </i-col>
-            <div style="margin-top: 20px;">
+            <Form
+              ref="merchInfoParam"
+              :model="merchInfoParam"
+              :rules="ruleValidate"
+              :label-width="150"
+            >
+              <i-col span="24">
+                <div>
+                  <FormItem label="企业名称：" prop="merchName">
+                    <Input
+                      :disabled="disabled"
+                      v-model="merchInfoParam.merchName"
+                      style="width: 200px"
+                    />
+                  </FormItem>
+                  <FormItem label="企业地址：" prop="merchAddr">
+                    <Input
+                      :disabled="disabled"
+                      v-model="merchInfoParam.merchAddr"
+                      style="width: 200px"
+                      @on-focus="chooseAddr"
+                    />
+                  </FormItem>
+                </div>
+              </i-col>
+              <i-col span="24" class="margin-top-10">
+                <div>
+                  <FormItem label="企业邮箱：" prop="merchEmail">
+                    <Input
+                      :disabled="disabled"
+                      v-model="merchInfoParam.merchEmail"
+                      style="width: 200px"
+                      type="email"
+                    />
+                  </FormItem>
+                  <FormItem label="企业电话：" prop="merchMobile">
+                    <Input
+                      :disabled="disabled"
+                      v-model="merchInfoParam.merchMobile"
+                      style="width: 200px"
+                      type="tel"
+                    />
+                  </FormItem>
+                </div>
+              </i-col>
+              <i-col span="24" class="margin-top-10">
+                <FormItem label="企业说明：" prop="merchInfo">
+                  <Input
+                    :disabled="disabled"
+                    v-model="merchInfoParam.merchInfo"
+                    style="width: 200px"
+                    placeholder="请输入企业说明"
+                    maxlength="1000"
+                    :autosize="{ minRows: 5, maxRows: 10 }"
+                    show-word-limit
+                    type="textarea"
+                    class="width-800"
+                  />
+                </FormItem>
+              </i-col>
+              <FormItem label="请上传企业图片：" prop="merchImg">
+                <i-col span="24" class="col-upload-lsg">
+                  <lsg-upload
+                    :imgUrl.sync="merchShowImg"
+                    @getImgUrl="uploadImgMethod"
+                    :uploadImg="updateFlag"
+                    v-model="merchInfoParam.merchImg"
+                  ></lsg-upload>
+                </i-col>
+              </FormItem>
+            </Form>
+            <div class="btn__col" style="margin-top: 20px;">
               <Poptip
                 placement="top-start"
                 confirm
@@ -81,9 +100,6 @@
                   updateFlag ? '更新' : '新增'
                 }}</Button>
               </Poptip>
-              <Button style="margin: 0 10px;" @click="returnLastPage"
-                >返回</Button
-              >
             </div>
           </Row>
         </Card>
@@ -112,7 +128,8 @@ export default {
     return {
       merchCharge: '',
       merchAddr: '',
-      merchAddrName: '',
+      merchAddrName:
+        '陕西省西安市未央区张家堡街道西安市城管执法局西安市人民政府',
       merchName: '',
       merchEmail: '',
       merchMobile: '',
@@ -123,7 +140,64 @@ export default {
       merchImg: '',
       merchShowImg: '',
       merchLngLat: [108.93977, 34.341574],
-      merchInfo: ''
+      merchInfo: '',
+      merchInfoParam: {
+        merchName: '',
+        merchAddr: '',
+        merchEmail: '',
+        merchMobile: '',
+        merchInfo: '',
+        merchImg: ''
+      },
+      ruleValidate: {
+        merchName: [
+          {
+            required: true,
+            message: '企业名称不能为空',
+            trigger: 'blur'
+          }
+        ],
+        merchAddr: [
+          {
+            required: true,
+            message: '企业地址不能为空',
+            trigger: 'blur'
+          }
+        ],
+        merchEmail: [
+          {
+            required: true,
+            message: '企业邮箱不能为空',
+            trigger: 'blur'
+          },
+          {
+            type: 'email',
+            message: '邮箱格式不正确',
+            trigger: 'blur'
+          }
+        ],
+        merchMobile: [
+          {
+            required: true,
+            message: '企业电话不能为空',
+            trigger: 'blur'
+          }
+        ],
+        merchInfo: [
+          {
+            required: true,
+            message: '企业说明不能为空',
+            trigger: 'blur'
+          }
+        ],
+        merchImg: [
+          {
+            required: true,
+            message: '企业LOGO不能为空',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
 
@@ -141,16 +215,17 @@ export default {
         this.updateFlag = true
         this.popTitle = '您确认更新当前企业信息吗？'
       }
-      this.merchName = beforePageData.params.merchName
+      this.merchInfoParam.merchName = beforePageData.params.merchName
+      this.merchInfoParam.merchImg = beforePageData.params.merchImg
+      this.merchInfoParam.merchEmail = beforePageData.params.merchEmail
+      this.merchInfoParam.merchMobile = beforePageData.params.merchMobile
+      this.merchInfoParam.merchAddr = beforePageData.params.merchAddr
+      this.merchInfoParam.merchInfo = beforePageData.params.merchInfo
+
       this.merchCharge = beforePageData.params.merchId
-      this.merchImg = beforePageData.params.merchImg
-      this.merchEmail = beforePageData.params.merchEmail
-      this.merchMobile = beforePageData.params.merchMobile
-      this.merchShowImg = config.baseUrl.imgUrl + this.merchImg
-      this.merchAddr = beforePageData.params.merchAddr
+      this.merchShowImg = config.baseUrl.imgUrl + this.merchInfoParam.merchImg
       this.merchLngLat = beforePageData.params.merchLngLat.split(',')
       this.merchAddrName = beforePageData.params.merchAddr
-      this.merchInfo = beforePageData.params.merchInfo
     }
   },
   methods: {
@@ -159,62 +234,27 @@ export default {
     },
     chooseMapLocation(item) {
       this.merchAddrName = item.address
-      this.merchAddr = this.merchAddrName
       this.merchLngLat = item.location
+      this.merchInfoParam.merchAddrName = item.address
+      this.merchInfoParam.merchAddr = this.merchAddrName
     },
     uploadImgMethod(item) {
-      this.merchImg = item
+      this.merchInfoParam.merchImg = item
       this.merchShowImg = item ? config.baseUrl.imgUrl + item : ''
     },
     chooseAddr() {
       this.showMap = true
+      this.merchInfoParam.merchAddr = this.merchAddrName
     },
     returnLastPage() {
       this.$router.go(-1)
     },
     addMerchant() {
-      if (!this.merchName) {
-        this.$Message.error({
-          content: '请输入企业名称'
-        })
-        return
-      }
-      if (!this.merchAddr) {
-        this.$Message.error({
-          content: '请选取企业地点'
-        })
-        return
-      }
-      if (!this.merchImg) {
-        this.$Message.error({
-          content: '请上传企业图片'
-        })
-        return
-      }
-      if (!this.merchEmail) {
-        this.$Message.error({
-          content: '请输入企业邮箱'
-        })
-        return
-      }
-      if (!this.merchMobile) {
-        this.$Message.error({
-          content: '请输入企业联系方式'
-        })
-        return
-      }
       if (this.updateFlag) {
+        this.merchInfoParam.merchId = this.merchCharge
+        this.merchInfoParam.merchLngLat = this.merchLngLat.join(',')
         // 更新
-        enterpriseReleaseUpdate({
-          merchName: this.merchName,
-          merchAddr: this.merchAddr,
-          merchId: this.merchCharge,
-          merchImg: this.merchImg,
-          merchMobile: this.merchMobile,
-          merchEmail: this.merchEmail,
-          merchLngLat: this.merchLngLat.join(','),
-          merchInfo: this.merchInfo
-        }).then(res => {
+        enterpriseReleaseUpdate(this.merchInfoParam).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({
               title: '提醒',
@@ -229,16 +269,9 @@ export default {
           }
         })
       } else {
+        this.merchInfoParam.merchLngLat = this.merchLngLat.join(',')
         // 新增
-        enterpriseManageInsert({
-          merchName: this.merchName,
-          merchAddr: this.merchAddr,
-          merchImg: this.merchImg,
-          merchMobile: this.merchMobile,
-          merchEmail: this.merchEmail,
-          merchLngLat: this.merchLngLat.join(','),
-          merchInfo: this.merchInfo
-        }).then(res => {
+        enterpriseManageInsert(this.merchInfoParam).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({
               title: '提醒',
@@ -260,60 +293,10 @@ export default {
 .margin-top-10 {
   margin-top: 10px;
 }
-.col-upload-lsg {
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-}
-
-.vertical-center-modal {
+.btn__col {
+  margin-top: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  .ivu-modal {
-    top: 0;
-  }
-}
-.goods-edit-list {
-  padding-bottom: 24px;
-  border-bottom: 1px solid #e9eaec;
-}
-.goods-edit-list li {
-  float: left;
-  margin-right: 60px;
-  margin-bottom: 10px;
-}
-/*清除浮动*/
-.clearfix:before,
-.clearfix:after {
-  content: '';
-  display: table;
-}
-.clearfix:after {
-  clear: both;
-}
-.clearfix {
-  *zoom: 1;
-}
-.prompt-list {
-  margin-top: 2px;
-  width: 300px;
-  padding: 4px 7px;
-  border: 1px solid #dddee1;
-}
-.prompt-list li {
-  cursor: pointer;
-  padding: 2px 0;
-}
-
-li {
-  list-style: none;
-} /*这里设置*/
-
-.label-line {
-  display: inline-block;
-  width: 120px;
-  text-align: right;
 }
 </style>

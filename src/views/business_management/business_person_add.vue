@@ -3,29 +3,44 @@
     <Row class="margin-top-10">
       <i-col>
         <Card>
-          <p slot="title">
+          <p slot="title" style="height: auto;">
             <Icon type="android-create"></Icon>{{ merchName }}负责人{{
               disabled ? '详情' : updateFlag ? '信息修改' : '新增'
             }}
+            <Button
+              type="error"
+              style="margin-left: 20px"
+              @click="returnLastPage"
+              >返回</Button
+            >
           </p>
           <Row class="margin-top-10">
-            <i-col span="12">
-              <label>企业负责人姓名：</label>
-              <Input
-                v-model="merchChargeName"
-                :disabled="disabled"
-                style="width: 200px"
-              />
-            </i-col>
-            <i-col span="12">
-              <label>企业负责人手机号：</label>
-              <Input
-                v-model="certNo"
-                :disabled="disabled"
-                style="width: 200px"
-                maxlength="18"
-              />
-            </i-col>
+            <Form
+              ref="merchChargeInfo"
+              :model="merchChargeInfo"
+              :rules="ruleValidate"
+              :label-width="150"
+            >
+              <i-col span="12">
+                <FormItem label="负责人姓名：" prop="merchChargeName">
+                  <Input
+                    v-model="merchChargeInfo.merchChargeName"
+                    :disabled="disabled"
+                    style="width: 200px"
+                  />
+                </FormItem>
+              </i-col>
+              <i-col span="12">
+                <FormItem label="负责人身份证号：" prop="certNo">
+                  <Input
+                    v-model="merchChargeInfo.certNo"
+                    :disabled="disabled"
+                    style="width: 200px"
+                    maxlength="18"
+                  />
+                </FormItem>
+              </i-col>
+            </Form>
             <i-col span="24" v-if="!disabled">
               <div class="btn__col">
                 <Poptip
@@ -40,9 +55,6 @@
                     updateFlag ? '更新' : '新增'
                   }}</Button>
                 </Poptip>
-                <Button style="margin: 0 10px;" @click="returnLastPage"
-                  >返回</Button
-                >
               </div>
             </i-col>
           </Row>
@@ -55,21 +67,43 @@
 <script>
 import { enterpriseDirectorInsert, enterpriseDirectorUpdate } from '@/api/user'
 import { mapGetters } from 'vuex'
-// import { checkID } from '@/libs/util'
+import { checkID } from '@/libs/util'
 
 export default {
   name: 'searchable-table',
   data() {
     return {
       merchChargeName: '',
-      certNo: '',
       disabled: false,
       updateFlag: false,
       popTitle: '您确认增加当前负责人吗？',
       merchName: '',
-      merchId: '',
-      merchChargeId: '', // 列表查询返回
-      merchCharge: '' // 列表查询返回
+      merchChargeInfo: {
+        merchId: '',
+        merchChargeName: '',
+        certNo: ''
+      },
+      ruleValidate: {
+        merchChargeName: [
+          {
+            required: true,
+            message: '负责人姓名不能为空',
+            trigger: 'blur'
+          }
+        ],
+        certNo: [
+          {
+            required: true,
+            message: '负责人身份证号码不能为空',
+            trigger: 'blur'
+          },
+          {
+            type: 'string',
+            validator: this.checkTheIdCard,
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   mounted() {
@@ -81,13 +115,14 @@ export default {
         this.updateFlag = true
         this.popTitle = '您确认更新当前企业负责人信息吗？'
       }
-      this.merchChargeName = beforePageData.params.merchCharge
-      this.certNo = beforePageData.params.loginId
+      this.merchChargeInfo.merchChargeName = beforePageData.params.merchCharge
+      this.merchChargeInfo.certNo = beforePageData.params.loginId
+      this.merchChargeInfo.merchId = beforePageData.params.merchId
+
       this.merchChargeId = beforePageData.params.merchChargeId
-      this.merchId = beforePageData.params.merchId
     } else {
       this.merchName = beforePageData.params.label
-      this.merchId = beforePageData.params.value
+      this.merchChargeInfo.merchId = beforePageData.params.value
     }
   },
   methods: {
@@ -95,30 +130,9 @@ export default {
       this.$router.go(-1)
     },
     addMerchantManage() {
-      if (!this.merchChargeName) {
-        this.$Message.error({
-          content: '请输入企业负责人姓名'
-        })
-        return
-      }
-      if (!this.updateFlag && !this.certNo) {
-        this.$Message.error({
-          content: '请输入企业负责人身份证号码'
-        })
-        return
-      }
-      // if (!this.updateFlag && !checkID(this.certNo)) {
-      //   this.$Message.error({
-      //     content: '身份证号码不正确'
-      //   })
-      //   return
-      // }
       if (this.updateFlag) {
-        enterpriseDirectorUpdate({
-          merchId: this.merchId,
-          merchChargeId: this.merchChargeId,
-          merchChargeName: this.merchChargeName
-        }).then(res => {
+        this.merchChargeInfo.merchChargeId = this.merchChargeId
+        enterpriseDirectorUpdate(this.merchChargeInfo).then(res => {
           if (res.data && res.data.retCode === '00000') {
             if (res.data && res.data.retCode === '00000') {
               this.$Notice.success({
@@ -135,12 +149,7 @@ export default {
           }
         })
       } else {
-        enterpriseDirectorInsert({
-          // merchId: this.getCookieToken.loginNo,
-          merchId: this.merchId,
-          merchChargeName: this.merchChargeName,
-          certNo: this.certNo
-        }).then(res => {
+        enterpriseDirectorInsert(this.merchChargeInfo).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({
               title: '提醒',
@@ -151,7 +160,15 @@ export default {
         })
       }
     },
-    cancel() {}
+    cancel() {},
+
+    checkTheIdCard(rule, value, callback) {
+      if (!checkID(value)) {
+        callback(new Error('请输入正确的身份证号'))
+      } else {
+        callback()
+      }
+    }
   },
   computed: {
     ...mapGetters(['getCookieToken'])
