@@ -101,6 +101,8 @@
 <script>
 import { enterpiseRechargeGetQrCode } from '@/api/user'
 import { mapGetters, mapActions } from 'vuex'
+import config from '@/config'
+
 export default {
   name: 'job-posting',
   data() {
@@ -201,9 +203,12 @@ export default {
         merchId: this.merchId,
         merchName: this.merchName,
         postionName: this.postionName,
-        postionId: this.postionId
+        positionId: this.postionId
       }).then(res => {
-        console.log(res)
+        if (res && res.data.retCode === '00000') {
+          this.imageUrl = config.baseUrl.imgUrl + res.data.data
+          this.isShowImgModal = true
+        }
       })
     },
     async chooseMerch(item) {
@@ -212,7 +217,8 @@ export default {
         this.merchName = item.label
         await this.requestPostionListInfo(this.merchId)
         this.positionList = this.getAllPositonForMerch
-        this.postionId = this.positionList[0].postionId
+        this.postionId =
+          this.positionList.length > 0 ? this.positionList[0].postionId : ''
       }
     },
 
@@ -220,9 +226,6 @@ export default {
       if (item && item.value) {
         this.postionId = item.value
         this.postionName = item.label
-        if (this.exemStat) {
-          // this.queryList()
-        }
       } else {
         this.orderList = []
       }

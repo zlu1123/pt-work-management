@@ -3,8 +3,14 @@
     <Row class="margin-top-10">
       <i-col>
         <Card>
-          <p slot="title">
+          <p slot="title" style="height: auto">
             <Icon type="android-create"></Icon>{{ merchName }}新增职位
+            <Button
+              type="error"
+              style="margin-left: 20px"
+              @click="returnLastPage"
+              >返回</Button
+            >
           </p>
           <Row class="margin-top-10">
             <i-col span="12" class="mar-top-10">
@@ -200,30 +206,6 @@
                 <span slot="close">关闭</span>
               </i-switch>
             </i-col>
-            <!-- <i-col span="12" class="mar-top-10">
-              <label>发布企业：</label>
-              <Input
-                v-model="positionInfo.releaseMerch"
-                placeholder="请输入企业名称"
-                class="width-200"
-              />
-            </i-col> -->
-            <!-- <i-col span="12" class="mar-top-10">
-              <label>企业负责人：</label>
-              <Input
-                v-model="positionInfo.merchCharge"
-                placeholder="请输入企业名称"
-                class="width-200"
-              />
-            </i-col> -->
-            <!-- <i-col span="12" class="mar-top-10">
-              <label>平台负责人：</label>
-              <Input
-                v-model="positionInfo.platformCharge1"
-                placeholder="请输入平台负责人"
-                class="width-200"
-              />
-            </i-col> -->
             <i-col span="24" class="mar-top-10 col-upload-lsg">
               <label>请上传职位图片：</label>
               <lsg-upload
@@ -257,7 +239,6 @@
             >
               <Button type="primary">{{ updateFlag ? '更新' : '新增' }}</Button>
             </Poptip>
-            <Button @click="returnLastPage">返回</Button>
           </div>
         </Card>
       </i-col>

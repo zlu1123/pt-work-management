@@ -187,6 +187,8 @@ export default {
             .then(res => {
               if (res && res.data.data.list.length > 0) {
                 commit('setAllPositonListForMerch', res.data.data.list)
+              } else {
+                commit('setAllPositonListForMerch', [])
               }
               resolve(res)
             })

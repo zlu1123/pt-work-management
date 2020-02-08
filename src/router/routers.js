@@ -381,8 +381,8 @@ export const otherRouter = {
   component: Main,
   children: [
     {
-      path: '/job-add',
-      name: 'job-add',
+      path: '/job_add',
+      name: 'job_add',
       component: () => import('@/views/position-management/job-add.vue')
     },
     {
