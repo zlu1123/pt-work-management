@@ -2,6 +2,7 @@ import {
   login,
   queryEnterpriseRelease,
   postionReleasePage,
+  enterpriseDirectorPage,
   // eslint-disable-next-line no-unused-vars
   logout
 } from '@/api/user'
@@ -24,7 +25,8 @@ export default {
     messageContentStore: {},
     merchInfo: {},
     allMerchList: [],
-    allPositonList: []
+    allPositonList: [],
+    allEnterpriseDirector: []
   },
   mutations: {
     setAvatar(state, avatarPath) {
@@ -76,6 +78,9 @@ export default {
     },
     setAllPositonListForMerch(state, data) {
       state.allPositonList = data
+    },
+    setAllEnterpriseDirector(state, data) {
+      state.allEnterpriseDirector = data
     }
   },
   getters: {
@@ -85,7 +90,14 @@ export default {
     getCookieToken: state => state.token,
     getMerchInfo: state => state.merchInfo,
     getAllMerchList: state => state.allMerchList,
-    getAllPositonForMerch: state => state.allPositonList
+    getAllPositonForMerch: state => state.allPositonList,
+    getAllEnterpriseDirector: state => state.allEnterpriseDirector,
+    // eslint-disable-next-line no-unused-vars
+    getEnterpriseDirectorByCharge: (state, getters) => merchChargeId => {
+      return getters.getAllEnterpriseDirector.find(
+        item => item.merchChargeId === merchChargeId
+      )
+    }
   },
   actions: {
     // 登录
@@ -189,6 +201,33 @@ export default {
                 commit('setAllPositonListForMerch', res.data.data.list)
               } else {
                 commit('setAllPositonListForMerch', [])
+              }
+              resolve(res)
+            })
+            .catch(err => {
+              reject(err)
+            })
+        } catch (error) {
+          reject(error)
+        }
+      })
+    },
+    // 获取企业下所有职位信息
+    // eslint-disable-next-line no-unused-vars
+    async requestEnterpriseDirectorInfo({ state, commit }, merchId) {
+      return new Promise((resolve, reject) => {
+        try {
+          // eslint-disable-next-line no-undef
+          enterpriseDirectorPage({
+            pageNum: 1,
+            pageSize: 1000,
+            merchId
+          })
+            .then(res => {
+              if (res && res.data.data.list.length > 0) {
+                commit('setAllEnterpriseDirector', res.data.data.list)
+              } else {
+                commit('setAllEnterpriseDirector', [])
               }
               resolve(res)
             })

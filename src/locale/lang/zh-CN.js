@@ -69,5 +69,6 @@ export default {
   business_person_add: '企业负责人新增',
   advertising_maintenance_add: '轮播图新增',
   platform_user_maintenance_add: '平台用户管理',
-  job_application_detail: '职位申请详情'
+  job_application_detail: '职位申请详情',
+  job_application_exam: '职位审核维护'
 }

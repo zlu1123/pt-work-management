@@ -4,13 +4,27 @@
       <i-col>
         <Card>
           <p slot="title" style="height: auto">
-            <Icon type="android-create"></Icon>{{ merchName }}新增职位
+            <Icon type="android-create"></Icon
+            >{{ disabled ? '职位详情' : `${merchName}新增职位` }}
             <Button
               type="error"
               style="margin-left: 20px"
               @click="returnLastPage"
               >返回</Button
             >
+            <label style="margin-left: 20px">企业职位负责人：</label>
+            <Select
+              v-model="positionInfo.merchCharge"
+              class="width-200"
+              :disabled="disabled"
+            >
+              <Option
+                v-for="item in getAllEnterpriseDirector"
+                :value="item.merchChargeId"
+                :key="item.merchChargeId"
+                >{{ item.merchCharge }}</Option
+              >
+            </Select>
           </p>
           <Row class="margin-top-10">
             <i-col span="12" class="mar-top-10">
@@ -323,11 +337,15 @@ export default {
       } else if (beforePageData.flag === 'add') {
         this.merchId = beforePageData.params.merchId
         this.merchName = beforePageData.params.merchName
+        this.positionInfo.merchCharge = this.getAllEnterpriseDirector[0].merchChargeId
         return
       } else {
         this.updateFlag = true
         this.popTitle = '您确认更新当前职位信息吗？'
       }
+      this.positionInfo.merchCharge = this.getEnterpriseDirectorByCharge(
+        beforePageData.params.merchCharge
+      )
       this.positionInfo = { ...beforePageData.params }
       this.positionInfo.postionWelfare = beforePageData.params.postionWelfare.split(
         ','
@@ -498,7 +516,11 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getCookieToken'])
+    ...mapGetters([
+      'getCookieToken',
+      'getAllEnterpriseDirector',
+      'getEnterpriseDirectorByCharge'
+    ])
   }
 }
 </script>

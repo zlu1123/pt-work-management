@@ -136,6 +136,16 @@ export default [
         component: () => import('@/views/position-management/job-posting.vue')
       },
       {
+        path: '/job_application_exam',
+        name: 'job_application_exam',
+        meta: {
+          icon: 'md-cafe',
+          title: '职位审核维护'
+        },
+        component: () =>
+          import('@/views/position-management/job_posting_exam.vue')
+      },
+      {
         path: '/job_application',
         name: 'job_application',
         meta: {

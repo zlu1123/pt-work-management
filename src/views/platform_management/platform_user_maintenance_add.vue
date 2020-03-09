@@ -29,7 +29,7 @@
             <i-col span="12" class="mar-top-10">
               <label>手机号：</label>
               <Input
-                v-model="mainMobile"
+                v-model="mobile"
                 :disabled="disabled"
                 style="width: 200px"
                 maxlength="18"
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { platformUserInsert, enterpriseDirectorUpdate } from '@/api/user'
+import { platformUserInsert, platformUserUpdate } from '@/api/user'
 import { mapGetters } from 'vuex'
 // import { checkID } from '@/libs/util'
 
@@ -88,7 +88,7 @@ export default {
     return {
       custName: '',
       certNo: '',
-      mainMobile: '',
+      mobile: '',
       userType: '',
       disabled: false,
       updateFlag: false,
@@ -152,7 +152,7 @@ export default {
       //   return
       // }
       if (this.updateFlag) {
-        enterpriseDirectorUpdate({
+        platformUserUpdate({
           merchId: this.merchId,
           merchChargeId: this.merchChargeId,
           merchChargeName: this.merchChargeName
@@ -161,13 +161,13 @@ export default {
             if (res.data && res.data.retCode === '00000') {
               this.$Notice.success({
                 title: '提醒',
-                desc: '企业负责人信息更新成功'
+                desc: '平台用户信息更新成功'
               })
               this.$router.go(-1)
             } else {
               this.$Notice.error({
                 title: '提醒',
-                desc: '企业负责人信息更新失败'
+                desc: '平台用户信息更新失败'
               })
             }
           }
@@ -175,14 +175,14 @@ export default {
       } else {
         platformUserInsert({
           custName: this.custName,
-          mainMobile: this.mainMobile,
+          mobile: this.mobile,
           certNo: this.certNo,
           userType: this.userType
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
             this.$Notice.success({
               title: '提醒',
-              desc: '企业负责人新增成功'
+              desc: '用户新增成功'
             })
             this.$router.go(-1)
           }

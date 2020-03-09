@@ -130,35 +130,41 @@ export default {
       this.$router.go(-1)
     },
     addMerchantManage() {
-      if (this.updateFlag) {
-        this.merchChargeInfo.merchChargeId = this.merchChargeId
-        enterpriseDirectorUpdate(this.merchChargeInfo).then(res => {
-          if (res.data && res.data.retCode === '00000') {
-            if (res.data && res.data.retCode === '00000') {
-              this.$Notice.success({
-                title: '提醒',
-                desc: '企业负责人信息更新成功'
-              })
-              this.$router.go(-1)
-            } else {
-              this.$Notice.error({
-                title: '提醒',
-                desc: '企业负责人信息更新失败'
-              })
-            }
-          }
-        })
-      } else {
-        enterpriseDirectorInsert(this.merchChargeInfo).then(res => {
-          if (res.data && res.data.retCode === '00000') {
-            this.$Notice.success({
-              title: '提醒',
-              desc: '企业负责人新增成功'
+      this.$refs.merchChargeInfo.validate(valid => {
+        if (valid) {
+          if (this.updateFlag) {
+            this.merchChargeInfo.merchChargeId = this.merchChargeId
+            enterpriseDirectorUpdate(this.merchChargeInfo).then(res => {
+              if (res.data && res.data.retCode === '00000') {
+                if (res.data && res.data.retCode === '00000') {
+                  this.$Notice.success({
+                    title: '提醒',
+                    desc: '企业负责人信息更新成功'
+                  })
+                  this.$router.go(-1)
+                } else {
+                  this.$Notice.error({
+                    title: '提醒',
+                    desc: '企业负责人信息更新失败'
+                  })
+                }
+              }
             })
-            this.$router.go(-1)
+          } else {
+            enterpriseDirectorInsert(this.merchChargeInfo).then(res => {
+              if (res.data && res.data.retCode === '00000') {
+                this.$Notice.success({
+                  title: '提醒',
+                  desc: '企业负责人新增成功'
+                })
+                this.$router.go(-1)
+              }
+            })
           }
-        })
-      }
+        } else {
+          this.$Message.error('请按照规则输入')
+        }
+      })
     },
     cancel() {},
 

@@ -250,37 +250,43 @@ export default {
       this.$router.go(-1)
     },
     addMerchant() {
-      if (this.updateFlag) {
-        this.merchInfoParam.merchId = this.merchCharge
-        this.merchInfoParam.merchLngLat = this.merchLngLat.join(',')
-        // 更新
-        enterpriseReleaseUpdate(this.merchInfoParam).then(res => {
-          if (res.data && res.data.retCode === '00000') {
-            this.$Notice.success({
-              title: '提醒',
-              desc: '企业信息更新成功'
+      this.$refs.merchInfoParam.validate(valid => {
+        if (valid) {
+          if (this.updateFlag) {
+            this.merchInfoParam.merchId = this.merchCharge
+            this.merchInfoParam.merchLngLat = this.merchLngLat.join(',')
+            // 更新
+            enterpriseReleaseUpdate(this.merchInfoParam).then(res => {
+              if (res.data && res.data.retCode === '00000') {
+                this.$Notice.success({
+                  title: '提醒',
+                  desc: '企业信息更新成功'
+                })
+                this.$router.go(-1)
+              } else {
+                this.$Notice.error({
+                  title: '提醒',
+                  desc: '企业信息更新失败'
+                })
+              }
             })
-            this.$router.go(-1)
           } else {
-            this.$Notice.error({
-              title: '提醒',
-              desc: '企业信息更新失败'
+            this.merchInfoParam.merchLngLat = this.merchLngLat.join(',')
+            // 新增
+            enterpriseManageInsert(this.merchInfoParam).then(res => {
+              if (res.data && res.data.retCode === '00000') {
+                this.$Notice.success({
+                  title: '提醒',
+                  desc: '企业新增成功'
+                })
+                this.$router.go(-1)
+              }
             })
           }
-        })
-      } else {
-        this.merchInfoParam.merchLngLat = this.merchLngLat.join(',')
-        // 新增
-        enterpriseManageInsert(this.merchInfoParam).then(res => {
-          if (res.data && res.data.retCode === '00000') {
-            this.$Notice.success({
-              title: '提醒',
-              desc: '企业新增成功'
-            })
-            this.$router.go(-1)
-          }
-        })
-      }
+        } else {
+          this.$Message.error('请按照规则输入')
+        }
+      })
     },
     cancel() {}
   },

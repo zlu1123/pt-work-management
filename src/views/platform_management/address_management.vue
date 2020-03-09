@@ -215,22 +215,28 @@ export default {
       })
     },
     addAddrDes() {
-      addrMatn(this.addrContent).then(res => {
-        if (res && res.data.retCode) {
-          this.showModel = false
-          this.$Notice.success({
-            title: '提醒',
-            desc: '添加成功'
+      this.$refs.merchInfoParam.validate(valid => {
+        if (valid) {
+          addrMatn(this.addrContent).then(res => {
+            if (res && res.data.retCode) {
+              this.showModel = false
+              this.$Notice.success({
+                title: '提醒',
+                desc: '添加成功'
+              })
+              this.getAllAddr()
+            } else {
+              this.showModel = false
+              this.$Notice.error({
+                title: '提醒',
+                desc: '添加失败'
+              })
+            }
+            this.handleReset('addrContent')
           })
-          this.getAllAddr()
         } else {
-          this.showModel = false
-          this.$Notice.error({
-            title: '提醒',
-            desc: '添加失败'
-          })
+          this.$Message.error('请按照规则输入')
         }
-        this.handleReset('addrContent')
       })
     },
 

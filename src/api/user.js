@@ -463,3 +463,12 @@ export const enterpiseRechargeGetQrCode = params => {
     method: 'post'
   })
 }
+
+// 职位审核
+export const platformerEnterpriseReleaseExam = params => {
+  return axios.request({
+    url: '/platformer/enterpriseReleaseExam',
+    data: params,
+    method: 'post'
+  })
+}

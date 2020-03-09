@@ -67,7 +67,7 @@ export default {
         },
         {
           title: '平台用户名称',
-          key: 'loginNo',
+          key: 'loginName',
           align: 'center'
         },
         {

@@ -22,9 +22,24 @@
               >
             </Select>
           </i-col>
-          <Button type="primary" icon="md-add" @click="addJobInfo"
-            >新增职位</Button
-          >
+          <i-col span="8">
+            <label>请选择职位状态：</label>
+            <Select
+              v-model="postionStat"
+              style="width:200px"
+              clearable
+              not-found-text
+              :label-in-value="true"
+              @on-change="choosePostionStat"
+            >
+              <Option
+                v-for="item in postionStatList"
+                :value="item.postionStat"
+                :key="item.postionStat"
+                >{{ item.postionStatName }}</Option
+              >
+            </Select>
+          </i-col>
         </Row>
       </Card>
     </i-col>
@@ -32,7 +47,7 @@
       <Card>
         <p slot="title">
           <Icon type="navicon-round"></Icon>
-          职位发布列表
+          职位审核列表
         </p>
         <div style="overflow: auto;height: 540px;" class="margin-top-5">
           <i-table
@@ -57,20 +72,75 @@
         </div>
       </Card>
     </i-col>
+    <Modal
+      v-model="eaxmPostionModal"
+      title="职位审核"
+      :loading="loading"
+      @on-ok="examPostion"
+    >
+      <RadioGroup v-model="examStats" @on-change="changeExamStats">
+        <Radio label="通过"></Radio>
+        <Radio label="不通过"></Radio>
+      </RadioGroup>
+      <div v-if="examStats === '通过'" style="margin-top: 20px">
+        <label>请选择职位平台负责人：</label>
+        <Select
+          v-model="platformMcharge"
+          style="width:200px"
+          clearable
+          not-found-text
+          :label-in-value="true"
+          @on-change="choosePlatformMcharge"
+        >
+          <Option
+            v-for="item in platformMchargeList"
+            :value="item.loginNo"
+            :key="item.loginNo"
+            >{{ item.loginName }}</Option
+          >
+        </Select>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
-import { postionReleasePage, insertPostionDelete } from '@/api/user'
+import {
+  postionReleasePage,
+  insertPostionDelete,
+  platformUserPage,
+  platformerEnterpriseReleaseExam
+} from '@/api/user'
 import { mapGetters, mapActions } from 'vuex'
 import { formatDateYYYYMMDD } from '@/libs/util'
 export default {
   name: 'job-posting',
   data() {
     return {
+      eaxmPostionModal: false,
+      loading: true,
+      examStats: '通过',
+      postionId: '',
+      platformMcharge: '',
+      platformMchargeList: [],
       merchId: '',
       addMerchName: '',
       merchList: [],
+      postionStat: '01',
+      postionStatList: [
+        {
+          postionStat: '01',
+          postionStatName: '待审核'
+        },
+        {
+          postionStat: '02',
+          postionStatName: '审核通过'
+        },
+        {
+          postionStat: '03',
+          postionStatName: '审核拒绝'
+        }
+      ],
       pageNum: 1,
       maxRows: 10,
       pageSize: [10, 20, 30, 50],
@@ -213,24 +283,6 @@ export default {
                 'Button',
                 {
                   props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '10px'
-                  },
-                  on: {
-                    click: () => {
-                      this.goDetail(params.row, 'detail')
-                    }
-                  }
-                },
-                '详情'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
                     type: 'success',
                     size: 'small'
                   },
@@ -239,11 +291,14 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.goDetail(params.row, 'update')
+                      // this.goDetail(params.row, 'update')
+                      this.eaxmPostionModal = true
+                      this.postionId = params.row.postionId
+                      this.getPlatformUser()
                     }
                   }
                 },
-                '更新'
+                '审核'
               ),
               h(
                 'Button',
@@ -261,7 +316,7 @@ export default {
                     }
                   }
                 },
-                '删除'
+                '停止'
               )
             ])
           }
@@ -433,7 +488,8 @@ export default {
       let queryParams = {
         pageNum: this.pageNum,
         pageSize: this.maxRows,
-        merchId: this.merchId
+        merchId: this.merchId,
+        postionStat: this.postionStat
       }
       if (this.getCookieToken.userType === '03') {
         queryParams.merchId = this.getCookieToken.loginNo
@@ -449,6 +505,47 @@ export default {
         this.merchId = item.value
         this.addMerchName = item.label
         this.queryList()
+      }
+    },
+
+    choosePostionStat(item) {
+      this.postionStat = item.value
+      this.queryList()
+    },
+
+    examPostion() {
+      let params = {
+        postionStat: this.examStats === '通过' ? '02' : '03',
+        platforMcharge1: this.platformMcharge,
+        platforMcharge2: '',
+        platforMcharge3: '',
+        platforMcharge4: '',
+        postionId: this.postionId
+      }
+      platformerEnterpriseReleaseExam(params).then(res => {
+        if (res && res.data.retCode === '00000') {
+          this.$Message.info('审核完成')
+        }
+      })
+    },
+
+    getPlatformUser() {
+      platformUserPage({
+        pageNum: 1,
+        pageSize: 1000
+      }).then(res => {
+        if (res && res.data.retCode === '00000') {
+          this.platformMchargeList = res.data.data.list
+        }
+      })
+    },
+
+    choosePlatformMcharge() {},
+
+    changeExamStats(item) {
+      this.examStats = item
+      if (item === '通过') {
+        this.getPlatformUser()
       }
     }
   },
