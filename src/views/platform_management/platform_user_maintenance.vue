@@ -156,10 +156,10 @@ export default {
         case '01':
           typeName = '务工'
           break
-        case '02':
+        case '03':
           typeName = '商户'
           break
-        case '03':
+        case '02':
           typeName = '平台'
           break
         case '04':
@@ -201,31 +201,10 @@ export default {
       this.$router.push({
         path: '/platform_user_maintenance_add',
         query: {
-          flag: 'add',
-          params: this.businessItem
+          flag: 'add'
         }
       })
     },
-
-    // deleteItem(merchId, merchChargeId) {
-    //   this.$Modal.confirm({
-    //     title: '提醒',
-    //     content: '<p>确认删除当前企业负责人吗？</p>',
-    //     loading: true,
-    //     onOk: () => {
-    //       enterpriseDirectorDelete({
-    //         merchId: merchId,
-    //         merchChargeId: merchChargeId
-    //       }).then(res => {
-    //         if (res.data && res.data.retCode === '00000') {
-    //           this.$Modal.remove()
-    //           this.$Message.info('删除成功')
-    //           this.queryList()
-    //         }
-    //       })
-    //     }
-    //   })
-    // },
 
     getNoAdminUser(list) {
       let arrayList = []
@@ -253,6 +232,17 @@ export default {
   },
   mounted() {
     this.queryPlatformUser()
+  },
+
+  beforeRouteEnter(to, from, next) {
+    // ...
+    if (from.path === '/platform_user_maintenance_add') {
+      next(vm => {
+        vm.pageNum = 1
+        vm.queryPlatformUser()
+      })
+    }
+    next()
   }
 }
 </script>

@@ -18,10 +18,10 @@
               />
             </i-col>
             <i-col span="12" class="mar-top-10">
-              <label>身份证号：</label>
+              <label>账号：</label>
               <Input
                 v-model="certNo"
-                :disabled="disabled"
+                :disabled="disabled || updateFlag"
                 style="width: 200px"
                 maxlength="18"
               />
@@ -100,11 +100,11 @@ export default {
       userTypeList: [
         {
           label: '商户',
-          value: '02'
+          value: '03'
         },
         {
           label: '平台',
-          value: '03'
+          value: '02'
         },
         {
           label: '财务',
@@ -120,12 +120,12 @@ export default {
         this.disabled = true
       } else {
         this.updateFlag = true
-        this.popTitle = '您确认更新当前企业负责人信息吗？'
+        this.popTitle = '您确认更新当前平台负责人信息吗？'
       }
-      this.merchChargeName = beforePageData.params.merchCharge
-      this.certNo = beforePageData.params.loginId
-      this.merchChargeId = beforePageData.params.merchChargeId
-      this.merchId = beforePageData.params.merchId
+      this.custName = beforePageData.params.loginName
+      this.certNo = beforePageData.params.loginNo
+      this.mobile = beforePageData.params.mobile
+      this.userType = beforePageData.params.userType
     }
   },
   methods: {
@@ -141,7 +141,7 @@ export default {
       }
       if (!this.updateFlag && !this.certNo) {
         this.$Message.error({
-          content: '请输入企业负责人身份证号码'
+          content: '请输入企业负责人账号码'
         })
         return
       }
@@ -153,23 +153,22 @@ export default {
       // }
       if (this.updateFlag) {
         platformUserUpdate({
-          merchId: this.merchId,
-          merchChargeId: this.merchChargeId,
-          merchChargeName: this.merchChargeName
+          custName: this.custName,
+          mobile: this.mobile,
+          certNo: this.certNo,
+          userType: this.userType
         }).then(res => {
           if (res.data && res.data.retCode === '00000') {
-            if (res.data && res.data.retCode === '00000') {
-              this.$Notice.success({
-                title: '提醒',
-                desc: '平台用户信息更新成功'
-              })
-              this.$router.go(-1)
-            } else {
-              this.$Notice.error({
-                title: '提醒',
-                desc: '平台用户信息更新失败'
-              })
-            }
+            this.$Notice.success({
+              title: '提醒',
+              desc: '平台用户信息更新成功'
+            })
+            this.returnLastPage()
+          } else {
+            this.$Notice.error({
+              title: '提醒',
+              desc: '平台用户信息更新失败'
+            })
           }
         })
       } else {
@@ -184,7 +183,8 @@ export default {
               title: '提醒',
               desc: '用户新增成功'
             })
-            this.$router.go(-1)
+            this.$store.commit('setPlatformRefresh', true)
+            this.returnLastPage()
           }
         })
       }

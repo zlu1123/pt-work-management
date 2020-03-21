@@ -26,7 +26,8 @@ export default {
     merchInfo: {},
     allMerchList: [],
     allPositonList: [],
-    allEnterpriseDirector: []
+    allEnterpriseDirector: [],
+    platformRefresh: false
   },
   mutations: {
     setAvatar(state, avatarPath) {
@@ -81,6 +82,9 @@ export default {
     },
     setAllEnterpriseDirector(state, data) {
       state.allEnterpriseDirector = data
+    },
+    setPlatformRefresh(state, data) {
+      state.platformRefresh = data
     }
   },
   getters: {
@@ -97,7 +101,8 @@ export default {
       return getters.getAllEnterpriseDirector.find(
         item => item.merchChargeId === merchChargeId
       )
-    }
+    },
+    getPlatformRefresh: state => state.platformRefresh
   },
   actions: {
     // 登录
@@ -121,11 +126,13 @@ export default {
               // 企业管理员：首页（企业职位统计、职位报名实到统计）、职位管理、企业管理（企业负责人维护、企业充值维护）
               dispatch('requestAllMerchInfo')
               if (userInfo.userType === '00') {
-                commit('setAccess', ['00', '01', '03'])
+                commit('setAccess', ['00', '01', '02', '03'])
               } else if (userInfo.userType === '01') {
                 commit('setAccess', ['01'])
               } else if (userInfo.userType === '03') {
                 commit('setAccess', ['03'])
+              } else if (userInfo.userType === '02') {
+                commit('setAccess', ['02'])
               }
               commit('setHasGetInfo', true)
               resolve(res)

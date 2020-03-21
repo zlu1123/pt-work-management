@@ -88,6 +88,7 @@
           v-model="platformMcharge"
           style="width:200px"
           clearable
+          :multiple="true"
           not-found-text
           :label-in-value="true"
           @on-change="choosePlatformMcharge"
@@ -121,7 +122,7 @@ export default {
       loading: true,
       examStats: '通过',
       postionId: '',
-      platformMcharge: '',
+      platformMcharge: [],
       platformMchargeList: [],
       merchId: '',
       addMerchName: '',
@@ -278,47 +279,49 @@ export default {
           fixed: 'right',
           width: '200',
           render: (h, params) => {
-            return h('div', [
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'success',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '10px'
-                  },
-                  on: {
-                    click: () => {
-                      // this.goDetail(params.row, 'update')
-                      this.eaxmPostionModal = true
-                      this.postionId = params.row.postionId
-                      this.getPlatformUser()
+            if (this.postionStat === '01') {
+              return h('div', [
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'success',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '10px'
+                    },
+                    on: {
+                      click: () => {
+                        // this.goDetail(params.row, 'update')
+                        this.eaxmPostionModal = true
+                        this.postionId = params.row.postionId
+                        this.getPlatformUser()
+                      }
                     }
-                  }
-                },
-                '审核'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'error',
-                    size: 'small'
                   },
-                  on: {
-                    click: () => {
-                      this.deleteItem(
-                        params.row.releasEmerch,
-                        params.row.postionId
-                      )
+                  '审核'
+                ),
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'error',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.deleteItem(
+                          params.row.releasEmerch,
+                          params.row.postionId
+                        )
+                      }
                     }
-                  }
-                },
-                '停止'
-              )
-            ])
+                  },
+                  '停止'
+                )
+              ])
+            }
           }
         }
       ],
@@ -516,15 +519,37 @@ export default {
     examPostion() {
       let params = {
         postionStat: this.examStats === '通过' ? '02' : '03',
-        platforMcharge1: this.platformMcharge,
+        platforMcharge1: '',
         platforMcharge2: '',
         platforMcharge3: '',
         platforMcharge4: '',
         postionId: this.postionId
       }
+      if (this.examStats === '通过') {
+        let list = this.platformMcharge
+        if (list.length > 0) {
+          if (list.length >= 4) {
+            this.$Message.error('最多选择4个平台负责人')
+            return
+          }
+          for (let i = 0; i < list.length; i++) {
+            params[`platforMcharge${i + 1}`] = list[i]
+          }
+        } else {
+          this.$Message.error('请选择平台负责人')
+          return
+        }
+      }
+
       platformerEnterpriseReleaseExam(params).then(res => {
         if (res && res.data.retCode === '00000') {
           this.$Message.info('审核完成')
+          this.eaxmPostionModal = false
+          this.platformMcharge = []
+          this.init()
+        } else {
+          this.eaxmPostionModal = false
+          this.platformMcharge = []
         }
       })
     },
@@ -547,19 +572,23 @@ export default {
       if (item === '通过') {
         this.getPlatformUser()
       }
+    },
+
+    init() {
+      if (this.getCookieToken.userType === '03') {
+        this.merchId = this.getMerchInfo.merchId
+        this.addMerchName = this.getMerchInfo.merchName
+        this.merchList = [this.getMerchInfo]
+      } else {
+        this.merchId = this.getAllMerchList[0].merchId
+        this.addMerchName = this.getAllMerchList[0].merchName
+        this.merchList = this.getAllMerchList
+      }
+      this.queryList()
     }
   },
   mounted() {
-    if (this.getCookieToken.userType === '03') {
-      this.merchId = this.getMerchInfo.merchId
-      this.addMerchName = this.getMerchInfo.merchName
-      this.merchList = [this.getMerchInfo]
-    } else {
-      this.merchId = this.getAllMerchList[0].merchId
-      this.addMerchName = this.getAllMerchList[0].merchName
-      this.merchList = this.getAllMerchList
-    }
-    this.queryList()
+    this.init()
   },
 
   computed: {

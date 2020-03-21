@@ -215,7 +215,7 @@ export default {
       })
     },
     addAddrDes() {
-      this.$refs.merchInfoParam.validate(valid => {
+      this.$refs.addrContent.validate(valid => {
         if (valid) {
           addrMatn(this.addrContent).then(res => {
             if (res && res.data.retCode) {
