@@ -12,7 +12,7 @@ const resolve = dir => {
 // 例如：https://www.foobar.com/my-app/
 // 需要将它改为'/my-app/'
 // iview-admin线上演示打包路径： https://file.iviewui.com/admin-dist/
-const BASE_URL = process.env.NODE_ENV === 'production' ? '/' : '/'
+const BASE_URL = process.env.NODE_ENV === 'production' ? '/lsgManage/' : '/'
 
 module.exports = {
   // Project deployment base
@@ -41,15 +41,6 @@ module.exports = {
   devServer: {
     port: process.env.PORT,
     proxy: 'http://test.coa.police.adxinfo.cn:8811/lsg/'
-    // proxy: {
-    //   '/lsgService': {
-    //     target: 'http://test.coa.police.adxinfo.cn:8811/',
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       '^/lsgService': ''
-    //     }
-    //   }
-    // }
   },
   css: {
     loaderOptions: {

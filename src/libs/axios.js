@@ -2,6 +2,7 @@ import axios from 'axios'
 // import store from '@/store'
 // import { Spin } from 'iview'
 import { Notice } from 'iview'
+// import configBase from '@/config'
 // const addErrorLog = errorInfo => {
 //   const {
 //     statusText,
@@ -28,7 +29,7 @@ class HttpRequest {
   }
   getInsideConfig() {
     const config = {
-      baseURL: this.baseUrl,
+      baseURL: process.env.NODE_ENV === 'development' ? '' : '/lsgService',
       headers: {
         //
       },
