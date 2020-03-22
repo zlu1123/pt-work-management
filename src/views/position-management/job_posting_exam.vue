@@ -95,8 +95,8 @@
         >
           <Option
             v-for="item in platformMchargeList"
-            :value="item.loginNo"
-            :key="item.loginNo"
+            :value="item.userId"
+            :key="item.userId"
             >{{ item.loginName }}</Option
           >
         </Select>
