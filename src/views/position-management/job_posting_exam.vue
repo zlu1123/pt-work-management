@@ -123,7 +123,12 @@ export default {
       examStats: '通过',
       postionId: '',
       platformMcharge: [],
-      platformMchargeList: [],
+      platformMchargeList: [
+        {
+          loginName: '',
+          userId: ''
+        }
+      ],
       merchId: '',
       addMerchName: '',
       merchList: [],
@@ -560,9 +565,13 @@ export default {
         pageSize: 1000
       }).then(res => {
         if (res && res.data.retCode === '00000') {
-          this.platformMchargeList = res.data.data.list
+          this.platformMchargeList = this.getPlatformList(res.data.data.list)
         }
       })
+    },
+
+    getPlatformList(arr) {
+      return arr.filter(item => item.userType === '02')
     },
 
     choosePlatformMcharge() {},

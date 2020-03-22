@@ -31,7 +31,7 @@
                 </FormItem>
               </i-col>
               <i-col span="12">
-                <FormItem label="负责人身份证号：" prop="certNo">
+                <FormItem label="负责人登录账号：" prop="certNo">
                   <Input
                     v-model="merchChargeInfo.certNo"
                     :disabled="disabled"
@@ -94,12 +94,12 @@ export default {
         certNo: [
           {
             required: true,
-            message: '负责人身份证号码不能为空',
+            message: '负责人登录账号不能为空',
             trigger: 'blur'
           },
           {
             type: 'string',
-            validator: this.checkTheIdCard,
+            // validator: this.checkTheIdCard,
             trigger: 'blur'
           }
         ]

@@ -99,11 +99,7 @@ export default {
       merchCharge: '', // 列表查询返回
       userTypeList: [
         {
-          label: '商户',
-          value: '03'
-        },
-        {
-          label: '平台',
+          label: '平台负责人',
           value: '02'
         },
         {

@@ -186,21 +186,23 @@ export default {
                 },
                 '更新'
               ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'error',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.deleteItem(params.row.merchId)
-                    }
-                  }
-                },
-                '删除'
-              )
+              this.getCookieToken.userType !== '03'
+                ? h(
+                    'Button',
+                    {
+                      props: {
+                        type: 'error',
+                        size: 'small'
+                      },
+                      on: {
+                        click: () => {
+                          this.deleteItem(params.row.merchId)
+                        }
+                      }
+                    },
+                    '删除'
+                  )
+                : null
             ])
           }
         }

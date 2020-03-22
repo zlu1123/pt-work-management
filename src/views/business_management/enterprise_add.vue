@@ -120,7 +120,7 @@ import { enterpriseManageInsert, enterpriseReleaseUpdate } from '@/api/user'
 import addressMap from '../components/amap/address-map.vue'
 import lsgUpload from '../components/upload/lsg-upload.vue'
 import config from '@/config'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'searchable-table',
@@ -229,6 +229,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['requestAllMerchInfo']),
     mapModelChange(value) {
       this.showMap = value
     },
@@ -269,6 +270,7 @@ export default {
                   desc: '企业信息更新失败'
                 })
               }
+              this.requestAllMerchInfo()
             })
           } else {
             this.merchInfoParam.merchLngLat = this.merchLngLat.join(',')
@@ -280,6 +282,7 @@ export default {
                   desc: '企业新增成功'
                 })
                 this.$router.go(-1)
+                this.requestAllMerchInfo()
               }
             })
           }

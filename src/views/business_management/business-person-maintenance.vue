@@ -102,7 +102,7 @@ export default {
           align: 'center'
         },
         {
-          title: '负责人身份证号码',
+          title: '企业负责人登录账号',
           key: 'loginId',
           align: 'center'
         },

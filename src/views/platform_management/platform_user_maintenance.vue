@@ -71,6 +71,11 @@ export default {
           align: 'center'
         },
         {
+          title: '登录账号',
+          key: 'loginNo',
+          align: 'center'
+        },
+        {
           title: '平台用户类型',
           key: 'userType',
           align: 'center',
@@ -160,7 +165,7 @@ export default {
           typeName = '商户'
           break
         case '02':
-          typeName = '平台'
+          typeName = '平台负责人'
           break
         case '04':
           typeName = '财务'
